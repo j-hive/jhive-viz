@@ -1,0 +1,32 @@
+// _interaction.scss
+
+.interaction-panel {
+    position: absolute;
+    right: 2em;
+    top: 5em;
+    width: 10em;
+    height: 20em;
+    background: $Main-bg-transparent;
+    border: 1px solid $Main-secondary-text-hex;
+    z-index: 10;
+    backdrop-filter: blur(2px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+#interaction-panel-bar {
+    width: 100%;
+    height: 10px;
+    background-color: $Main-secondary-text-hex;
+    z-index: 11;
+}
+
+#interaction-panel-buttons {
+    // min-width: 100%;
+    flex-grow: 10;
+    padding: 0.5em;
+    display: flex;
+    align-items: center;
+}

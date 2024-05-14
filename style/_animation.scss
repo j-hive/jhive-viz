@@ -1,0 +1,6 @@
+// _animation.scss
+
+@mixin animation() {
+    transition-duration: 0.5s;
+    transition-timing-function: cubic-bezier(0.65, 0.05, 0.36, 1);
+}

@@ -1,0 +1,48 @@
+// _header.scss
+
+header.titlebar {
+    // position: absolute;
+    // left: 0;
+    // top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.5em;
+
+    .titlebar_list {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        list-style: none;
+        justify-content: space-between;
+
+        li {
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+            padding-top: 0.35em;
+            padding-bottom: 0.25em;
+            display: flex;
+            justify-content: center;
+            border-bottom-style: solid;
+            border-color: $Main-secondary-text-hex;
+        }
+
+        #expandedname {
+            color: $Main-secondary-text-hex;
+            flex-grow: 4;
+            border-left-style: solid;
+            border-right-style: solid;
+            border-color: $Main-secondary-text-hex;
+        }
+
+        #versionnumber {
+            color: $Main-secondary-text-hex;
+        }
+
+    }
+
+}

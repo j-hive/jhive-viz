@@ -1,0 +1,93 @@
+// _details.scss
+
+.details {
+    position: absolute;
+    width: 100vw;
+    height: 12em;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    border-top-style: solid;
+    border-color: $Main-secondary-text-hex;
+    background-color: $Main-bg-transparent;
+    display: flex;
+    overflow: hidden;
+
+    .close-details-button {
+
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.5em;
+        width: 1em;
+        height: 1em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-decoration: none;
+
+        &:hover {
+            color: $J-HIVE-Theme-1-hex;
+        }
+
+    }
+
+    .detail-scroller {
+        height: 95%;
+        width: 97%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: start;
+
+        // scrollbar-color: #777 #222222;
+        // scrollbar-width: 10px;
+
+        &::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            background-color: #222222;
+        }
+
+        &::-webkit-scrollbar {
+            height: 10px;
+            width: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            background-color: #777;
+        }
+
+    }
+
+
+}
+
+.details-on {
+    transform: translateY(0%);
+}
+
+.details-off {
+    transform: translateY(100%);
+    @include animation();
+}
+
+.test-detail-card {
+    border: 1px solid gray;
+    margin: 1em;
+    padding: 1em;
+    height: 7em;
+    width: 10em;
+    flex-shrink: 0;
+
+}
