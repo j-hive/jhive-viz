@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js';
 import { Ease, ease } from 'pixi-ease';
 import { addDraggingToElements } from './js/dragging.js'
 import { startUIInteractions } from './js/uiinteractions.js';
+import { initializePixiApp } from './js/pixiapp.js';
 
 import './style/style.scss'
 
@@ -11,6 +12,8 @@ import './style/style.scss'
 let app_length = document.getElementById("app").clientWidth;
 let app_height = document.getElementById("app").clientHeight;
 
+// Initializing Pixi App
+initializePixiApp();
 
 // Setup UI Interactions
 startUIInteractions();
@@ -18,3 +21,4 @@ startUIInteractions();
 
 // Adding Dragging to Elements
 addDraggingToElements();
+
