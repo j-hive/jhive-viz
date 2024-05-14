@@ -3,20 +3,47 @@
 @import "_fonts.scss";
 @import "_colours.scss";
 
+// Font Awesome 
+
+// importing core styling file
+@import './fontawesome/scss/fontawesome.scss';
+
+// our project needs Solid
+@import './fontawesome/scss/solid.scss';
+
+
+@mixin animation() {
+    transition-duration: 0.5s;
+    transition-timing-function: cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
 body {
     font-family: "Spectral", serif;
     font-size: large;
     background-color: $Main-bg-hex;
     color: $Main-text-hex;
+    overflow: hidden;
+}
+
+.container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 
 // Header
 
 header.titlebar {
-    position: absolute;
-    left: 0;
-    top: 0;
+    // position: absolute;
+    // left: 0;
+    // top: 0;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -60,19 +87,61 @@ header.titlebar {
 
 }
 
+// App Panel
+#app {
+    position: relative;
+    flex-grow: 30;
+    left: 0;
+    top: 0;
+}
 
 // Details Panel
 
-.slide-top {
-    animation: slide-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+.details {
+    position: absolute;
+    width: 100vw;
+    height: 12em;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    border-top-style: solid;
+    border-color: $Main-secondary-text-hex;
+    background-color: $Main-bg-transparent;
+
+
+    .close-details-button {
+
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.5em;
+        width: 1em;
+        height: 1em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-decoration: none;
+
+    }
+
 }
 
-@keyframes slide-top {
-    0% {
-        transform: translateY(0);
-    }
+.details-on {
+    transform: translateY(0%);
+}
 
-    100% {
-        transform: translateY(-100px);
-    }
+.details-off {
+    transform: translateY(100%);
+    @include animation();
+}
+
+
+// Testing Classes
+
+.centertext {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
