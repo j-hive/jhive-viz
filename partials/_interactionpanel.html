@@ -2,5 +2,28 @@
 
 <div class="interaction-panel" id="interaction-panel">
     <div id="interaction-panel-bar"></div>
-    <div id="interaction-panel-buttons">This is the interaction panel.</div>
+    <div id="interaction-panel-selectors">
+
+        <div class="interaction-panel-selector-row">
+            <div class="axis-selector-label">X-Axis:</div>
+            <select name="x-axis" id="x-axis-selector" class="axis-selector">
+                <option value="tmp" selected>Temp 123456789123456789</option>
+            </select>
+        </div>
+
+        <div class="interaction-panel-selector-row">
+            <div class="axis-selector-label">Y-Axis:</div>
+            <select name="y-axis" id="y-axis-selector" class="axis-selector">
+                <option value="tmp" selected>Temp 123456789123456789</option>
+            </select>
+        </div>
+
+
+    </div>
+
+    <div class="interaction-panel-button-row">
+        <a id="mouse-zoom-button" class="selected">Zoom & Pan</a>
+        <a id="mouse-select-button">Select</a>
+    </div>
+
 </div>
