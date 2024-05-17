@@ -14,6 +14,7 @@
     backdrop-filter: blur(2px);
     display: flex;
     overflow: hidden;
+    z-index: 3;
 
     .close-details-button {
 

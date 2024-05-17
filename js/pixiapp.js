@@ -9,6 +9,19 @@ import * as d3 from 'd3';
 const dataURL = "/data/uncover_dr3_jhive_viz.csv";
 const metadataURL = "/data/uncover_dr3_jhive_viz.json";
 
+// Plotting Constants
+
+const DEFAULT_POINT_COLOR = 0xffffff;
+const HIGHLIGHT_POINT_COLOR = 0x849cba;
+const MOUSEOVER_POINT_COLOR = 0xfacb73;
+const CLICKED_POINT_COLOR = 0x73adfa;
+const POINTRADIUS = 4;
+const DATABORDERBUFFER = 0.07;
+const LEFTMARGIN = 50;
+const RIGHTMARGIN = 5;
+const LOWERMARGIN = 50;
+const UPPERMARGIN = 5;
+
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
     if (this.parent) {
@@ -107,8 +120,8 @@ function makePixiTemplate(app) {
     // Template Shape
 
     const templateShape = new PIXI.Graphics()
-        .fill(0xffffff)
-        .setStrokeStyle({ width: 1, color: 0x333333, alignment: 0 })
+        .fill(DEFAULT_POINT_COLOR)
+        .setStrokeStyle({ width: 1, color: DEFAULT_POINT_COLOR, alignment: 0 })
         .circle(0, 0, 8 * POINTRADIUS);
 
 
@@ -159,12 +172,7 @@ function getRangeWithBorder(entryMetadata) {
 
 let WIDTH = getAppWidth();
 let HEIGHT = getAppHeight();
-const POINTRADIUS = 3;
-const DATABORDERBUFFER = 0.07;
-const LEFTMARGIN = 50;
-const RIGHTMARGIN = 5;
-const LOWERMARGIN = 50;
-const UPPERMARGIN = 5;
+
 
 
 
@@ -243,6 +251,8 @@ export async function initializePixiApp() {
         plotpoint.eventMode = 'static';
         plotpoint.cursor = 'pointer';
 
+        plotpoint.on('pointerover', onPointerOver).on('pointerout', onPointerOut);
+
         point_container.addChild(plotpoint);
 
         sprite_to_data.set(plotpoint, d);
@@ -307,7 +317,7 @@ export async function initializePixiApp() {
     // Functions for tinting dots 
 
     function onPointerOver() {
-        this.tint = 0xfacb73;
+        this.tint = MOUSEOVER_POINT_COLOR;
         this.z = 10000;
         this.bringToFront();
 
@@ -316,7 +326,10 @@ export async function initializePixiApp() {
     }
 
     function onPointerOut() {
-        this.tint = 0xffffff;
+        this.tint = (
+            sprite_to_highlighted.get(this) ? HIGHLIGHT_POINT_COLOR :
+                sprite_to_selected.get(this) ? CLICKED_POINT_COLOR :
+                    DEFAULT_POINT_COLOR);
         this.z = 2;
     }
 
@@ -357,6 +370,179 @@ export async function initializePixiApp() {
         d3.select(main_container).call(mainZoom);
     }
 
+
+
+    // Adding Brushing 
+
+    const highlightPoints = ({ selection: [[x0, y0], [x1, y1]] }) => {
+        data.map((d) => {
+
+            let tmpSprite = data_to_sprite.get(d);
+            if ((tmpSprite.x > x0) && (tmpSprite.x < x1) & (tmpSprite.y < y1) && (tmpSprite.y > y0)) {
+                tmpSprite.tint = HIGHLIGHT_POINT_COLOR;
+                tmpSprite.bringToFront();
+                sprite_to_highlighted.set(tmpSprite, true)
+            } else {
+                tmpSprite.tint = DEFAULT_POINT_COLOR;
+                sprite_to_highlighted.set(tmpSprite, false)
+            }
+
+        })
+
+    }
+
+    const mainBrush = d3.brush().on("start brush end", highlightPoints);
+
+    let brushElement = svg.append("g");
+
+    function turnOffBrush() {
+        d3.selectAll(brushElement).remove();
+    }
+
+    function turnOnBrush() {
+        brushElement = svg.append("g").call(mainBrush);
+    }
+
+    // Adding mouse function changing to buttons:
+
+    let zoom_button = document.getElementById("mouse-zoom-button");
+    let select_button = document.getElementById("mouse-select-button");
+
+    function clickZoomButton() {
+        turnOffBrush();
+        turnOnZoom();
+    }
+
+    function clickSelectButton() {
+        turnOffZoom();
+        turnOnBrush();
+    }
+
+    zoom_button.addEventListener("pointerdown", clickZoomButton)
+    select_button.addEventListener("pointerdown", clickSelectButton)
+
+
+    // Axis Switching Functions
+
+    // Adding axis changing functions to selection boxes:
+
+    let x_axis_options = document.getElementById('x-axis-selector');
+    let y_axis_options = document.getElementById('y-axis-selector');
+
+    x_axis_options.addEventListener('change', switch_x_axis);
+    y_axis_options.addEventListener('change', switch_y_axis);
+
+    // Setting up Ease to use:
+
+    const motionEase = new Ease({ duration: 1000, wait: 500, ease: "easeInOutQuad" })
+
+    function switch_x_axis() {
+        let new_axis = x_axis_options.value;
+
+
+        let new_x_extent = d3.extent(data, d => parseFloat(d[new_axis]));
+
+        // Adding Buffer
+        let new_x_range = new_x_extent[1] - new_x_extent[0];
+        new_x_extent[0] = new_x_extent[0] - DATABORDERBUFFER * new_x_range
+        new_x_extent[1] = new_x_extent[1] + DATABORDERBUFFER * new_x_range
+
+        x_scaler.domain(new_x_extent);
+
+        const zoomed_x_scaler = currentZoom.rescaleX(x_scaler).interpolate(d3.interpolateRound);
+
+        // Transforming Axis
+        x_axis.transition()
+            .duration(1000)
+            .call(d3.axisBottom(zoomed_x_scaler).tickSizeOuter(0).tickSize(-HEIGHT * 1.3));
+
+        // Changing Labels 
+        x_label.text(make_axis_label(metadata[new_axis]))
+
+        // Transforming Map
+        data.map((d) => {
+            let plotpoint = data_to_sprite.get(d)
+
+
+            motionEase.add(plotpoint, { x: zoomed_x_scaler(d[new_axis]) });
+
+        });
+
+        currentXAxis = new_axis;
+
+
+    }
+
+    function switch_y_axis() {
+        let new_axis = y_axis_options.value;
+
+
+        let new_y_extent = d3.extent(data, d => parseFloat(d[new_axis]));
+
+        // Adding Buffer
+        let new_y_range = new_y_extent[1] - new_y_extent[0];
+        new_y_extent[0] = new_y_extent[0] - DATABORDERBUFFER * new_y_range
+        new_y_extent[1] = new_y_extent[1] + DATABORDERBUFFER * new_y_range
+
+        new_y_extent.reverse();
+
+        y_scaler.domain(new_y_extent);
+
+        const zoomed_y_scaler = currentZoom.rescaleY(y_scaler).interpolate(d3.interpolateRound);
+
+        y_axis.transition()
+            .duration(1000)
+            .call(d3.axisLeft(zoomed_y_scaler).tickSizeOuter(0).tickSize(-WIDTH * 1.3));
+
+        // Changing Labels 
+        y_label.text(make_axis_label(metadata[new_axis]))
+
+        data.map((d) => {
+            let plotpoint = data_to_sprite.get(d);
+
+            motionEase.add(plotpoint, { y: zoomed_y_scaler(d[new_axis]) });
+        });
+
+        currentYAxis = new_axis;
+
+    }
+
+    function replotData() {
+
+        console.log(`Current X-axis: ${currentXAxis}`)
+        console.log(`Current Y-axis: ${currentYAxis}`)
+        data.map((d) => {
+            let plotpoint = data_to_sprite.get(d);
+            plotpoint.position.x = x_scaler(d[currentXAxis]);
+            plotpoint.position.y = y_scaler(d[currentYAxis]);
+
+        })
+
+    }
+
+    function resizeWindow() {
+
+        HEIGHT = getAppHeight();
+        WIDTH = getAppWidth();
+
+        // Resize Pixi app
+        app.resize();
+
+        // Resize Decorators SVG
+        svg.attr("width", WIDTH).attr("height", HEIGHT)
+
+        // Update Scalers
+        x_scaler.range([0, WIDTH])
+        y_scaler.range([0, HEIGHT])
+
+        // Replot Data
+        replotData();
+
+    }
+
+    replotData();
+    // Currently Resize Not Working, Turning Off
+    // window.addEventListener("resize", resizeWindow);
 
 
 }
