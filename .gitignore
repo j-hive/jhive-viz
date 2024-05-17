@@ -159,3 +159,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Keeping Data Directory out of Git Repo
+
+data/
