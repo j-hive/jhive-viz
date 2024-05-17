@@ -12,6 +12,9 @@ import './style/style.scss'
 let app_length = document.getElementById("app").clientWidth;
 let app_height = document.getElementById("app").clientHeight;
 
+// Initial Removing Context Menu
+window.addEventListener("contextmenu", e => e.preventDefault());
+
 // Initializing Pixi App
 initializePixiApp();
 
