@@ -11,6 +11,7 @@
     border-top-style: solid;
     border-color: $Main-secondary-text-hex;
     background-color: $Main-bg-transparent;
+    backdrop-filter: blur(2px);
     display: flex;
     overflow: hidden;
 

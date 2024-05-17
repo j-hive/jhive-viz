@@ -1,0 +1,28 @@
+// _plotdecorators.scss
+
+/* Removing Axis Lines */
+
+.y-axis .domain,
+.x-axis .domain {
+    stroke: none;
+}
+
+// Formatting X-Labels
+
+
+#app .x-label, #app .y-label {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 16pt;
+    fill: white;
+}
+
+/* Formatting Ticks */
+
+#app .tick line {
+    opacity: 0.2;
+    color: gray;
+}
+
+#app .tick text {
+    font-family: "Spectral", serif;
+}
