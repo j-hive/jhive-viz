@@ -11,7 +11,7 @@
     border-top-style: solid;
     border-color: $Main-secondary-text-hex;
     background-color: $Main-bg-transparent;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(6px);
     display: flex;
     overflow: hidden;
     z-index: 3;
@@ -77,11 +77,51 @@
 
 .details-on {
     transform: translateY(0%);
+    @include animation();
 }
 
 .details-off {
     transform: translateY(100%);
     @include animation();
+}
+
+
+#detail-title-card-label {
+    font-family: "Bebas Neue", sans-serif;
+    color: #fff;
+    font-size: 1.5em;
+}
+
+#detail-title-card-positions {
+    font-family: "Bebas Neue", sans-serif;
+    color: #ccc;
+    font-size: 1.0em;
+}
+
+#detail-title-card-magnitudes {
+    font-family: "Bebas Neue", sans-serif;
+    color: #ccc;
+    font-size: 1.0em;
+}
+
+#detail-sed-plot {
+    height: 9em;
+    width: 30em;
+    margin-left: 2em;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 2em;
+}
+
+
+.sed-y-axis .domain,
+.sed-x-axis .domain {
+    stroke: none;
+}
+
+.sed-y-axis .tick line {
+    opacity: 0.5;
+    color: gray;
 }
 
 .test-detail-card {

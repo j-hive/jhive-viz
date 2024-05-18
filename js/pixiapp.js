@@ -3,6 +3,7 @@
 import * as PIXI from 'pixi.js';
 import { Ease, ease } from 'pixi-ease';
 import * as d3 from 'd3';
+import { updateDetailPanel } from './details';
 
 
 // Data URLs
@@ -11,7 +12,7 @@ const metadataURL = "/data/uncover_dr3_jhive_viz.json";
 
 // Plotting Constants
 
-const DEFAULT_POINT_COLOR = 0xffffff;
+const DEFAULT_POINT_COLOR = 0x777777;
 const HIGHLIGHT_POINT_COLOR = 0x849cba;
 const MOUSEOVER_POINT_COLOR = 0xfacb73;
 const CLICKED_POINT_COLOR = 0x73adfa;
@@ -120,7 +121,6 @@ function makePixiTemplate(app) {
     // Template Shape
 
     const templateShape = new PIXI.Graphics()
-        .fill(DEFAULT_POINT_COLOR)
         .setStrokeStyle({ width: 1, color: DEFAULT_POINT_COLOR, alignment: 0 })
         .circle(0, 0, 8 * POINTRADIUS);
 
@@ -139,7 +139,7 @@ function makePixiTemplate(app) {
 
     const plot_layer = new PIXI.Graphics()
     plot_layer.circle(0, 0, POINTRADIUS);
-    plot_layer.fill(0x777777);
+    plot_layer.fill(PIXI.Texture.WHITE);
 
 
     const texture = app.renderer.generateTexture(plot_layer);
@@ -173,7 +173,8 @@ function getRangeWithBorder(entryMetadata) {
 let WIDTH = getAppWidth();
 let HEIGHT = getAppHeight();
 
-
+let mouseMode = 'zoom';
+let selectedPoint = false;
 
 
 export async function initializePixiApp() {
@@ -247,11 +248,14 @@ export async function initializePixiApp() {
 
         plotpoint.position.x = x_scaler(d[currentXAxis]);
         plotpoint.position.y = y_scaler(d[currentYAxis]);
+        plotpoint.tint = DEFAULT_POINT_COLOR;
 
         plotpoint.eventMode = 'static';
         plotpoint.cursor = 'pointer';
 
-        plotpoint.on('pointerover', onPointerOver).on('pointerout', onPointerOut);
+        plotpoint.on('pointerover', onPointerOver)
+            .on('pointerout', onPointerOut)
+            .on('pointerdown', onPointerClick);
 
         point_container.addChild(plotpoint);
 
@@ -314,6 +318,22 @@ export async function initializePixiApp() {
 
     // Interaction Functions
 
+    // Function for setting context:
+
+    const contextIDVal = document.getElementById("context-panel-id-value");
+    const contextRAVal = document.getElementById("context-panel-ra-value");
+    const contextDECVal = document.getElementById("context-panel-dec-value");
+    const contextZPhotVal = document.getElementById("context-panel-zphot-value");
+
+    function setContextInfo(datapoint = {}) {
+
+        contextIDVal.innerHTML = (datapoint['id'] ? d3.format(".0f")(datapoint['id']) : "");
+        contextRAVal.innerHTML = (datapoint['ra'] ? d3.format(".5f")(datapoint['ra']) + "&deg;" : "");
+        contextDECVal.innerHTML = (datapoint['dec'] ? d3.format(".5f")(datapoint['dec']) + "&deg;" : "");
+        contextZPhotVal.innerHTML = (datapoint['z_phot'] ? d3.format(".2f")(datapoint['z_phot']) : "");
+
+    }
+
     // Functions for tinting dots 
 
     function onPointerOver() {
@@ -322,6 +342,7 @@ export async function initializePixiApp() {
         this.bringToFront();
 
         let datapoint = sprite_to_data.get(this);
+        setContextInfo(datapoint);
 
     }
 
@@ -331,6 +352,20 @@ export async function initializePixiApp() {
                 sprite_to_selected.get(this) ? CLICKED_POINT_COLOR :
                     DEFAULT_POINT_COLOR);
         this.z = 2;
+        setContextInfo();
+
+    }
+
+    function onPointerClick() {
+        this.tint = CLICKED_POINT_COLOR;
+        if (selectedPoint) {
+            selectedPoint.tint = DEFAULT_POINT_COLOR;
+            sprite_to_selected.set(selectedPoint, false)
+        }
+        selectedPoint = this;
+        sprite_to_selected.set(this, true);
+        let datapoint = sprite_to_data.get(this);
+        updateDetailPanel(datapoint);
     }
 
     // Adding D3 Zoom:
@@ -340,6 +375,7 @@ export async function initializePixiApp() {
         .on("zoom", ({ transform }) => zoomed(transform));
 
     d3.select(main_container).call(mainZoom);
+    mouseMode = "zoom";
 
 
 
@@ -368,6 +404,7 @@ export async function initializePixiApp() {
 
     function turnOnZoom() {
         d3.select(main_container).call(mainZoom);
+        mouseMode = "zoom";
     }
 
 
@@ -401,6 +438,7 @@ export async function initializePixiApp() {
 
     function turnOnBrush() {
         brushElement = svg.append("g").call(mainBrush);
+        mouseMode = "select";
     }
 
     // Adding mouse function changing to buttons:
@@ -449,6 +487,10 @@ export async function initializePixiApp() {
 
         x_scaler.domain(new_x_extent);
 
+        if (mouseMode === "select") {
+            turnOffBrush();
+        }
+
         const zoomed_x_scaler = currentZoom.rescaleX(x_scaler).interpolate(d3.interpolateRound);
 
         // Transforming Axis
@@ -470,6 +512,9 @@ export async function initializePixiApp() {
 
         currentXAxis = new_axis;
 
+        if (mouseMode === "select") {
+            turnOnBrush();
+        }
 
     }
 
@@ -485,6 +530,10 @@ export async function initializePixiApp() {
         new_y_extent[1] = new_y_extent[1] + DATABORDERBUFFER * new_y_range
 
         new_y_extent.reverse();
+
+        if (mouseMode === "select") {
+            turnOffBrush();
+        }
 
         y_scaler.domain(new_y_extent);
 
@@ -504,6 +553,10 @@ export async function initializePixiApp() {
         });
 
         currentYAxis = new_axis;
+
+        if (mouseMode === "select") {
+            turnOnBrush();
+        }
 
     }
 

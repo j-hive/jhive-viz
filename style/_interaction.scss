@@ -42,7 +42,7 @@
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 
-    color: $Main-secondary-text-hex;
+    color: #ccc;
 
     display: flex;
     flex-direction: row;
@@ -61,6 +61,11 @@
         font-family: "Spectral", serif;
         color: #ccc;
         border: 1px solid $Main-secondary-text-hex;
+    }
+
+
+    option {
+        background-color: $Main-bg-hex;
     }
 
 }
