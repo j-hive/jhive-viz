@@ -2,8 +2,8 @@
 import * as d3 from 'd3';
 
 const metadataURL = "/data/uncover_dr3_jhive_viz.json";
-const metadata_response = fetch(metadataURL);
-const metadata = metadata_response.json();
+const metadata_response = await fetch(metadataURL);
+const metadata = await metadata_response.json();
 
 const detailsPanel = document.getElementById("detailpanel");
 const detailsTitleID = document.getElementById("detail-title-header-val");
