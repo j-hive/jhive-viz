@@ -4,6 +4,7 @@ import { Ease, ease } from 'pixi-ease';
 import { addDraggingToElements } from './js/dragging.js'
 import { startUIInteractions } from './js/uiinteractions.js';
 import { initializePixiApp } from './js/pixiapp.js';
+import { initializeLoadingMessage, hideLoadingSpinnerShowButton } from './js/loading.js';
 
 import './style/style.scss'
 
@@ -15,8 +16,12 @@ let app_height = document.getElementById("app").clientHeight;
 // Initial Removing Context Menu
 window.addEventListener("contextmenu", e => e.preventDefault());
 
+// Initializing Loading Message:
+
+initializeLoadingMessage();
+
 // Initializing Pixi App
-initializePixiApp();
+initializePixiApp().then(hideLoadingSpinnerShowButton);
 
 // Setup UI Interactions
 startUIInteractions();
