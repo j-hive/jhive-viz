@@ -1,7 +1,7 @@
 // _details.scss
 
 .details {
-    position: absolute;
+    position: relative;
     width: 100vw;
     height: 12em;
     bottom: 0;
@@ -74,17 +74,6 @@
 
 
 }
-
-.details-on {
-    transform: translateY(0%);
-    @include animation();
-}
-
-.details-off {
-    transform: translateY(100%);
-    @include animation();
-}
-
 
 #detail-title-card-label {
     font-family: "Bebas Neue", sans-serif;

@@ -66,10 +66,6 @@ function selectMouseFunction(event) {
 // Main Starting Function
 export function startUIInteractions() {
 
-    // Add Close to Details Panel
-    const closeDetailButton = document.getElementById("closedetailbutton");
-    closeDetailButton.addEventListener("click", closeDetailPanel);
-
     // Add selectMouseFunction to Interaction Panel Buttons
     const mouseZoomButton = document.getElementById("mouse-zoom-button");
     const mouseSelectButton = document.getElementById("mouse-select-button")

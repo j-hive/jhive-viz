@@ -74,7 +74,6 @@ svg.append("g")
         .tickSize(-SEDWidth + marginRight));
 
 let baseData = getSEDPoints({});
-console.log(baseData);
 
 svg.selectAll("mycircles")
     .data(baseData)

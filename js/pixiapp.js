@@ -508,6 +508,12 @@ export async function initializePixiApp() {
 
             motionEase.add(plotpoint, { x: zoomed_x_scaler(d[new_axis]) });
 
+            plotpoint.tint = (
+                sprite_to_highlighted.get(plotpoint) ? HIGHLIGHT_POINT_COLOR :
+                    sprite_to_selected.get(plotpoint) ? CLICKED_POINT_COLOR :
+                        DEFAULT_POINT_COLOR);
+
+
         });
 
         currentXAxis = new_axis;
@@ -550,6 +556,14 @@ export async function initializePixiApp() {
             let plotpoint = data_to_sprite.get(d);
 
             motionEase.add(plotpoint, { y: zoomed_y_scaler(d[new_axis]) });
+
+            plotpoint.tint = (
+                sprite_to_highlighted.get(plotpoint) ? HIGHLIGHT_POINT_COLOR :
+                    sprite_to_selected.get(plotpoint) ? CLICKED_POINT_COLOR :
+                        DEFAULT_POINT_COLOR);
+
+
+
         });
 
         currentYAxis = new_axis;
@@ -668,7 +682,6 @@ export async function initializePixiApp() {
             .tickSize(-SEDWidth + marginRight));
 
     let baseData = getSEDPoints({});
-    console.log(baseData);
 
     SEDsvg.selectAll("mycircles")
         .data(baseData)
