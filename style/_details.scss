@@ -75,6 +75,19 @@
 
 }
 
+.detail-title-card {
+    width: 20em;
+}
+
+.cutout-container {
+    width: 8em;
+    height: 8em;
+    margin-right: 1em;
+    background-color: #222222;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
 #detail-title-card-label {
     font-family: "Bebas Neue", sans-serif;
     color: #fff;
@@ -94,7 +107,7 @@
 }
 
 #detail-sed-plot {
-    height: 9em;
+    height: 8em;
     width: 30em;
     margin-left: 2em;
     margin-top: 0;
@@ -112,6 +125,10 @@
     opacity: 0.5;
     color: gray;
 }
+
+// .sed-yaxis .tick text {
+//     color: gray;
+// }
 
 .test-detail-card {
     border: 1px solid gray;

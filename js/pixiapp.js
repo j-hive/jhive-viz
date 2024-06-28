@@ -7,8 +7,8 @@ import * as d3 from 'd3';
 
 
 // Data URLs
-const dataURL = "/data/uncover_dr3_jhive_viz.csv";
-const metadataURL = "/data/uncover_dr3_jhive_viz.json";
+const dataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.csv";
+const metadataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.json";
 
 // Plotting Constants
 
@@ -614,6 +614,7 @@ export async function initializePixiApp() {
 
 
     const detailsPanel = document.getElementById("detailpanel");
+    const detailsImage = document.getElementById("source-cutout");
     const detailsTitleID = document.getElementById("detail-title-header-val");
     const detailsTitleRA = document.getElementById("detail-title-ra-val");
     const detailsTitleDEC = document.getElementById("detail-title-dec-val");
@@ -736,6 +737,10 @@ export async function initializePixiApp() {
             .duration(1000)
             .attr("cy", (d) => { return yScaler(setNantoLow(d.y)) })
 
+
+        // Change Cutout Image:
+
+        detailsImage.style.backgroundImage = `url(/data/cutouts/f200w/abell2744clu_grizli-v7.2_uncover-dr3_f200w_${(datapoint['id']).padStart(5, '0')}_cutout.jpg)`;
 
     }
 
