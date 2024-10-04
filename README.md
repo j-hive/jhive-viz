@@ -18,7 +18,7 @@ The development of the J-HIVE Visualization Tool is led by [Sidrat Research](htt
 
 ### Installing Development Environment
 
-To install the current develoment environment, run:
+To install the current development environment, run:
 
 ```npm install```
 

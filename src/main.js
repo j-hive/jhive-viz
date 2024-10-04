@@ -1,10 +1,10 @@
 import * as d3 from 'd3';
 import * as PIXI from 'pixi.js';
 import { Ease, ease } from 'pixi-ease';
-import { addDraggingToElements } from './js/dragging.js'
-import { startUIInteractions } from './js/uiinteractions.js';
-import { initializePixiApp } from './js/pixiapp.js';
-import { initializeLoadingMessage, hideLoadingSpinnerShowButton } from './js/loading.js';
+import { addDraggingToElements } from './dragging.js'
+import { startUIInteractions } from './uiinteractions.js';
+import { initializePixiApp } from './pixiapp.js';
+import { initializeLoadingMessage, hideLoadingSpinnerShowButton } from './loading.js';
 
 import './style/style.scss'
 
