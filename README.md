@@ -2,6 +2,9 @@
 
 The J-HIVE Visualization Tool is an open-source, browser-based visualization and exploration tool for JWST data as uniformly processed through the [J-HIVE](https://www.j-hive.org/) collaboration.
 
+![Screenshot of J-HIVE Interface](misc/j-hive_screenshot.png)
+
+
 Some important features of the J-HIVE Visualization Tool:
 
 - Rendering of visualizations using WebGL through the [Pixi.js](https://pixijs.com/) library, providing the ability to handle a million individual data points in browser.
@@ -32,6 +35,7 @@ To build the production version of the webapp, run:
 
 ```npm run build```
 
+The exported version of the webapp will be written to the `dist/` folder. 
 
 ## Feedback
 
