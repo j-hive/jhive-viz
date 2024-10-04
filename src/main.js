@@ -8,10 +8,6 @@ import { initializeLoadingMessage, hideLoadingSpinnerShowButton } from './loadin
 
 import './style/style.scss'
 
-// Testing: Determining Size of app div
-
-let app_length = document.getElementById("app").clientWidth;
-let app_height = document.getElementById("app").clientHeight;
 
 // Initial Removing Context Menu
 window.addEventListener("contextmenu", e => e.preventDefault());

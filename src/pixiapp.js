@@ -3,26 +3,8 @@
 import * as PIXI from 'pixi.js';
 import { Ease, ease } from 'pixi-ease';
 import * as d3 from 'd3';
+import { dataURL, metadataURL, plottingConfig } from './config';
 // import { updateDetailPanel } from './details';
-
-
-// Data URLs
-const dataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.csv";
-const metadataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.json";
-
-// Plotting Constants
-
-const DEFAULT_POINT_COLOR = 0x777777;
-const HIGHLIGHT_POINT_COLOR = 0x849cba;
-const MOUSEOVER_POINT_COLOR = 0xfacb73;
-const CLICKED_POINT_COLOR = 0x73adfa;
-const POINTRADIUS = 3;
-const DATABORDERBUFFER = 0.07;
-const LEFTMARGIN = 50;
-const RIGHTMARGIN = 5;
-const LOWERMARGIN = 50;
-const UPPERMARGIN = 5;
-let DEFAULT_ALPHA = 0.3;
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
@@ -139,8 +121,8 @@ function makePixiTemplate(app) {
     // Template Shape
 
     const templateShape = new PIXI.Graphics()
-        .setStrokeStyle({ width: 1, color: DEFAULT_POINT_COLOR, alignment: 0 })
-        .circle(0, 0, 8 * POINTRADIUS);
+        .setStrokeStyle({ width: 1, color: plottingConfig.DEFAULT_POINT_COLOR, alignment: 0 })
+        .circle(0, 0, 8 * plottingConfig.POINTRADIUS);
 
 
     const { point_width, point_height } = templateShape;
@@ -156,7 +138,7 @@ function makePixiTemplate(app) {
     const point_container = new PIXI.Container()
 
     const plot_layer = new PIXI.Graphics()
-    plot_layer.circle(0, 0, POINTRADIUS);
+    plot_layer.circle(0, 0, plottingConfig.POINTRADIUS);
     plot_layer.fill(PIXI.Texture.WHITE);
 
 
@@ -179,8 +161,8 @@ function getRangeWithBorder(entryMetadata) {
 
     let initialRange = fullExtent[1] - fullExtent[0];
 
-    fullExtent[0] = fullExtent[0] - (DATABORDERBUFFER * initialRange);
-    fullExtent[1] = fullExtent[1] + (DATABORDERBUFFER * initialRange);
+    fullExtent[0] = fullExtent[0] - (plottingConfig.DATABORDERBUFFER * initialRange);
+    fullExtent[1] = fullExtent[1] + (plottingConfig.DATABORDERBUFFER * initialRange);
 
     return fullExtent
 }
@@ -266,8 +248,8 @@ export async function initializePixiApp() {
 
         plotpoint.position.x = x_scaler(d[currentXAxis]);
         plotpoint.position.y = y_scaler(d[currentYAxis]);
-        plotpoint.tint = DEFAULT_POINT_COLOR;
-        plotpoint.alpha = DEFAULT_ALPHA;
+        plotpoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
+        plotpoint.alpha = plottingConfig.DEFAULT_ALPHA;
 
         plotpoint.eventMode = 'static';
         plotpoint.cursor = 'pointer';
@@ -303,7 +285,7 @@ export async function initializePixiApp() {
 
     const y_axis = svg.append("g")
         .attr("class", "y-axis")
-        .attr("transform", `translate(${LEFTMARGIN},0)`)
+        .attr("transform", `translate(${plottingConfig.LEFTMARGIN},0)`)
         .call(d3.axisLeft(y_scaler)
             .tickSizeOuter(0)
             .tickSize(-WIDTH * 1.3)
@@ -311,7 +293,7 @@ export async function initializePixiApp() {
 
     const x_axis = svg.append("g")
         .attr("class", "x-axis")
-        .attr("transform", `translate(0,${HEIGHT - LEFTMARGIN})`)
+        .attr("transform", `translate(0,${HEIGHT - plottingConfig.LEFTMARGIN})`)
         .call(d3.axisBottom(x_scaler)
             .tickSizeOuter(0)
             .tickSize(-HEIGHT * 1.3));
@@ -321,7 +303,7 @@ export async function initializePixiApp() {
     const y_label = svg.append("text")
         .attr("class", "y-label")
         .attr("text-anchor", "middle")
-        .attr("x", LEFTMARGIN / 2)
+        .attr("x", plottingConfig.LEFTMARGIN / 2)
         .attr("y", HEIGHT / 2)
         .attr("transform", `rotate(-90, 20, ${HEIGHT / 2})`)
         .text(make_axis_label(metadata[currentYAxis]))
@@ -330,7 +312,7 @@ export async function initializePixiApp() {
         .attr("class", "x-label")
         .attr("text-anchor", "middle")
         .attr("x", WIDTH / 2)
-        .attr("y", HEIGHT - (LOWERMARGIN / 2) + 3)
+        .attr("y", HEIGHT - (plottingConfig.LOWERMARGIN / 2) + 3)
         .text(make_axis_label(metadata[currentXAxis]))
 
 
@@ -356,7 +338,7 @@ export async function initializePixiApp() {
     // Functions for tinting dots 
 
     function onPointerOver() {
-        this.tint = MOUSEOVER_POINT_COLOR;
+        this.tint = plottingConfig.MOUSEOVER_POINT_COLOR;
         this.z = 10000;
         this.alpha = 1.0;
         this.bringToFront();
@@ -368,15 +350,15 @@ export async function initializePixiApp() {
 
     function onPointerOut() {
 
-        let tmpColor = DEFAULT_POINT_COLOR;
-        let tmpAlpha = DEFAULT_ALPHA;
+        let tmpColor = plottingConfig.DEFAULT_POINT_COLOR;
+        let tmpAlpha = plottingConfig.DEFAULT_ALPHA;
 
         if (sprite_to_selected.get(this)) {
-            tmpColor = CLICKED_POINT_COLOR;
+            tmpColor = plottingConfig.CLICKED_POINT_COLOR;
             tmpAlpha = 1.0;
         }
         else if (sprite_to_highlighted.get(this)) {
-            tmpColor = HIGHLIGHT_POINT_COLOR;
+            tmpColor = plottingConfig.HIGHLIGHT_POINT_COLOR;
             tmpAlpha = 1.0;
         }
 
@@ -388,9 +370,9 @@ export async function initializePixiApp() {
     }
 
     function onPointerClick() {
-        this.tint = CLICKED_POINT_COLOR;
+        this.tint = plottingConfig.CLICKED_POINT_COLOR;
         if (selectedPoint) {
-            selectedPoint.tint = DEFAULT_POINT_COLOR;
+            selectedPoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
             selectedPoint.alpha = 1.0;
             sprite_to_selected.set(selectedPoint, false)
         }
@@ -447,14 +429,14 @@ export async function initializePixiApp() {
         data.map((d) => {
 
             let tmpSprite = data_to_sprite.get(d);
-            if ((tmpSprite.x > x0) && (tmpSprite.x < x1 - POINTRADIUS) & (tmpSprite.y < y1 - POINTRADIUS) && (tmpSprite.y > y0)) {
-                tmpSprite.tint = HIGHLIGHT_POINT_COLOR;
+            if ((tmpSprite.x > x0) && (tmpSprite.x < x1 - plottingConfig.POINTRADIUS) & (tmpSprite.y < y1 - plottingConfig.POINTRADIUS) && (tmpSprite.y > y0)) {
+                tmpSprite.tint = plottingConfig.HIGHLIGHT_POINT_COLOR;
                 tmpSprite.alpha = 1.0;
                 tmpSprite.bringToFront();
                 sprite_to_highlighted.set(tmpSprite, true)
             } else {
-                tmpSprite.tint = DEFAULT_POINT_COLOR;
-                tmpSprite.alpha = DEFAULT_ALPHA;
+                tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
+                tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA;
                 sprite_to_highlighted.set(tmpSprite, false)
             }
 
@@ -516,8 +498,8 @@ export async function initializePixiApp() {
 
         // Adding Buffer
         let new_x_range = new_x_extent[1] - new_x_extent[0];
-        new_x_extent[0] = new_x_extent[0] - DATABORDERBUFFER * new_x_range
-        new_x_extent[1] = new_x_extent[1] + DATABORDERBUFFER * new_x_range
+        new_x_extent[0] = new_x_extent[0] - plottingConfig.DATABORDERBUFFER * new_x_range
+        new_x_extent[1] = new_x_extent[1] + plottingConfig.DATABORDERBUFFER * new_x_range
 
         x_scaler.domain(new_x_extent);
 
@@ -543,9 +525,9 @@ export async function initializePixiApp() {
             motionEase.add(plotpoint, { x: zoomed_x_scaler(d[new_axis]) });
 
             plotpoint.tint = (
-                sprite_to_highlighted.get(plotpoint) ? HIGHLIGHT_POINT_COLOR :
-                    sprite_to_selected.get(plotpoint) ? CLICKED_POINT_COLOR :
-                        DEFAULT_POINT_COLOR);
+                sprite_to_highlighted.get(plotpoint) ? plottingConfig.HIGHLIGHT_POINT_COLOR :
+                    sprite_to_selected.get(plotpoint) ? plottingConfig.CLICKED_POINT_COLOR :
+                        plottingConfig.DEFAULT_POINT_COLOR);
 
 
         });
@@ -566,8 +548,8 @@ export async function initializePixiApp() {
 
         // Adding Buffer
         let new_y_range = new_y_extent[1] - new_y_extent[0];
-        new_y_extent[0] = new_y_extent[0] - DATABORDERBUFFER * new_y_range
-        new_y_extent[1] = new_y_extent[1] + DATABORDERBUFFER * new_y_range
+        new_y_extent[0] = new_y_extent[0] - plottingConfig.DATABORDERBUFFER * new_y_range
+        new_y_extent[1] = new_y_extent[1] + plottingConfig.DATABORDERBUFFER * new_y_range
 
         new_y_extent.reverse();
 
@@ -592,9 +574,9 @@ export async function initializePixiApp() {
             motionEase.add(plotpoint, { y: zoomed_y_scaler(d[new_axis]) });
 
             plotpoint.tint = (
-                sprite_to_highlighted.get(plotpoint) ? HIGHLIGHT_POINT_COLOR :
-                    sprite_to_selected.get(plotpoint) ? CLICKED_POINT_COLOR :
-                        DEFAULT_POINT_COLOR);
+                sprite_to_highlighted.get(plotpoint) ? plottingConfig.HIGHLIGHT_POINT_COLOR :
+                    sprite_to_selected.get(plotpoint) ? plottingConfig.CLICKED_POINT_COLOR :
+                        plottingConfig.DEFAULT_POINT_COLOR);
 
 
 
@@ -612,7 +594,7 @@ export async function initializePixiApp() {
 
     let opacity_slider = document.getElementById('opacity-slider');
 
-    opacity_slider.value = DEFAULT_ALPHA;
+    opacity_slider.value = plottingConfig.DEFAULT_ALPHA;
 
     opacity_slider.addEventListener('input', changeOpacity);
 
@@ -620,12 +602,12 @@ export async function initializePixiApp() {
 
         let new_opacity = opacity_slider.value;
 
-        DEFAULT_ALPHA = new_opacity;
+        plottingConfig.DEFAULT_ALPHA = new_opacity;
 
         data.map((d) => {
 
             let tmpSprite = data_to_sprite.get(d);
-            tmpSprite.alpha = DEFAULT_ALPHA
+            tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA
 
         })
 
@@ -647,7 +629,7 @@ export async function initializePixiApp() {
 
             data.map((d) => {
                 let tmpSprite = data_to_sprite.get(d);
-                tmpSprite.color = DEFAULT_POINT_COLOR;
+                tmpSprite.color = plottingConfig.DEFAULT_POINT_COLOR;
             })
 
         } else {
