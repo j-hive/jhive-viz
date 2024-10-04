@@ -614,7 +614,7 @@ export async function initializePixiApp() {
 
     opacity_slider.value = DEFAULT_ALPHA;
 
-    opacity_slider.addEventListener('change', changeOpacity);
+    opacity_slider.addEventListener('input', changeOpacity);
 
     function changeOpacity() {
 
