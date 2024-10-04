@@ -16,12 +16,13 @@ const DEFAULT_POINT_COLOR = 0x777777;
 const HIGHLIGHT_POINT_COLOR = 0x849cba;
 const MOUSEOVER_POINT_COLOR = 0xfacb73;
 const CLICKED_POINT_COLOR = 0x73adfa;
-const POINTRADIUS = 4;
+const POINTRADIUS = 3;
 const DATABORDERBUFFER = 0.07;
 const LEFTMARGIN = 50;
 const RIGHTMARGIN = 5;
 const LOWERMARGIN = 50;
 const UPPERMARGIN = 5;
+let DEFAULT_ALPHA = 0.3;
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
@@ -51,10 +52,20 @@ async function load_data() {
 
 // Function to add options to axis selectors
 
-function make_selector_options_from_metadata(metadataJSON, defaultValue) {
+function make_selector_options_from_metadata(metadataJSON, defaultValue, addNone = false) {
 
     // Initial Empty Option List
     let optionList = [];
+
+
+    // If addNone is True
+
+    if (addNone) {
+        defaultValue = "None";
+        optionList.push(
+            new Option("None", "None", true, true)
+        )
+    }
 
     Object.entries(metadataJSON).forEach(
         (entry) => {
@@ -75,9 +86,11 @@ function add_data_options_to_axis_selectors(metadataJSON, x_default = "ra", y_de
     // Get Axis Selectors First:
     const xAxisSelector = document.getElementById("x-axis-selector");
     const yAxisSelector = document.getElementById("y-axis-selector");
+    const colourAxisSelector = document.getElementById("colour-axis-selector");
 
     let xOptionList = make_selector_options_from_metadata(metadataJSON, x_default);
     let yOptionList = make_selector_options_from_metadata(metadataJSON, y_default);
+    let colourOptionList = make_selector_options_from_metadata(metadataJSON, "None", true)
 
     // Adding all X-parameters
     xOptionList.forEach((entry) => {
@@ -87,6 +100,11 @@ function add_data_options_to_axis_selectors(metadataJSON, x_default = "ra", y_de
     // Adding all Y-parameters
     yOptionList.forEach((entry) => {
         yAxisSelector.add(entry);
+    })
+
+    // Adding all Colour parameters
+    colourOptionList.forEach((entry) => {
+        colourAxisSelector.add(entry);
     })
 
 };
@@ -249,6 +267,7 @@ export async function initializePixiApp() {
         plotpoint.position.x = x_scaler(d[currentXAxis]);
         plotpoint.position.y = y_scaler(d[currentYAxis]);
         plotpoint.tint = DEFAULT_POINT_COLOR;
+        plotpoint.alpha = DEFAULT_ALPHA;
 
         plotpoint.eventMode = 'static';
         plotpoint.cursor = 'pointer';
@@ -339,6 +358,7 @@ export async function initializePixiApp() {
     function onPointerOver() {
         this.tint = MOUSEOVER_POINT_COLOR;
         this.z = 10000;
+        this.alpha = 1.0;
         this.bringToFront();
 
         let datapoint = sprite_to_data.get(this);
@@ -347,11 +367,22 @@ export async function initializePixiApp() {
     }
 
     function onPointerOut() {
-        this.tint = (
-            sprite_to_highlighted.get(this) ? HIGHLIGHT_POINT_COLOR :
-                sprite_to_selected.get(this) ? CLICKED_POINT_COLOR :
-                    DEFAULT_POINT_COLOR);
+
+        let tmpColor = DEFAULT_POINT_COLOR;
+        let tmpAlpha = DEFAULT_ALPHA;
+
+        if (sprite_to_selected.get(this)) {
+            tmpColor = CLICKED_POINT_COLOR;
+            tmpAlpha = 1.0;
+        }
+        else if (sprite_to_highlighted.get(this)) {
+            tmpColor = HIGHLIGHT_POINT_COLOR;
+            tmpAlpha = 1.0;
+        }
+
+        this.tint = tmpColor;
         this.z = 2;
+        this.alpha = tmpAlpha;
         setContextInfo();
 
     }
@@ -360,6 +391,7 @@ export async function initializePixiApp() {
         this.tint = CLICKED_POINT_COLOR;
         if (selectedPoint) {
             selectedPoint.tint = DEFAULT_POINT_COLOR;
+            selectedPoint.alpha = 1.0;
             sprite_to_selected.set(selectedPoint, false)
         }
         selectedPoint = this;
@@ -415,12 +447,14 @@ export async function initializePixiApp() {
         data.map((d) => {
 
             let tmpSprite = data_to_sprite.get(d);
-            if ((tmpSprite.x > x0) && (tmpSprite.x < x1) & (tmpSprite.y < y1) && (tmpSprite.y > y0)) {
+            if ((tmpSprite.x > x0) && (tmpSprite.x < x1 - POINTRADIUS) & (tmpSprite.y < y1 - POINTRADIUS) && (tmpSprite.y > y0)) {
                 tmpSprite.tint = HIGHLIGHT_POINT_COLOR;
+                tmpSprite.alpha = 1.0;
                 tmpSprite.bringToFront();
                 sprite_to_highlighted.set(tmpSprite, true)
             } else {
                 tmpSprite.tint = DEFAULT_POINT_COLOR;
+                tmpSprite.alpha = DEFAULT_ALPHA;
                 sprite_to_highlighted.set(tmpSprite, false)
             }
 
@@ -573,6 +607,64 @@ export async function initializePixiApp() {
         }
 
     }
+
+    // Opacity Slider
+
+    let opacity_slider = document.getElementById('opacity-slider');
+
+    opacity_slider.value = DEFAULT_ALPHA;
+
+    opacity_slider.addEventListener('input', changeOpacity);
+
+    function changeOpacity() {
+
+        let new_opacity = opacity_slider.value;
+
+        DEFAULT_ALPHA = new_opacity;
+
+        data.map((d) => {
+
+            let tmpSprite = data_to_sprite.get(d);
+            tmpSprite.alpha = DEFAULT_ALPHA
+
+        })
+
+
+    }
+
+
+    // Colour Axis
+
+    let colour_axis_options = document.getElementById('colour-axis-selector');
+    colour_axis_options.addEventListener('change', switch_colour_axis);
+
+    function switch_colour_axis() {
+        let new_axis = colour_axis_options.value;
+
+        console.log(new_axis);
+
+        if (new_axis === "None") {
+
+            data.map((d) => {
+                let tmpSprite = data_to_sprite.get(d);
+                tmpSprite.color = DEFAULT_POINT_COLOR;
+            })
+
+        } else {
+            let new_color_extent = d3.extent(data, d => parseFloat(d[new_axis]));
+
+            let colorScaler = d3.scaleSequential().domain(new_color_extent)
+                .interpolator(d3.interpolateViridis);
+
+            data.map((d) => {
+                let tmpSprite = data_to_sprite.get(d);
+                tmpSprite.tint = colorScaler(d[new_axis]);
+            })
+        }
+
+
+    }
+
 
     function replotData() {
 
