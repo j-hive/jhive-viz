@@ -21,3 +21,15 @@ export const plottingConfig = {
     UPPERMARGIN: 5,
     DEFAULT_ALPHA: 0.3,
 }
+
+
+// Data Containers
+
+export const dataContainers = {
+    data: null,
+    metadata: null,
+    spriteToData: new WeakMap(),
+    dataToSprite: new WeakMap(),
+    spriteToSelected: new WeakMap(),
+    spriteToHighlighted: new WeakMap()
+}

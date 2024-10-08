@@ -3,7 +3,7 @@
 import * as PIXI from 'pixi.js';
 import { Ease, ease } from 'pixi-ease';
 import * as d3 from 'd3';
-import { dataURL, metadataURL, plottingConfig } from './config';
+import { dataURL, metadataURL, plottingConfig, dataContainers } from './config';
 // import { updateDetailPanel } from './details';
 
 // Adding sprite function to Bring Sprite to Front
@@ -182,10 +182,10 @@ export async function initializePixiApp() {
 
     // Loading Data:
 
-    const [data, metadata] = await load_data();
+    [dataContainers.data, dataContainers.metadata] = await load_data();
 
     // Adding Options to UI
-    add_data_options_to_axis_selectors(metadata);
+    add_data_options_to_axis_selectors(dataContainers.metadata);
 
     // Current Plot Status
     let currentXAxis = document.getElementById("x-axis-selector").value;
@@ -214,8 +214,8 @@ export async function initializePixiApp() {
 
     // Setup Initial Plotting
 
-    let xRange = getRangeWithBorder(metadata[currentXAxis]);
-    let yRange = getRangeWithBorder(metadata[currentYAxis]).reverse();
+    let xRange = getRangeWithBorder(dataContainers.metadata[currentXAxis]);
+    let yRange = getRangeWithBorder(dataContainers.metadata[currentYAxis]).reverse();
 
 
     // Setting up Scalers 
@@ -232,18 +232,13 @@ export async function initializePixiApp() {
 
     const texture = makePixiTemplate(app);
 
-    // Setting containers for Lookup 
-    const sprite_to_data = new WeakMap();
-    const data_to_sprite = new WeakMap();
-    const sprite_to_selected = new WeakMap();
-    const sprite_to_highlighted = new WeakMap();
 
     // Initial Plotting
 
     const point_container = new PIXI.Container()
 
 
-    data.map(d => {
+    dataContainers.data.map(d => {
         const plotpoint = new PIXI.Sprite(texture);
 
         plotpoint.position.x = x_scaler(d[currentXAxis]);
@@ -260,10 +255,10 @@ export async function initializePixiApp() {
 
         point_container.addChild(plotpoint);
 
-        sprite_to_data.set(plotpoint, d);
-        data_to_sprite.set(d, plotpoint);
-        sprite_to_selected.set(plotpoint, false);
-        sprite_to_highlighted.set(plotpoint, false);
+        dataContainers.spriteToData.set(plotpoint, d);
+        dataContainers.dataToSprite.set(d, plotpoint);
+        dataContainers.spriteToSelected.set(plotpoint, false);
+        dataContainers.spriteToHighlighted.set(plotpoint, false);
 
     })
 
@@ -306,14 +301,14 @@ export async function initializePixiApp() {
         .attr("x", plottingConfig.LEFTMARGIN / 2)
         .attr("y", HEIGHT / 2)
         .attr("transform", `rotate(-90, 20, ${HEIGHT / 2})`)
-        .text(make_axis_label(metadata[currentYAxis]))
+        .text(make_axis_label(dataContainers.metadata[currentYAxis]))
 
     const x_label = svg.append("text")
         .attr("class", "x-label")
         .attr("text-anchor", "middle")
         .attr("x", WIDTH / 2)
         .attr("y", HEIGHT - (plottingConfig.LOWERMARGIN / 2) + 3)
-        .text(make_axis_label(metadata[currentXAxis]))
+        .text(make_axis_label(dataContainers.metadata[currentXAxis]))
 
 
 
@@ -343,7 +338,7 @@ export async function initializePixiApp() {
         this.alpha = 1.0;
         this.bringToFront();
 
-        let datapoint = sprite_to_data.get(this);
+        let datapoint = dataContainers.spriteToData.get(this);
         setContextInfo(datapoint);
 
     }
@@ -353,11 +348,11 @@ export async function initializePixiApp() {
         let tmpColor = plottingConfig.DEFAULT_POINT_COLOR;
         let tmpAlpha = plottingConfig.DEFAULT_ALPHA;
 
-        if (sprite_to_selected.get(this)) {
+        if (dataContainers.spriteToSelected.get(this)) {
             tmpColor = plottingConfig.CLICKED_POINT_COLOR;
             tmpAlpha = 1.0;
         }
-        else if (sprite_to_highlighted.get(this)) {
+        else if (dataContainers.spriteToHighlighted.get(this)) {
             tmpColor = plottingConfig.HIGHLIGHT_POINT_COLOR;
             tmpAlpha = 1.0;
         }
@@ -374,11 +369,11 @@ export async function initializePixiApp() {
         if (selectedPoint) {
             selectedPoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
             selectedPoint.alpha = 1.0;
-            sprite_to_selected.set(selectedPoint, false)
+            dataContainers.spriteToSelected.set(selectedPoint, false)
         }
         selectedPoint = this;
-        sprite_to_selected.set(this, true);
-        let datapoint = sprite_to_data.get(this);
+        dataContainers.spriteToSelected.set(this, true);
+        let datapoint = dataContainers.spriteToData.get(this);
         updateDetailPanel(datapoint);
     }
 
@@ -401,8 +396,8 @@ export async function initializePixiApp() {
         x_axis.call(d3.axisBottom(zoomed_x_scaler).tickSizeOuter(0).tickSize(-HEIGHT * 1.3));
         y_axis.call(d3.axisLeft(zoomed_y_scaler).tickSizeOuter(0).tickSize(-WIDTH * 1.3));
 
-        data.map((d) => {
-            let plotpoint = data_to_sprite.get(d);
+        dataContainers.data.map((d) => {
+            let plotpoint = dataContainers.dataToSprite.get(d);
             plotpoint.position.x = zoomed_x_scaler(d[currentXAxis]);
             plotpoint.position.y = zoomed_y_scaler(d[currentYAxis]);
 
@@ -426,18 +421,18 @@ export async function initializePixiApp() {
     // Adding Brushing 
 
     const highlightPoints = ({ selection: [[x0, y0], [x1, y1]] }) => {
-        data.map((d) => {
+        dataContainers.data.map((d) => {
 
-            let tmpSprite = data_to_sprite.get(d);
+            let tmpSprite = dataContainers.dataToSprite.get(d);
             if ((tmpSprite.x > x0) && (tmpSprite.x < x1 - plottingConfig.POINTRADIUS) & (tmpSprite.y < y1 - plottingConfig.POINTRADIUS) && (tmpSprite.y > y0)) {
                 tmpSprite.tint = plottingConfig.HIGHLIGHT_POINT_COLOR;
                 tmpSprite.alpha = 1.0;
                 tmpSprite.bringToFront();
-                sprite_to_highlighted.set(tmpSprite, true)
+                dataContainers.spriteToHighlighted.set(tmpSprite, true)
             } else {
                 tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
                 tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA;
-                sprite_to_highlighted.set(tmpSprite, false)
+                dataContainers.spriteToHighlighted.set(tmpSprite, false)
             }
 
         })
@@ -494,7 +489,7 @@ export async function initializePixiApp() {
         let new_axis = x_axis_options.value;
 
 
-        let new_x_extent = d3.extent(data, d => parseFloat(d[new_axis]));
+        let new_x_extent = d3.extent(dataContainers.data, d => parseFloat(d[new_axis]));
 
         // Adding Buffer
         let new_x_range = new_x_extent[1] - new_x_extent[0];
@@ -515,18 +510,18 @@ export async function initializePixiApp() {
             .call(d3.axisBottom(zoomed_x_scaler).tickSizeOuter(0).tickSize(-HEIGHT * 1.3));
 
         // Changing Labels 
-        x_label.text(make_axis_label(metadata[new_axis]))
+        x_label.text(make_axis_label(dataContainers.metadata[new_axis]))
 
         // Transforming Map
-        data.map((d) => {
-            let plotpoint = data_to_sprite.get(d)
+        dataContainers.data.map((d) => {
+            let plotpoint = dataContainers.dataToSprite.get(d)
 
 
             motionEase.add(plotpoint, { x: zoomed_x_scaler(d[new_axis]) });
 
             plotpoint.tint = (
-                sprite_to_highlighted.get(plotpoint) ? plottingConfig.HIGHLIGHT_POINT_COLOR :
-                    sprite_to_selected.get(plotpoint) ? plottingConfig.CLICKED_POINT_COLOR :
+                dataContainers.spriteToHighlighted.get(plotpoint) ? plottingConfig.HIGHLIGHT_POINT_COLOR :
+                    dataContainers.spriteToSelected.get(plotpoint) ? plottingConfig.CLICKED_POINT_COLOR :
                         plottingConfig.DEFAULT_POINT_COLOR);
 
 
@@ -544,7 +539,7 @@ export async function initializePixiApp() {
         let new_axis = y_axis_options.value;
 
 
-        let new_y_extent = d3.extent(data, d => parseFloat(d[new_axis]));
+        let new_y_extent = d3.extent(dataContainers.data, d => parseFloat(d[new_axis]));
 
         // Adding Buffer
         let new_y_range = new_y_extent[1] - new_y_extent[0];
@@ -566,16 +561,16 @@ export async function initializePixiApp() {
             .call(d3.axisLeft(zoomed_y_scaler).tickSizeOuter(0).tickSize(-WIDTH * 1.3));
 
         // Changing Labels 
-        y_label.text(make_axis_label(metadata[new_axis]))
+        y_label.text(make_axis_label(dataContainers.metadata[new_axis]))
 
-        data.map((d) => {
-            let plotpoint = data_to_sprite.get(d);
+        dataContainers.data.map((d) => {
+            let plotpoint = dataContainers.dataToSprite.get(d);
 
             motionEase.add(plotpoint, { y: zoomed_y_scaler(d[new_axis]) });
 
             plotpoint.tint = (
-                sprite_to_highlighted.get(plotpoint) ? plottingConfig.HIGHLIGHT_POINT_COLOR :
-                    sprite_to_selected.get(plotpoint) ? plottingConfig.CLICKED_POINT_COLOR :
+                dataContainers.spriteToHighlighted.get(plotpoint) ? plottingConfig.HIGHLIGHT_POINT_COLOR :
+                    dataContainers.spriteToSelected.get(plotpoint) ? plottingConfig.CLICKED_POINT_COLOR :
                         plottingConfig.DEFAULT_POINT_COLOR);
 
 
@@ -604,9 +599,9 @@ export async function initializePixiApp() {
 
         plottingConfig.DEFAULT_ALPHA = new_opacity;
 
-        data.map((d) => {
+        dataContainers.data.map((d) => {
 
-            let tmpSprite = data_to_sprite.get(d);
+            let tmpSprite = dataContainers.dataToSprite.get(d);
             tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA
 
         })
@@ -627,19 +622,19 @@ export async function initializePixiApp() {
 
         if (new_axis === "None") {
 
-            data.map((d) => {
-                let tmpSprite = data_to_sprite.get(d);
+            dataContainers.data.map((d) => {
+                let tmpSprite = dataContainers.dataToSprite.get(d);
                 tmpSprite.color = plottingConfig.DEFAULT_POINT_COLOR;
             })
 
         } else {
-            let new_color_extent = d3.extent(data, d => parseFloat(d[new_axis]));
+            let new_color_extent = d3.extent(dataContainers.data, d => parseFloat(d[new_axis]));
 
             let colorScaler = d3.scaleSequential().domain(new_color_extent)
                 .interpolator(d3.interpolateViridis);
 
-            data.map((d) => {
-                let tmpSprite = data_to_sprite.get(d);
+            dataContainers.data.map((d) => {
+                let tmpSprite = dataContainers.dataToSprite.get(d);
                 tmpSprite.tint = colorScaler(d[new_axis]);
             })
         }
@@ -652,8 +647,8 @@ export async function initializePixiApp() {
 
         console.log(`Current X-axis: ${currentXAxis}`)
         console.log(`Current Y-axis: ${currentYAxis}`)
-        data.map((d) => {
-            let plotpoint = data_to_sprite.get(d);
+        dataContainers.data.map((d) => {
+            let plotpoint = dataContainers.dataToSprite.get(d);
             plotpoint.position.x = x_scaler(d[currentXAxis]);
             plotpoint.position.y = y_scaler(d[currentYAxis]);
 
@@ -704,7 +699,7 @@ export async function initializePixiApp() {
     function getSEDPoints(datapoint) {
         let sed = [];
 
-        Object.entries(metadata).forEach(
+        Object.entries(dataContainers.metadata).forEach(
             (entry) => {
                 const [key, value] = entry;
                 if (value['is_magnitude']) {
