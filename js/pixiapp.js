@@ -10,9 +10,18 @@ import * as d3 from 'd3';
 const dataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.csv";
 const metadataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.json";
 
+const dataURL2 = "/data/dja_ceers-full-grizli-v7.4_jhive_viz.csv";
+const metadataURL2 = "/data/dja_ceers-full-grizli-v7.4_jhive_viz.json";
+
+const dataURL3 = "/data/dja_ngdeep-grizli-v7.2_jhive_viz.csv";
+const metadataURL3 = "/data/dja_ngdeep-grizli-v7.2_jhive_viz.json";
+
+
 // Plotting Constants
 
-const DEFAULT_POINT_COLOR = 0x777777;
+const DEFAULT_POINT_COLOR = "#337777";
+const DEFAULT_POINT_COLOR_2 = "#773377";
+const DEFAULT_POINT_COLOR_3 = "#777733";
 const HIGHLIGHT_POINT_COLOR = 0x849cba;
 const MOUSEOVER_POINT_COLOR = 0xfacb73;
 const CLICKED_POINT_COLOR = 0x73adfa;
@@ -42,9 +51,41 @@ async function load_data() {
     const metadata_response = await fetch(metadataURL);
     const metadata = await metadata_response.json();
 
+    data.map(d => {
+        d.color = DEFAULT_POINT_COLOR
+    })
+
+    const data2 = await d3.csv(dataURL2);
+
+    data2.map(d2 => {
+        d2.color = DEFAULT_POINT_COLOR_2
+    })
+
+    const data3 = await d3.csv(dataURL3);
+
+    data3.map(d => {
+        d.color = DEFAULT_POINT_COLOR_3
+    })
+
+    const metadata_response2 = await fetch(metadataURL2);
+    const metadata2 = await metadata_response2.json();
+
+    const metadata_response3 = await fetch(metadataURL3);
+    const metadata3 = await metadata_response3.json();
+
+    const data_full = data.concat(data2, data3);
+
+    const metadata_full = metadata
+
+    metadata_full.ra.min_val = Math.min(metadata.ra.min_val, metadata2.ra.min_val, metadata3.ra.min_val)
+    metadata_full.ra.max_val = Math.max(metadata.ra.max_val, metadata2.ra.max_val, metadata3.ra.max_val)
+
+    metadata_full.dec.min_val = Math.min(metadata.dec.min_val, metadata2.dec.min_val, metadata3.dec.min_val)
+    metadata_full.dec.max_val = Math.max(metadata.dec.max_val, metadata2.dec.max_val, metadata3.dec.max_val)
+
     console.log("Loaded Data and Metadata");
 
-    return [data, metadata]
+    return [data_full, metadata_full]
 }
 
 
@@ -139,7 +180,7 @@ function makePixiTemplate(app) {
     // Template Shape
 
     const templateShape = new PIXI.Graphics()
-        .setStrokeStyle({ width: 1, color: DEFAULT_POINT_COLOR, alignment: 0 })
+        .setStrokeStyle({ width: 1, color: "#FFFFFF", alignment: 0 })
         .circle(0, 0, 8 * POINTRADIUS);
 
 
@@ -266,7 +307,7 @@ export async function initializePixiApp() {
 
         plotpoint.position.x = x_scaler(d[currentXAxis]);
         plotpoint.position.y = y_scaler(d[currentYAxis]);
-        plotpoint.tint = DEFAULT_POINT_COLOR;
+        plotpoint.tint = d.color;
         plotpoint.alpha = DEFAULT_ALPHA;
 
         plotpoint.eventMode = 'static';
@@ -368,7 +409,7 @@ export async function initializePixiApp() {
 
     function onPointerOut() {
 
-        let tmpColor = DEFAULT_POINT_COLOR;
+        let tmpColor = sprite_to_data.get(this).color;
         let tmpAlpha = DEFAULT_ALPHA;
 
         if (sprite_to_selected.get(this)) {
@@ -389,21 +430,21 @@ export async function initializePixiApp() {
 
     function onPointerClick() {
         this.tint = CLICKED_POINT_COLOR;
+        let datapoint = sprite_to_data.get(this);
         if (selectedPoint) {
-            selectedPoint.tint = DEFAULT_POINT_COLOR;
+            selectedPoint.tint = datapoint.color;
             selectedPoint.alpha = 1.0;
             sprite_to_selected.set(selectedPoint, false)
         }
         selectedPoint = this;
         sprite_to_selected.set(this, true);
-        let datapoint = sprite_to_data.get(this);
         updateDetailPanel(datapoint);
     }
 
     // Adding D3 Zoom:
 
     const mainZoom = d3.zoom()
-        .scaleExtent([1, 8])
+        .scaleExtent([1, 100])
         .on("zoom", ({ transform }) => zoomed(transform));
 
     d3.select(main_container).call(mainZoom);
@@ -453,7 +494,7 @@ export async function initializePixiApp() {
                 tmpSprite.bringToFront();
                 sprite_to_highlighted.set(tmpSprite, true)
             } else {
-                tmpSprite.tint = DEFAULT_POINT_COLOR;
+                tmpSprite.tint = d.color;
                 tmpSprite.alpha = DEFAULT_ALPHA;
                 sprite_to_highlighted.set(tmpSprite, false)
             }
@@ -545,7 +586,7 @@ export async function initializePixiApp() {
             plotpoint.tint = (
                 sprite_to_highlighted.get(plotpoint) ? HIGHLIGHT_POINT_COLOR :
                     sprite_to_selected.get(plotpoint) ? CLICKED_POINT_COLOR :
-                        DEFAULT_POINT_COLOR);
+                        d.color);
 
 
         });
@@ -594,7 +635,7 @@ export async function initializePixiApp() {
             plotpoint.tint = (
                 sprite_to_highlighted.get(plotpoint) ? HIGHLIGHT_POINT_COLOR :
                     sprite_to_selected.get(plotpoint) ? CLICKED_POINT_COLOR :
-                        DEFAULT_POINT_COLOR);
+                        d.color);
 
 
 
@@ -647,7 +688,7 @@ export async function initializePixiApp() {
 
             data.map((d) => {
                 let tmpSprite = data_to_sprite.get(d);
-                tmpSprite.color = DEFAULT_POINT_COLOR;
+                tmpSprite.color = d.color;
             })
 
         } else {
