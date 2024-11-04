@@ -1,5 +1,7 @@
 // Application Wide Configuration Parameters
 
+import { sassNull } from "sass";
+
 
 // Data URLs
 
@@ -20,6 +22,7 @@ export const plottingConfig = {
     LOWERMARGIN: 50,
     UPPERMARGIN: 5,
     DEFAULT_ALPHA: 0.3,
+    BACKGROUND_COLOR: 0x323232,
 }
 
 
@@ -32,4 +35,20 @@ export const dataContainers = {
     dataToSprite: new WeakMap(),
     spriteToSelected: new WeakMap(),
     spriteToHighlighted: new WeakMap()
+}
+
+// Window State
+
+export const windowState = {
+    WIDTH: null,
+    HEIGHT: null,
+    mouseMode: 'zoom',
+    selectedPoint: false,
+    currentXAxis: null,
+    currentYAxis: null,
+    currentZoom: null,
+    xRange: null,
+    yRange: null,
+    xScaler: null,
+    yScaler: null,
 }
