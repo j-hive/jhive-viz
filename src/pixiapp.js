@@ -6,6 +6,7 @@ import * as d3 from 'd3';
 import { dataURL, metadataURL, plottingConfig, dataContainers, windowState } from './config';
 import { load_data, make_axis_label, add_data_options_to_axis_selectors, getRangeWithBorder } from './data';
 import { appendToSVG, initializePlotAxis, resizePlotAxis, scalePlotAxis, setXLabel, setYLabel, transformXAxis, transformYAxis } from './plotaxis';
+import { initColorAxis, initOpacitySlider } from './interactivity/datainteractions';
 // import { updateDetailPanel } from './details';
 
 // Adding sprite function to Bring Sprite to Front
@@ -437,60 +438,11 @@ export async function initializePixiApp() {
 
     // Opacity Slider
 
-    let opacity_slider = document.getElementById('opacity-slider');
-
-    opacity_slider.value = plottingConfig.DEFAULT_ALPHA;
-
-    opacity_slider.addEventListener('input', changeOpacity);
-
-    function changeOpacity() {
-
-        let new_opacity = opacity_slider.value;
-
-        plottingConfig.DEFAULT_ALPHA = new_opacity;
-
-        dataContainers.data.map((d) => {
-
-            let tmpSprite = dataContainers.dataToSprite.get(d);
-            tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA
-
-        })
-
-
-    }
-
+    initOpacitySlider();
 
     // Colour Axis
 
-    let colour_axis_options = document.getElementById('colour-axis-selector');
-    colour_axis_options.addEventListener('change', switch_colour_axis);
-
-    function switch_colour_axis() {
-        let new_axis = colour_axis_options.value;
-
-        console.log(new_axis);
-
-        if (new_axis === "None") {
-
-            dataContainers.data.map((d) => {
-                let tmpSprite = dataContainers.dataToSprite.get(d);
-                tmpSprite.color = plottingConfig.DEFAULT_POINT_COLOR;
-            })
-
-        } else {
-            let new_color_extent = d3.extent(dataContainers.data, d => parseFloat(d[new_axis]));
-
-            let colorScaler = d3.scaleSequential().domain(new_color_extent)
-                .interpolator(d3.interpolateViridis);
-
-            dataContainers.data.map((d) => {
-                let tmpSprite = dataContainers.dataToSprite.get(d);
-                tmpSprite.tint = colorScaler(d[new_axis]);
-            })
-        }
-
-
-    }
+    initColorAxis();
 
 
     function replotData() {

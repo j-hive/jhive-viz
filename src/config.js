@@ -5,11 +5,22 @@ import { sassNull } from "sass";
 
 // Data URLs
 
+/**
+ * The URL to the Data File
+ * @type {string}
+ */
 export const dataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.csv";
+
+/**
+ * The URL to the Metadata File
+ * @type {string}
+ */
 export const metadataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.json";
 
-// Plotting Parameters
 
+/**
+ * Configuration Parameters for Plotting
+ */
 export const plottingConfig = {
     DEFAULT_POINT_COLOR: 0x777777,
     HIGHLIGHT_POINT_COLOR: 0x849cba,
@@ -26,8 +37,9 @@ export const plottingConfig = {
 }
 
 
-// Data Containers
-
+/**
+ * Object to contain all relevant data
+ */
 export const dataContainers = {
     data: null,
     metadata: null,
@@ -37,8 +49,10 @@ export const dataContainers = {
     spriteToHighlighted: new WeakMap()
 }
 
-// Window State
 
+/**
+ * Object to contain all state parameters of the current window
+ */
 export const windowState = {
     WIDTH: null,
     HEIGHT: null,

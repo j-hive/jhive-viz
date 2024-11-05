@@ -1,9 +1,13 @@
 // Functions related to creation and styling of plot axes
 
 import * as d3 from 'd3';
-import { dataURL, metadataURL, dataContainers, plottingConfig, windowState } from "./config";
+import { dataContainers, plottingConfig, windowState } from "./config";
 import { make_axis_label } from './data';
 
+
+/**
+ * Container for all plot axis objects
+ */
 const plotAxisContainers = {
     svg: null,
     yAxis: null,
@@ -13,8 +17,9 @@ const plotAxisContainers = {
 };
 
 
-// Create initial plot axis
-
+/**
+ * Initialize the Plot Axis Decorators
+ */
 export function initializePlotAxis() {
 
     // Adding and Styling Axes
