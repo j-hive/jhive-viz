@@ -96,16 +96,15 @@ export async function initializePixiApp() {
   // Adding Options to UI
   add_data_options_to_axis_selectors(dataContainers.metadata);
 
-  // Current Plot Status
+  // Setting Initial Plot Status
   windowState.currentXAxis = document.getElementById("x-axis-selector").value;
   windowState.currentYAxis = document.getElementById("y-axis-selector").value;
   windowState.currentZoom = d3.zoomIdentity;
+  windowState.WIDTH = getAppWidth();
+  windowState.HEIGHT = getAppHeight();
 
   console.log(`Current X-Axis: ${windowState.currentXAxis}`);
   console.log(`Current Y-Axis: ${windowState.currentYAxis}`);
-
-  windowState.WIDTH = getAppWidth();
-  windowState.HEIGHT = getAppHeight();
 
   const app = new PIXI.Application();
   await app.init({

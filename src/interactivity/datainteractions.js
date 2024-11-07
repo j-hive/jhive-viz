@@ -61,3 +61,16 @@ export function switchColorAxis() {
     });
   }
 }
+
+/**
+ * Function for when pointer is over a data point
+ */
+export function onPointerOver() {
+  this.tint = plottingConfig.MOUSEOVER_POINT_COLOR;
+  this.z = 10000;
+  this.alpha = 1.0;
+  this.bringToFront();
+
+  let dataPoint = dataContainers.spriteToData.get(this);
+  setContextInfo(dataPoint);
+}
