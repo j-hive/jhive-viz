@@ -2,6 +2,9 @@
 
 import * as d3 from "d3";
 import { dataContainers, plottingConfig, windowState } from "../config";
+import { setHoverPaneInfo } from "../panes/hoverpane";
+
+/** @import { FederatedPointerEvent } from "pixi.js" */
 
 /**
  * Initializing the Opacity Slider
@@ -62,15 +65,43 @@ export function switchColorAxis() {
   }
 }
 
+// Main Data Interaction Functions
+
 /**
  * Function for when pointer is over a data point
+ *
+ * @param {FederatedPointerEvent} event - Initial Event
  */
-export function onPointerOver() {
-  this.tint = plottingConfig.MOUSEOVER_POINT_COLOR;
-  this.z = 10000;
-  this.alpha = 1.0;
-  this.bringToFront();
+export function onPointerOver(event) {
+  event.target.tint = plottingConfig.MOUSEOVER_POINT_COLOR;
+  event.target.z = 10000;
+  event.target.alpha = 1.0;
+  event.target.bringToFront();
 
   let dataPoint = dataContainers.spriteToData.get(this);
-  setContextInfo(dataPoint);
+  setHoverPaneInfo(dataPoint);
+}
+
+/**
+ * Function for when pointer is moved off a data point
+ *
+ * @param {FederatedPointerEvent} event - Initial Event
+ */
+export function onPointerOut(event) {
+  let tmpColor = plottingConfig.DEFAULT_POINT_COLOR;
+  let tmpAlpha = plottingConfig.DEFAULT_ALPHA;
+  const target = event.target;
+
+  if (dataContainers.spriteToSelected.get(target)) {
+    tmpColor = plottingConfig.CLICKED_POINT_COLOR;
+    tmpAlpha = 1.0;
+  } else if (dataContainers.spriteToHighlighted.get(target)) {
+    tmpColor = plottingConfig.HIGHLIGHT_POINT_COLOR;
+    tmpAlpha = 1.0;
+  }
+
+  target.tint = tmpColor;
+  target.z = 2;
+  target.alpha = tmpAlpha;
+  setHoverPaneInfo();
 }

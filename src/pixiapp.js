@@ -24,6 +24,7 @@ import {
   initColorAxis,
   initOpacitySlider,
 } from "./interactivity/datainteractions";
+import { setHoverPaneInfo } from "./panes/hoverpane";
 // import { updateDetailPanel } from './details';
 
 // Adding sprite function to Bring Sprite to Front
@@ -179,28 +180,6 @@ export async function initializePixiApp() {
 
   // Interaction Functions
 
-  // Function for setting context:
-
-  const contextIDVal = document.getElementById("context-panel-id-value");
-  const contextRAVal = document.getElementById("context-panel-ra-value");
-  const contextDECVal = document.getElementById("context-panel-dec-value");
-  const contextZPhotVal = document.getElementById("context-panel-zphot-value");
-
-  function setContextInfo(datapoint = {}) {
-    contextIDVal.innerHTML = datapoint["id"]
-      ? d3.format(".0f")(datapoint["id"])
-      : "";
-    contextRAVal.innerHTML = datapoint["ra"]
-      ? d3.format(".5f")(datapoint["ra"]) + "&deg;"
-      : "";
-    contextDECVal.innerHTML = datapoint["dec"]
-      ? d3.format(".5f")(datapoint["dec"]) + "&deg;"
-      : "";
-    contextZPhotVal.innerHTML = datapoint["z_phot"]
-      ? d3.format(".2f")(datapoint["z_phot"])
-      : "";
-  }
-
   // Functions for tinting dots
 
   function onPointerOver() {
@@ -210,7 +189,7 @@ export async function initializePixiApp() {
     this.bringToFront();
 
     let datapoint = dataContainers.spriteToData.get(this);
-    setContextInfo(datapoint);
+    setHoverPaneInfo(datapoint);
   }
 
   function onPointerOut() {
@@ -228,7 +207,7 @@ export async function initializePixiApp() {
     this.tint = tmpColor;
     this.z = 2;
     this.alpha = tmpAlpha;
-    setContextInfo();
+    setHoverPaneInfo();
   }
 
   function onPointerClick() {
@@ -530,7 +509,7 @@ export async function initializePixiApp() {
     return sed;
   }
 
-  function setNantoLow(x) {
+  function setNanToLow(x) {
     return isNaN(x) ? 60 : x;
   }
 
@@ -646,7 +625,7 @@ export async function initializePixiApp() {
       .delay(100)
       .duration(1000)
       .attr("cy", (d) => {
-        return yScaler(setNantoLow(d.y));
+        return yScaler(setNanToLow(d.y));
       });
 
     // Change Cutout Image:
