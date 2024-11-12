@@ -25,6 +25,7 @@ import {
   initOpacitySlider,
 } from "./interactivity/datainteractions";
 import { setHoverPaneInfo } from "./panes/hoverpane";
+import { initializeDetailPane, updateDetailPanel } from "./panes/detailpane";
 // import { updateDetailPanel } from './details';
 
 // Adding sprite function to Bring Sprite to Front
@@ -473,165 +474,167 @@ export async function initializePixiApp() {
   // Currently Resize Not Working, Turning Off
   // window.addEventListener("resize", resizeWindow);
 
-  const detailsPanel = document.getElementById("detailpanel");
-  const detailsImage = document.getElementById("source-cutout");
-  const detailsTitleID = document.getElementById("detail-title-header-val");
-  const detailsTitleRA = document.getElementById("detail-title-ra-val");
-  const detailsTitleDEC = document.getElementById("detail-title-dec-val");
-  const detailsTitleMagf150w = document.getElementById(
-    "detail-title-mag-f150w-val"
-  );
-  const detailsTitleMagf200w = document.getElementById(
-    "detail-title-mag-f200w-val"
-  );
-  const detailsTitleMagf277w = document.getElementById(
-    "detail-title-mag-f277w-val"
-  );
+  // const detailsPanel = document.getElementById("detailpanel");
+  // const detailsImage = document.getElementById("source-cutout");
+  // const detailsTitleID = document.getElementById("detail-title-header-val");
+  // const detailsTitleRA = document.getElementById("detail-title-ra-val");
+  // const detailsTitleDEC = document.getElementById("detail-title-dec-val");
+  // const detailsTitleMagf150w = document.getElementById(
+  //   "detail-title-mag-f150w-val"
+  // );
+  // const detailsTitleMagf200w = document.getElementById(
+  //   "detail-title-mag-f200w-val"
+  // );
+  // const detailsTitleMagf277w = document.getElementById(
+  //   "detail-title-mag-f277w-val"
+  // );
 
   // Getting SED Container
 
-  const SEDContainer = document.getElementById("detail-sed-plot");
+  // const SEDContainer = document.getElementById("detail-sed-plot");
 
-  // Function to create x-y from wavelengths and magnitudes
-  function getSEDPoints(datapoint) {
-    let sed = [];
+  // // Function to create x-y from wavelengths and magnitudes
+  // function getSEDPoints(datapoint) {
+  //   let sed = [];
 
-    Object.entries(dataContainers.metadata).forEach((entry) => {
-      const [key, value] = entry;
-      if (value["is_magnitude"]) {
-        let tmpEntry = {};
-        tmpEntry["x"] = value["wl_micron"];
-        tmpEntry["y"] = datapoint[key] ? datapoint[key] : NaN;
-        sed.push(tmpEntry);
-      }
-    });
+  //   Object.entries(dataContainers.metadata).forEach((entry) => {
+  //     const [key, value] = entry;
+  //     if (value["is_magnitude"]) {
+  //       let tmpEntry = {};
+  //       tmpEntry["x"] = value["wl_micron"];
+  //       tmpEntry["y"] = datapoint[key] ? datapoint[key] : NaN;
+  //       sed.push(tmpEntry);
+  //     }
+  //   });
 
-    return sed;
-  }
+  //   return sed;
+  // }
 
-  function setNanToLow(x) {
-    return isNaN(x) ? 60 : x;
-  }
+  // function setNanToLow(x) {
+  //   return isNaN(x) ? 60 : x;
+  // }
 
-  // Base of SED
-  let SEDWidth = SEDContainer.clientWidth;
-  let SEDHeight = SEDContainer.clientHeight;
+  initializeDetailPane();
 
-  const marginTop = 10;
-  const marginRight = 10;
-  const marginBottom = 20;
-  const marginLeft = 20;
+  // // Base of SED
+  // let SEDWidth = SEDContainer.clientWidth;
+  // let SEDHeight = SEDContainer.clientHeight;
 
-  const xScaler = d3.scaleLinear(
-    [0.4, 5],
-    [marginLeft, SEDWidth - marginRight]
-  );
-  const yScaler = d3.scaleLinear(
-    [17, 40],
-    [marginTop, SEDHeight - marginBottom]
-  );
+  // const marginTop = 10;
+  // const marginRight = 10;
+  // const marginBottom = 20;
+  // const marginLeft = 20;
 
-  let SEDsvg = d3
-    .select(SEDContainer)
-    .append("svg")
-    .attr("width", SEDWidth + marginLeft + marginRight)
-    .attr("height", SEDHeight + marginTop + marginBottom)
-    .append("g")
-    .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
+  // const xScaler = d3.scaleLinear(
+  //   [0.4, 5],
+  //   [marginLeft, SEDWidth - marginRight]
+  // );
+  // const yScaler = d3.scaleLinear(
+  //   [17, 40],
+  //   [marginTop, SEDHeight - marginBottom]
+  // );
 
-  SEDsvg.append("g")
-    .attr("transform", "translate(0," + (SEDHeight - marginBottom + 5) + ")")
-    .attr("class", "sed-x-axis")
-    .call(d3.axisBottom(xScaler).ticks(5));
+  // let SEDsvg = d3
+  //   .select(SEDContainer)
+  //   .append("svg")
+  //   .attr("width", SEDWidth + marginLeft + marginRight)
+  //   .attr("height", SEDHeight + marginTop + marginBottom)
+  //   .append("g")
+  //   .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
 
-  SEDsvg.append("g")
-    .attr("class", "sed-y-axis")
-    .call(
-      d3
-        .axisLeft(yScaler)
-        .ticks(5)
-        .tickSizeOuter(0)
-        .tickSize(-SEDWidth + marginRight)
-    );
+  // SEDsvg.append("g")
+  //   .attr("transform", "translate(0," + (SEDHeight - marginBottom + 5) + ")")
+  //   .attr("class", "sed-x-axis")
+  //   .call(d3.axisBottom(xScaler).ticks(5));
 
-  let baseData = getSEDPoints({});
+  // SEDsvg.append("g")
+  //   .attr("class", "sed-y-axis")
+  //   .call(
+  //     d3
+  //       .axisLeft(yScaler)
+  //       .ticks(5)
+  //       .tickSizeOuter(0)
+  //       .tickSize(-SEDWidth + marginRight)
+  //   );
 
-  SEDsvg.selectAll("mycircles")
-    .data(baseData)
-    .enter()
-    .append("circle")
-    .attr("cx", (d) => {
-      return xScaler(d.x);
-    })
-    .attr("cy", (d) => {
-      return yScaler(80);
-    })
-    .attr("r", 5)
-    .style("fill", "#73ADFA");
+  // let baseData = getSEDPoints({});
 
-  SEDsvg.append("text")
-    .attr("x", (marginLeft + SEDWidth - marginRight) / 2)
-    .attr("y", SEDHeight - marginBottom)
-    .attr("dy", -6)
-    .attr("text-anchor", "middle")
-    .call((text) =>
-      text
-        .append("tspan")
-        .text("Wavelength (\u03BCm)")
-        .style("fill", "white")
-        .style("font-size", "10pt")
-    );
+  // SEDsvg.selectAll("mycircles")
+  //   .data(baseData)
+  //   .enter()
+  //   .append("circle")
+  //   .attr("cx", (d) => {
+  //     return xScaler(d.x);
+  //   })
+  //   .attr("cy", (d) => {
+  //     return yScaler(80);
+  //   })
+  //   .attr("r", 5)
+  //   .style("fill", "#73ADFA");
 
-  SEDsvg.append("text")
-    .attr("dy", 1)
-    .attr("text-anchor", "middle")
-    .attr(
-      "transform",
-      `translate(${marginLeft},${
-        (marginTop + SEDHeight - marginBottom) / 2
-      }) rotate(-90)`
-    )
-    .call((text) =>
-      text
-        .append("tspan")
-        .text("AB Magnitude")
-        .style("fill", "white")
-        .style("font-size", "10pt")
-    );
+  // SEDsvg.append("text")
+  //   .attr("x", (marginLeft + SEDWidth - marginRight) / 2)
+  //   .attr("y", SEDHeight - marginBottom)
+  //   .attr("dy", -6)
+  //   .attr("text-anchor", "middle")
+  //   .call((text) =>
+  //     text
+  //       .append("tspan")
+  //       .text("Wavelength (\u03BCm)")
+  //       .style("fill", "white")
+  //       .style("font-size", "10pt")
+  //   );
 
-  function updateDetailPanel(datapoint) {
-    // Turning on Detail Panel if not there already
-    detailsPanel.classList.remove("details-off");
-    detailsPanel.classList.add("details-on");
+  // SEDsvg.append("text")
+  //   .attr("dy", 1)
+  //   .attr("text-anchor", "middle")
+  //   .attr(
+  //     "transform",
+  //     `translate(${marginLeft},${
+  //       (marginTop + SEDHeight - marginBottom) / 2
+  //     }) rotate(-90)`
+  //   )
+  //   .call((text) =>
+  //     text
+  //       .append("tspan")
+  //       .text("AB Magnitude")
+  //       .style("fill", "white")
+  //       .style("font-size", "10pt")
+  //   );
 
-    // Set Titles:
-    detailsTitleID.innerHTML = datapoint["id"];
-    detailsTitleRA.innerHTML = d3.format(".5f")(datapoint["ra"]) + "&deg;";
-    detailsTitleDEC.innerHTML = d3.format(".5f")(datapoint["dec"]) + "&deg;";
-    detailsTitleMagf150w.innerHTML =
-      d3.format(".1f")(datapoint["abmag_f150w"]) + " (f150w)";
-    detailsTitleMagf200w.innerHTML =
-      d3.format(".1f")(datapoint["abmag_f200w"]) + " (f200w)";
-    detailsTitleMagf277w.innerHTML =
-      d3.format(".1f")(datapoint["abmag_f277w"]) + " (f277w)";
+  // function updateDetailPanel(datapoint) {
+  //   // Turning on Detail Panel if not there already
+  //   detailsPanel.classList.remove("details-off");
+  //   detailsPanel.classList.add("details-on");
 
-    let sedData = getSEDPoints(datapoint);
+  //   // Set Titles:
+  //   detailsTitleID.innerHTML = datapoint["id"];
+  //   detailsTitleRA.innerHTML = d3.format(".5f")(datapoint["ra"]) + "&deg;";
+  //   detailsTitleDEC.innerHTML = d3.format(".5f")(datapoint["dec"]) + "&deg;";
+  //   detailsTitleMagf150w.innerHTML =
+  //     d3.format(".1f")(datapoint["abmag_f150w"]) + " (f150w)";
+  //   detailsTitleMagf200w.innerHTML =
+  //     d3.format(".1f")(datapoint["abmag_f200w"]) + " (f200w)";
+  //   detailsTitleMagf277w.innerHTML =
+  //     d3.format(".1f")(datapoint["abmag_f277w"]) + " (f277w)";
 
-    // Change SED Points:
+  //   let sedData = getSEDPoints(datapoint);
 
-    SEDsvg.selectAll("circle")
-      .data(sedData)
-      .transition()
-      .delay(100)
-      .duration(1000)
-      .attr("cy", (d) => {
-        return yScaler(setNanToLow(d.y));
-      });
+  //   // Change SED Points:
 
-    // Change Cutout Image:
+  //   SEDsvg.selectAll("circle")
+  //     .data(sedData)
+  //     .transition()
+  //     .delay(100)
+  //     .duration(1000)
+  //     .attr("cy", (d) => {
+  //       return yScaler(setNanToLow(d.y));
+  //     });
 
-    detailsImage.style.backgroundImage = `url(/data/cutouts/f200w/abell2744clu_grizli-v7.2_uncover-dr3_f200w_${datapoint[
-      "id"
-    ].padStart(5, "0")}_cutout.jpg)`;
-  }
+  //   // Change Cutout Image:
+
+  //   detailsImage.style.backgroundImage = `url(/data/cutouts/f200w/abell2744clu_grizli-v7.2_uncover-dr3_f200w_${datapoint[
+  //     "id"
+  //   ].padStart(5, "0")}_cutout.jpg)`;
+  // }
 }

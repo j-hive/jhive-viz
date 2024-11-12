@@ -61,4 +61,6 @@ export const windowState = {
   yRange: null,
   xScaler: null,
   yScaler: null,
+  SEDxScaler: null,
+  SEDyScaler: null,
 };
