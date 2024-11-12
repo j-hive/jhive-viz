@@ -1,3 +1,5 @@
+@use "colours";
+
 // _interaction.scss
 
 .interaction-panel {
@@ -6,8 +8,8 @@
     top: 5em;
     width: 15em;
     // height: 20em;
-    background: $Main-bg-transparent;
-    border: 1px solid $Main-secondary-text-hex;
+    background: colours.$Main-bg-transparent;
+    border: 1px solid colours.$Main-secondary-text-hex;
     z-index: 10;
     backdrop-filter: blur(2px);
     display: flex;
@@ -23,7 +25,7 @@
 #interaction-panel-bar {
     width: 100%;
     height: 10px;
-    background-color: $Main-secondary-text-hex;
+    background-color: colours.$Main-secondary-text-hex;
     z-index: 11;
     cursor: grab;
 }
@@ -60,18 +62,18 @@
         background-color: transparent;
         font-family: "Spectral", serif;
         color: #ccc;
-        border: 1px solid $Main-secondary-text-hex;
+        border: 1px solid colours.$Main-secondary-text-hex;
     }
 
 
     option {
-        background-color: $Main-bg-hex;
+        background-color: colours.$Main-bg-hex;
     }
 
 }
 
 .interaction-panel-button-row {
-    color: $Main-secondary-text-hex;
+    color: colours.$Main-secondary-text-hex;
 
     display: flex;
     flex-direction: row;
@@ -81,22 +83,22 @@
 
     a {
         text-decoration: none;
-        color: $Main-secondary-text-hex;
+        color: colours.$Main-secondary-text-hex;
         margin: 0;
         padding: 0.25em;
-        border: 0.25px solid $Main-secondary-text-hex;
+        border: 0.25px solid colours.$Main-secondary-text-hex;
         transition: background-color 250ms;
         flex-grow: 2;
         text-align: center;
         cursor: pointer;
 
         &:hover {
-            background-color: $J-HIVE-Theme-1-hex;
+            background-color: colours.$J-HIVE-Theme-1-hex;
         }
     }
 
     .selected {
-        background-color: $J-HIVE-Theme-2-hex;
+        background-color: colours.$J-HIVE-Theme-2-hex;
         color: white;
         border-color: white;
     }

@@ -1,6 +1,8 @@
+@use "colours";
+
 .lds-facebook {
     /* change color here */
-    color: $J-HIVE-Theme-1-hex;
+    color: colours.$J-HIVE-Theme-1-hex;
 }
 
 .lds-facebook,

@@ -1,3 +1,5 @@
+@use "colours";
+
 // _details.scss
 
 .details {
@@ -9,8 +11,8 @@
     margin: 0;
     padding: 0;
     border-top-style: solid;
-    border-color: $Main-secondary-text-hex;
-    background-color: $Main-bg-transparent;
+    border-color: colours.$Main-secondary-text-hex;
+    background-color: colours.$Main-bg-transparent;
     backdrop-filter: blur(6px);
     display: flex;
     overflow: hidden;
@@ -31,7 +33,7 @@
         text-decoration: none;
 
         &:hover {
-            color: $J-HIVE-Theme-1-hex;
+            color: colours.$J-HIVE-Theme-1-hex;
         }
 
     }

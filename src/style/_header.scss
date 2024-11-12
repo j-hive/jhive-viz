@@ -1,3 +1,5 @@
+@use "colours";
+
 // _header.scss
 
 header.titlebar {
@@ -28,19 +30,19 @@ header.titlebar {
             display: flex;
             justify-content: center;
             border-bottom-style: solid;
-            border-color: $Main-secondary-text-hex;
+            border-color: colours.$Main-secondary-text-hex;
         }
 
         #expandedname {
-            color: $Main-secondary-text-hex;
+            color: colours.$Main-secondary-text-hex;
             flex-grow: 4;
             border-left-style: solid;
             border-right-style: solid;
-            border-color: $Main-secondary-text-hex;
+            border-color: colours.$Main-secondary-text-hex;
         }
 
         #versionnumber {
-            color: $Main-secondary-text-hex;
+            color: colours.$Main-secondary-text-hex;
         }
 
     }
