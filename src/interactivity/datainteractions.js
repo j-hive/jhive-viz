@@ -1,6 +1,6 @@
 // Data Interaction Functions
 
-import * as d3 from "d3";
+import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
 import { setHoverPaneInfo } from "../panes/hoverpane";
 

@@ -1,6 +1,6 @@
 // Functions related to creation and styling of plot axes
 
-import * as d3 from "d3";
+import { d3 } from "./imports";
 import { dataContainers, plottingConfig, windowState } from "./config";
 import { make_axis_label } from "./data";
 

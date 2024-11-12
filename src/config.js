@@ -1,7 +1,5 @@
 // Application Wide Configuration Parameters
 
-import { sassNull } from "sass";
-
 // Data URLs
 
 /**
@@ -32,6 +30,10 @@ export const plottingConfig = {
   UPPERMARGIN: 5,
   DEFAULT_ALPHA: 0.3,
   BACKGROUND_COLOR: 0x323232,
+  SEDLEFTMARGIN: 20,
+  SEDRIGHTMARGIN: 10,
+  SEDLOWERMARGIN: 20,
+  SEDUPPERMARGIN: 10,
 };
 
 /**

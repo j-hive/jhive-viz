@@ -1,8 +1,7 @@
 // pixiapp.js
 
-import * as PIXI from "pixi.js";
 import { Ease } from "pixi-ease";
-import * as d3 from "d3";
+import { d3, PIXI } from "./imports";
 import { plottingConfig, dataContainers, windowState } from "./config";
 import {
   load_data,
@@ -26,7 +25,6 @@ import {
 } from "./interactivity/datainteractions";
 import { setHoverPaneInfo } from "./panes/hoverpane";
 import { initializeDetailPane, updateDetailPanel } from "./panes/detailpane";
-// import { updateDetailPanel } from './details';
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {

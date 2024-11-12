@@ -1,6 +1,6 @@
 // Detail Pane Functions
 
-import * as d3 from "d3";
+import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
 
 const detailsPanel = document.getElementById("detailpanel");
@@ -57,7 +57,6 @@ export function setNanToLow(x) {
  */
 export function updateDetailPanel(dataPoint) {
   // Get SVG
-  // const SEDsvg = document.getElementById("SEDContainer");
   const SEDsvg = d3.select("#SEDContainer");
 
   // Set Titles:
@@ -99,31 +98,42 @@ export function initializeDetailPane() {
   let SEDWidth = SEDContainer.clientWidth;
   let SEDHeight = SEDContainer.clientHeight;
 
-  const marginTop = 10;
-  const marginRight = 10;
-  const marginBottom = 20;
-  const marginLeft = 20;
-
   windowState.SEDxScaler = d3.scaleLinear(
     [0.4, 5],
-    [marginLeft, SEDWidth - marginRight]
+    [plottingConfig.SEDLEFTMARGIN, SEDWidth - plottingConfig.SEDRIGHTMARGIN]
   );
   windowState.SEDyScaler = d3.scaleLinear(
     [17, 40],
-    [marginTop, SEDHeight - marginBottom]
+    [plottingConfig.SEDUPPERMARGIN, SEDHeight - plottingConfig.SEDLOWERMARGIN]
   );
 
   let SEDsvg = d3
     .select(SEDContainer)
     .append("svg")
     .attr("id", "SEDContainer")
-    .attr("width", SEDWidth + marginLeft + marginRight)
-    .attr("height", SEDHeight + marginTop + marginBottom)
+    .attr(
+      "width",
+      SEDWidth + plottingConfig.SEDLEFTMARGIN + plottingConfig.SEDRIGHTMARGIN
+    )
+    .attr(
+      "height",
+      SEDHeight + plottingConfig.SEDUPPERMARGIN + plottingConfig.SEDLOWERMARGIN
+    )
     .append("g")
-    .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
+    .attr(
+      "transform",
+      "translate(" +
+        plottingConfig.SEDLEFTMARGIN +
+        "," +
+        plottingConfig.SEDUPPERMARGIN +
+        ")"
+    );
 
   SEDsvg.append("g")
-    .attr("transform", "translate(0," + (SEDHeight - marginBottom + 5) + ")")
+    .attr(
+      "transform",
+      "translate(0," + (SEDHeight - plottingConfig.SEDLOWERMARGIN + 5) + ")"
+    )
     .attr("class", "sed-x-axis")
     .call(d3.axisBottom(windowState.SEDxScaler).ticks(5));
 
@@ -134,12 +144,12 @@ export function initializeDetailPane() {
         .axisLeft(windowState.SEDyScaler)
         .ticks(5)
         .tickSizeOuter(0)
-        .tickSize(-SEDWidth + marginRight)
+        .tickSize(-SEDWidth + plottingConfig.SEDRIGHTMARGIN)
     );
 
   let baseData = getSEDPoints({});
 
-  SEDsvg.selectAll("mycircles")
+  SEDsvg.selectAll("circles")
     .data(baseData)
     .enter()
     .append("circle")
@@ -153,8 +163,14 @@ export function initializeDetailPane() {
     .style("fill", "#73ADFA");
 
   SEDsvg.append("text")
-    .attr("x", (marginLeft + SEDWidth - marginRight) / 2)
-    .attr("y", SEDHeight - marginBottom)
+    .attr(
+      "x",
+      (plottingConfig.SEDLEFTMARGIN +
+        SEDWidth -
+        plottingConfig.SEDRIGHTMARGIN) /
+        2
+    )
+    .attr("y", SEDHeight - plottingConfig.SEDLOWERMARGIN)
     .attr("dy", -6)
     .attr("text-anchor", "middle")
     .call((text) =>
@@ -170,8 +186,11 @@ export function initializeDetailPane() {
     .attr("text-anchor", "middle")
     .attr(
       "transform",
-      `translate(${marginLeft},${
-        (marginTop + SEDHeight - marginBottom) / 2
+      `translate(${plottingConfig.SEDLEFTMARGIN},${
+        (plottingConfig.SEDUPPERMARGIN +
+          SEDHeight -
+          plottingConfig.SEDLOWERMARGIN) /
+        2
       }) rotate(-90)`
     )
     .call((text) =>

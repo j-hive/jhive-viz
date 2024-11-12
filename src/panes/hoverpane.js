@@ -1,6 +1,6 @@
 // Functions dealing with the hover pane
 
-import * as d3 from "d3";
+import { d3 } from "../imports";
 
 const hoverPaneIDVal = document.getElementById("context-panel-id-value");
 const hoverPaneRAVal = document.getElementById("context-panel-ra-value");

@@ -1,5 +1,5 @@
 // Data Loading and Manipulations Functions
-import * as d3 from "d3";
+import { d3 } from "./imports";
 import { dataURL, metadataURL, dataContainers, plottingConfig } from "./config";
 
 // Initial Data Loading Function
