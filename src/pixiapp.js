@@ -25,9 +25,11 @@ import {
   onPointerClick,
   onPointerOut,
   onPointerOver,
+  zoomPlot,
 } from "./interactivity/datainteractions";
 import { setHoverPaneInfo } from "./panes/hoverpane";
 import { initializeDetailPane, updateDetailPanel } from "./panes/detailpane";
+import { replotData } from "./utils/plot";
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
@@ -185,29 +187,10 @@ export async function initializePixiApp() {
   const mainZoom = d3
     .zoom()
     .scaleExtent([1, 8])
-    .on("zoom", ({ transform }) => zoomed(transform));
+    .on("zoom", ({ transform }) => zoomPlot(transform));
 
   d3.select(main_container).call(mainZoom);
   windowState.mouseMode = "zoom";
-
-  function zoomed(transform) {
-    const zoomed_x_scaler = transform
-      .rescaleX(windowState.xScaler)
-      .interpolate(d3.interpolateRound);
-    const zoomed_y_scaler = transform
-      .rescaleY(windowState.yScaler)
-      .interpolate(d3.interpolateRound);
-
-    scalePlotAxis(zoomed_x_scaler, zoomed_y_scaler);
-
-    dataContainers.data.map((d) => {
-      let plotPoint = dataContainers.dataToSprite.get(d);
-      plotPoint.position.x = zoomed_x_scaler(d[windowState.currentXAxis]);
-      plotPoint.position.y = zoomed_y_scaler(d[windowState.currentYAxis]);
-    });
-
-    windowState.currentZoom = transform;
-  }
 
   function turnOffZoom() {
     d3.select(main_container).on(".zoom", null);
@@ -398,15 +381,13 @@ export async function initializePixiApp() {
 
   initColorAxis();
 
-  function replotData() {
-    console.log(`Current X-axis: ${windowState.currentXAxis}`);
-    console.log(`Current Y-axis: ${windowState.currentYAxis}`);
-    dataContainers.data.map((d) => {
-      let plotPoint = dataContainers.dataToSprite.get(d);
-      plotPoint.position.x = windowState.xScaler(d[windowState.currentXAxis]);
-      plotPoint.position.y = windowState.yScaler(d[windowState.currentYAxis]);
-    });
-  }
+  // function replotData() {
+  //   dataContainers.data.map((d) => {
+  //     let plotPoint = dataContainers.dataToSprite.get(d);
+  //     plotPoint.position.x = windowState.xScaler(d[windowState.currentXAxis]);
+  //     plotPoint.position.y = windowState.yScaler(d[windowState.currentYAxis]);
+  //   });
+  // }
 
   function resizeWindow() {
     windowState.HEIGHT = getAppHeight();

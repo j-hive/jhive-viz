@@ -4,6 +4,8 @@ import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
 import { setHoverPaneInfo } from "../panes/hoverpane";
 import { updateDetailPanel } from "../panes/detailpane";
+import { scalePlotAxis } from "../plotaxis";
+import { moveDataPoints } from "../utils/plot";
 
 /** @import { FederatedPointerEvent } from "pixi.js" */
 
@@ -125,4 +127,28 @@ export function onPointerClick(event) {
   dataContainers.spriteToSelected.set(target, true);
   let dataPoint = dataContainers.spriteToData.get(target);
   updateDetailPanel(dataPoint);
+}
+
+/**
+ * Function to Zoom Main Plotting Area
+ *
+ * @param transform - The D3 Transform
+ */
+export function zoomPlot(transform) {
+  const zoomedXScaler = transform
+    .rescaleX(windowState.xScaler)
+    .interpolate(d3.interpolateRound);
+
+  const zoomedYScaler = transform
+    .rescaleY(windowState.yScaler)
+    .interpolate(d3.interpolateRound);
+
+  // Changing Plot Axis Decorators
+  scalePlotAxis(zoomedXScaler, zoomedYScaler);
+
+  // Moving Data Points
+
+  moveDataPoints(zoomedXScaler, zoomedYScaler);
+
+  windowState.currentZoom = transform;
 }
