@@ -1,6 +1,5 @@
 // pixiapp.js
 
-import { Ease } from "pixi-ease";
 import { d3, PIXI } from "./imports";
 import { plottingConfig, dataContainers, windowState } from "./config";
 import {
@@ -27,8 +26,7 @@ import {
   onPointerOver,
   zoomPlot,
 } from "./interactivity/datainteractions";
-import { setHoverPaneInfo } from "./panes/hoverpane";
-import { initializeDetailPane, updateDetailPanel } from "./panes/detailpane";
+import { initializeDetailPane } from "./panes/detailpane";
 import { replotData } from "./utils/plot";
 
 // Adding sprite function to Bring Sprite to Front
@@ -186,7 +184,7 @@ export async function initializePixiApp() {
 
   const mainZoom = d3
     .zoom()
-    .scaleExtent([1, 8])
+    .scaleExtent([1, 20])
     .on("zoom", ({ transform }) => zoomPlot(transform));
 
   d3.select(main_container).call(mainZoom);
@@ -267,12 +265,6 @@ export async function initializePixiApp() {
 
   // Setting up Ease to use:
 
-  const motionEase = new Ease({
-    duration: 1000,
-    wait: 500,
-    ease: "easeInOutQuad",
-  });
-
   function switch_x_axis() {
     let new_axis = x_axis_options.value;
 
@@ -307,8 +299,6 @@ export async function initializePixiApp() {
     dataContainers.data.map((d) => {
       let plotPoint = dataContainers.dataToSprite.get(d);
 
-      motionEase.add(plotPoint, { x: zoomed_x_scaler(d[new_axis]) });
-
       plotPoint.tint = dataContainers.spriteToHighlighted.get(plotPoint)
         ? plottingConfig.HIGHLIGHT_POINT_COLOR
         : dataContainers.spriteToSelected.get(plotPoint)
@@ -317,6 +307,7 @@ export async function initializePixiApp() {
     });
 
     windowState.currentXAxis = new_axis;
+    replotData();
 
     if (windowState.mouseMode === "select") {
       turnOnBrush();
@@ -357,8 +348,6 @@ export async function initializePixiApp() {
     dataContainers.data.map((d) => {
       let plotPoint = dataContainers.dataToSprite.get(d);
 
-      motionEase.add(plotPoint, { y: zoomed_y_scaler(d[new_axis]) });
-
       plotPoint.tint = dataContainers.spriteToHighlighted.get(plotPoint)
         ? plottingConfig.HIGHLIGHT_POINT_COLOR
         : dataContainers.spriteToSelected.get(plotPoint)
@@ -367,6 +356,7 @@ export async function initializePixiApp() {
     });
 
     windowState.currentYAxis = new_axis;
+    replotData();
 
     if (windowState.mouseMode === "select") {
       turnOnBrush();
@@ -380,14 +370,6 @@ export async function initializePixiApp() {
   // Colour Axis
 
   initColorAxis();
-
-  // function replotData() {
-  //   dataContainers.data.map((d) => {
-  //     let plotPoint = dataContainers.dataToSprite.get(d);
-  //     plotPoint.position.x = windowState.xScaler(d[windowState.currentXAxis]);
-  //     plotPoint.position.y = windowState.yScaler(d[windowState.currentYAxis]);
-  //   });
-  // }
 
   function resizeWindow() {
     windowState.HEIGHT = getAppHeight();
