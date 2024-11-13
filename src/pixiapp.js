@@ -12,10 +12,7 @@ import {
   appendToSVG,
   initializePlotAxis,
   resizePlotAxis,
-  scalePlotAxis,
-  setXLabel,
   setYLabel,
-  transformXAxis,
   transformYAxis,
 } from "./plotaxis";
 import {
@@ -24,6 +21,8 @@ import {
   onPointerClick,
   onPointerOut,
   onPointerOver,
+  switchXAxis,
+  switchYAxis,
   zoomPlot,
 } from "./interactivity/datainteractions";
 import { initializeDetailPane } from "./panes/detailpane";
@@ -260,108 +259,8 @@ export async function initializePixiApp() {
   let x_axis_options = document.getElementById("x-axis-selector");
   let y_axis_options = document.getElementById("y-axis-selector");
 
-  x_axis_options.addEventListener("change", switch_x_axis);
-  y_axis_options.addEventListener("change", switch_y_axis);
-
-  // Setting up Ease to use:
-
-  function switch_x_axis() {
-    let new_axis = x_axis_options.value;
-
-    let new_x_extent = d3.extent(dataContainers.data, (d) =>
-      parseFloat(d[new_axis])
-    );
-
-    // Adding Buffer
-    let new_x_range = new_x_extent[1] - new_x_extent[0];
-    new_x_extent[0] =
-      new_x_extent[0] - plottingConfig.DATABORDERBUFFER * new_x_range;
-    new_x_extent[1] =
-      new_x_extent[1] + plottingConfig.DATABORDERBUFFER * new_x_range;
-
-    windowState.xScaler.domain(new_x_extent);
-
-    if (windowState.mouseMode === "select") {
-      turnOffBrush();
-    }
-
-    const zoomed_x_scaler = windowState.currentZoom
-      .rescaleX(windowState.xScaler)
-      .interpolate(d3.interpolateRound);
-
-    // Transforming Axis
-    transformXAxis(zoomed_x_scaler);
-
-    // Changing Labels
-    setXLabel(make_axis_label(dataContainers.metadata[new_axis]));
-
-    // Transforming Map
-    dataContainers.data.map((d) => {
-      let plotPoint = dataContainers.dataToSprite.get(d);
-
-      plotPoint.tint = dataContainers.spriteToHighlighted.get(plotPoint)
-        ? plottingConfig.HIGHLIGHT_POINT_COLOR
-        : dataContainers.spriteToSelected.get(plotPoint)
-        ? plottingConfig.CLICKED_POINT_COLOR
-        : plottingConfig.DEFAULT_POINT_COLOR;
-    });
-
-    windowState.currentXAxis = new_axis;
-    replotData();
-
-    if (windowState.mouseMode === "select") {
-      turnOnBrush();
-    }
-  }
-
-  function switch_y_axis() {
-    let new_axis = y_axis_options.value;
-
-    let new_y_extent = d3.extent(dataContainers.data, (d) =>
-      parseFloat(d[new_axis])
-    );
-
-    // Adding Buffer
-    let new_y_range = new_y_extent[1] - new_y_extent[0];
-    new_y_extent[0] =
-      new_y_extent[0] - plottingConfig.DATABORDERBUFFER * new_y_range;
-    new_y_extent[1] =
-      new_y_extent[1] + plottingConfig.DATABORDERBUFFER * new_y_range;
-
-    new_y_extent.reverse();
-
-    if (windowState.mouseMode === "select") {
-      turnOffBrush();
-    }
-
-    windowState.yScaler.domain(new_y_extent);
-
-    const zoomed_y_scaler = windowState.currentZoom
-      .rescaleY(windowState.yScaler)
-      .interpolate(d3.interpolateRound);
-
-    transformYAxis(zoomed_y_scaler);
-
-    // Changing Labels
-    setYLabel(make_axis_label(dataContainers.metadata[new_axis]));
-
-    dataContainers.data.map((d) => {
-      let plotPoint = dataContainers.dataToSprite.get(d);
-
-      plotPoint.tint = dataContainers.spriteToHighlighted.get(plotPoint)
-        ? plottingConfig.HIGHLIGHT_POINT_COLOR
-        : dataContainers.spriteToSelected.get(plotPoint)
-        ? plottingConfig.CLICKED_POINT_COLOR
-        : plottingConfig.DEFAULT_POINT_COLOR;
-    });
-
-    windowState.currentYAxis = new_axis;
-    replotData();
-
-    if (windowState.mouseMode === "select") {
-      turnOnBrush();
-    }
-  }
+  x_axis_options.addEventListener("change", switchXAxis);
+  y_axis_options.addEventListener("change", switchYAxis);
 
   // Opacity Slider
 

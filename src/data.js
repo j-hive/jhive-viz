@@ -94,6 +94,12 @@ export function make_axis_label(metadataJSON) {
 
 // Data Property Functions
 
+/**
+ * Gets the Range for a data column and adds a border
+ *
+ * @param {*} entryMetadata - The Entry Metadata Object
+ * @returns {Array} the Extent Array with Border
+ */
 export function getRangeWithBorder(entryMetadata) {
   let fullExtent = [entryMetadata["min_val"], entryMetadata["max_val"]];
 

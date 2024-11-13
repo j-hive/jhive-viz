@@ -4,8 +4,15 @@ import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
 import { setHoverPaneInfo } from "../panes/hoverpane";
 import { updateDetailPanel } from "../panes/detailpane";
-import { scalePlotAxis } from "../plotaxis";
-import { moveDataPoints } from "../utils/plot";
+import {
+  scalePlotAxis,
+  setXLabel,
+  setYLabel,
+  transformXAxis,
+  transformYAxis,
+} from "../plotaxis";
+import { moveDataPoints, replotData } from "../utils/plot";
+import { getRangeWithBorder, make_axis_label } from "../data";
 
 /** @import { FederatedPointerEvent } from "pixi.js" */
 
@@ -151,4 +158,94 @@ export function zoomPlot(transform) {
   moveDataPoints(zoomedXScaler, zoomedYScaler);
 
   windowState.currentZoom = transform;
+}
+
+// Axis Switching Functions.
+
+let xAxisOptions = document.getElementById("x-axis-selector");
+let y_axis_options = document.getElementById("y-axis-selector");
+
+/**
+ * Function to Switch X-axis
+ */
+export function switchXAxis() {
+  let newAxis = xAxisOptions.value;
+
+  let newXExtent = getRangeWithBorder(dataContainers.metadata[newAxis]);
+
+  windowState.xScaler.domain(newXExtent);
+
+  // if (windowState.mouseMode === "select") {
+  //   turnOffBrush();
+  // }
+
+  const zoomedXScaler = windowState.currentZoom
+    .rescaleX(windowState.xScaler)
+    .interpolate(d3.interpolateRound);
+
+  // Transforming Axis
+  transformXAxis(zoomedXScaler);
+
+  // Changing Labels
+  setXLabel(make_axis_label(dataContainers.metadata[newAxis]));
+
+  // Transforming Map
+  dataContainers.data.map((d) => {
+    let plotPoint = dataContainers.dataToSprite.get(d);
+
+    plotPoint.tint = dataContainers.spriteToHighlighted.get(plotPoint)
+      ? plottingConfig.HIGHLIGHT_POINT_COLOR
+      : dataContainers.spriteToSelected.get(plotPoint)
+      ? plottingConfig.CLICKED_POINT_COLOR
+      : plottingConfig.DEFAULT_POINT_COLOR;
+  });
+
+  windowState.currentXAxis = newAxis;
+  replotData();
+
+  // if (windowState.mouseMode === "select") {
+  //   turnOnBrush();
+  // }
+}
+
+/**
+ * Function to Switch Y Axis
+ */
+export function switchYAxis() {
+  let newAxis = y_axis_options.value;
+
+  let newYExtent = getRangeWithBorder(dataContainers.metadata[newAxis]);
+  newYExtent.reverse();
+
+  // if (windowState.mouseMode === "select") {
+  //   turnOffBrush();
+  // }
+
+  windowState.yScaler.domain(newYExtent);
+
+  const zoomedYScaler = windowState.currentZoom
+    .rescaleY(windowState.yScaler)
+    .interpolate(d3.interpolateRound);
+
+  transformYAxis(zoomedYScaler);
+
+  // Changing Labels
+  setYLabel(make_axis_label(dataContainers.metadata[newAxis]));
+
+  dataContainers.data.map((d) => {
+    let plotPoint = dataContainers.dataToSprite.get(d);
+
+    plotPoint.tint = dataContainers.spriteToHighlighted.get(plotPoint)
+      ? plottingConfig.HIGHLIGHT_POINT_COLOR
+      : dataContainers.spriteToSelected.get(plotPoint)
+      ? plottingConfig.CLICKED_POINT_COLOR
+      : plottingConfig.DEFAULT_POINT_COLOR;
+  });
+
+  windowState.currentYAxis = newAxis;
+  replotData();
+
+  // if (windowState.mouseMode === "select") {
+  //   turnOnBrush();
+  // }
 }
