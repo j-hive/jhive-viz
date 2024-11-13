@@ -3,6 +3,7 @@
 import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
 import { setHoverPaneInfo } from "../panes/hoverpane";
+import { updateDetailPanel } from "../panes/detailpane";
 
 /** @import { FederatedPointerEvent } from "pixi.js" */
 
@@ -78,7 +79,7 @@ export function onPointerOver(event) {
   event.target.alpha = 1.0;
   event.target.bringToFront();
 
-  let dataPoint = dataContainers.spriteToData.get(this);
+  let dataPoint = dataContainers.spriteToData.get(event.target);
   setHoverPaneInfo(dataPoint);
 }
 
@@ -104,4 +105,24 @@ export function onPointerOut(event) {
   target.z = 2;
   target.alpha = tmpAlpha;
   setHoverPaneInfo();
+}
+
+/**
+ * Function for when a data point is clicked
+ *
+ * @param {FederatedPointerEvent} event - Initial Event
+ */
+export function onPointerClick(event) {
+  const target = event.target;
+
+  target.tint = plottingConfig.CLICKED_POINT_COLOR;
+  if (windowState.selectedPoint) {
+    windowState.selectedPoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
+    windowState.selectedPoint.alpha = 1.0;
+    dataContainers.spriteToSelected.set(windowState.selectedPoint, false);
+  }
+  windowState.selectedPoint = target;
+  dataContainers.spriteToSelected.set(target, true);
+  let dataPoint = dataContainers.spriteToData.get(target);
+  updateDetailPanel(dataPoint);
 }

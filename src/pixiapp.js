@@ -22,6 +22,9 @@ import {
 import {
   initColorAxis,
   initOpacitySlider,
+  onPointerClick,
+  onPointerOut,
+  onPointerOver,
 } from "./interactivity/datainteractions";
 import { setHoverPaneInfo } from "./panes/hoverpane";
 import { initializeDetailPane, updateDetailPanel } from "./panes/detailpane";
@@ -176,51 +179,6 @@ export async function initializePixiApp() {
   // Adding and Styling Axes
 
   initializePlotAxis();
-
-  // Interaction Functions
-
-  // Functions for tinting dots
-
-  function onPointerOver() {
-    this.tint = plottingConfig.MOUSEOVER_POINT_COLOR;
-    this.z = 10000;
-    this.alpha = 1.0;
-    this.bringToFront();
-
-    let datapoint = dataContainers.spriteToData.get(this);
-    setHoverPaneInfo(datapoint);
-  }
-
-  function onPointerOut() {
-    let tmpColor = plottingConfig.DEFAULT_POINT_COLOR;
-    let tmpAlpha = plottingConfig.DEFAULT_ALPHA;
-
-    if (dataContainers.spriteToSelected.get(this)) {
-      tmpColor = plottingConfig.CLICKED_POINT_COLOR;
-      tmpAlpha = 1.0;
-    } else if (dataContainers.spriteToHighlighted.get(this)) {
-      tmpColor = plottingConfig.HIGHLIGHT_POINT_COLOR;
-      tmpAlpha = 1.0;
-    }
-
-    this.tint = tmpColor;
-    this.z = 2;
-    this.alpha = tmpAlpha;
-    setHoverPaneInfo();
-  }
-
-  function onPointerClick() {
-    this.tint = plottingConfig.CLICKED_POINT_COLOR;
-    if (windowState.selectedPoint) {
-      windowState.selectedPoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
-      windowState.selectedPoint.alpha = 1.0;
-      dataContainers.spriteToSelected.set(windowState.selectedPoint, false);
-    }
-    windowState.selectedPoint = this;
-    dataContainers.spriteToSelected.set(this, true);
-    let datapoint = dataContainers.spriteToData.get(this);
-    updateDetailPanel(datapoint);
-  }
 
   // Adding D3 Zoom:
 
