@@ -249,3 +249,32 @@ export function switchYAxis() {
   //   turnOnBrush();
   // }
 }
+
+// Brushing Functions
+
+/**
+ * Function to highlight points
+ *
+ * @param {*} param0
+ */
+
+export function highlightPoints({ selection: [[x0, y0], [x1, y1]] }) {
+  dataContainers.data.map((d) => {
+    let tmpSprite = dataContainers.dataToSprite.get(d);
+    if (
+      tmpSprite.x > x0 &&
+      (tmpSprite.x < x1 - plottingConfig.POINTRADIUS) &
+        (tmpSprite.y < y1 - plottingConfig.POINTRADIUS) &&
+      tmpSprite.y > y0
+    ) {
+      tmpSprite.tint = plottingConfig.HIGHLIGHT_POINT_COLOR;
+      tmpSprite.alpha = 1.0;
+      tmpSprite.bringToFront();
+      dataContainers.spriteToHighlighted.set(tmpSprite, true);
+    } else {
+      tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
+      tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA;
+      dataContainers.spriteToHighlighted.set(tmpSprite, false);
+    }
+  });
+}

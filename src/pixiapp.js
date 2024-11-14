@@ -4,18 +4,12 @@ import { d3, PIXI } from "./imports";
 import { plottingConfig, dataContainers, windowState } from "./config";
 import {
   load_data,
-  make_axis_label,
   add_data_options_to_axis_selectors,
   getRangeWithBorder,
 } from "./data";
+import { appendToSVG, initializePlotAxis, resizePlotAxis } from "./plotaxis";
 import {
-  appendToSVG,
-  initializePlotAxis,
-  resizePlotAxis,
-  setYLabel,
-  transformYAxis,
-} from "./plotaxis";
-import {
+  highlightPoints,
   initColorAxis,
   initOpacitySlider,
   onPointerClick,
@@ -38,15 +32,15 @@ PIXI.Sprite.prototype.bringToFront = function () {
 };
 
 // Grabbing Main Container
-const main_container = document.getElementById("app");
+const mainContainer = document.getElementById("app");
 
 // Functions for Width and Height
 const getAppWidth = function () {
-  return main_container.clientWidth;
+  return mainContainer.clientWidth;
 };
 
 const getAppHeight = function () {
-  return main_container.clientHeight;
+  return mainContainer.clientHeight;
 };
 
 /**
@@ -114,11 +108,11 @@ export async function initializePixiApp() {
     height: windowState.HEIGHT,
     antialias: true,
     background: plottingConfig.BACKGROUND_COLOR,
-    resizeTo: main_container,
+    resizeTo: mainContainer,
   });
 
   // Putting Pixi Scene into Container
-  main_container.appendChild(app.canvas);
+  mainContainer.appendChild(app.canvas);
 
   // Setup Initial Plotting
 
@@ -186,40 +180,40 @@ export async function initializePixiApp() {
     .scaleExtent([1, 20])
     .on("zoom", ({ transform }) => zoomPlot(transform));
 
-  d3.select(main_container).call(mainZoom);
+  d3.select(mainContainer).call(mainZoom);
   windowState.mouseMode = "zoom";
 
   function turnOffZoom() {
-    d3.select(main_container).on(".zoom", null);
+    d3.select(mainContainer).on(".zoom", null);
   }
 
   function turnOnZoom() {
-    d3.select(main_container).call(mainZoom);
+    d3.select(mainContainer).call(mainZoom);
     windowState.mouseMode = "zoom";
   }
 
   // Adding Brushing
 
-  const highlightPoints = ({ selection: [[x0, y0], [x1, y1]] }) => {
-    dataContainers.data.map((d) => {
-      let tmpSprite = dataContainers.dataToSprite.get(d);
-      if (
-        tmpSprite.x > x0 &&
-        (tmpSprite.x < x1 - plottingConfig.POINTRADIUS) &
-          (tmpSprite.y < y1 - plottingConfig.POINTRADIUS) &&
-        tmpSprite.y > y0
-      ) {
-        tmpSprite.tint = plottingConfig.HIGHLIGHT_POINT_COLOR;
-        tmpSprite.alpha = 1.0;
-        tmpSprite.bringToFront();
-        dataContainers.spriteToHighlighted.set(tmpSprite, true);
-      } else {
-        tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
-        tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA;
-        dataContainers.spriteToHighlighted.set(tmpSprite, false);
-      }
-    });
-  };
+  // const highlightPoints = ({ selection: [[x0, y0], [x1, y1]] }) => {
+  //   dataContainers.data.map((d) => {
+  //     let tmpSprite = dataContainers.dataToSprite.get(d);
+  //     if (
+  //       tmpSprite.x > x0 &&
+  //       (tmpSprite.x < x1 - plottingConfig.POINTRADIUS) &
+  //         (tmpSprite.y < y1 - plottingConfig.POINTRADIUS) &&
+  //       tmpSprite.y > y0
+  //     ) {
+  //       tmpSprite.tint = plottingConfig.HIGHLIGHT_POINT_COLOR;
+  //       tmpSprite.alpha = 1.0;
+  //       tmpSprite.bringToFront();
+  //       dataContainers.spriteToHighlighted.set(tmpSprite, true);
+  //     } else {
+  //       tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
+  //       tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA;
+  //       dataContainers.spriteToHighlighted.set(tmpSprite, false);
+  //     }
+  //   });
+  // };
 
   const mainBrush = d3.brush().on("start brush end", highlightPoints);
 
@@ -289,8 +283,10 @@ export async function initializePixiApp() {
   }
 
   replotData();
+
+  // TODO: Remove this
+  turnOffZoom();
+  turnOnBrush();
   // Currently Resize Not Working, Turning Off
   // window.addEventListener("resize", resizeWindow);
-
-  initializeDetailPane();
 }

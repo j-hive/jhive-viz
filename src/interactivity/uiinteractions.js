@@ -1,24 +1,4 @@
-// uiinteractions.js
-
-// Detail Panel
-
-function closeDetailPanel() {
-  // Function to Close the details panel:
-
-  const detailsPanel = document.getElementById("detailpanel");
-
-  detailsPanel.classList.remove("details-on");
-  detailsPanel.classList.add("details-off");
-}
-
-function openDetailPanel() {
-  // Function to Close the details panel:
-
-  const detailsPanel = document.getElementById("detailpanel");
-
-  detailsPanel.classList.remove("details-off");
-  detailsPanel.classList.add("details-on");
-}
+// User Interface Interactions
 
 function selectMouseFunction(event) {
   // Function to select mouse function:

@@ -133,7 +133,7 @@ export function setXLabel(text) {
 // Appending to SVG
 
 export async function appendToSVG(element) {
-  return plotAxisContainers.svg.append(element);
+  const newElement = plotAxisContainers.svg.append(element);
 }
 
 // Resizing SVG

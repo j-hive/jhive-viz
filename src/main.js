@@ -1,5 +1,5 @@
-import { addDraggingToElements } from "./dragging.js";
-import { startUIInteractions } from "./uiinteractions.js";
+import { addDraggingToElements } from "./interactivity/dragging.js";
+import { startUIInteractions } from "./interactivity/uiinteractions.js";
 import { initializePixiApp } from "./pixiapp.js";
 import {
   initializeLoadingMessage,
@@ -7,6 +7,8 @@ import {
 } from "./loading.js";
 
 import "./style/style.scss";
+import { initializeDetailPane } from "./panes/detailpane.js";
+import * as config from "./config.js";
 
 // Initial Removing Context Menu
 window.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -16,7 +18,9 @@ window.addEventListener("contextmenu", (e) => e.preventDefault());
 initializeLoadingMessage();
 
 // Initializing Pixi App
-initializePixiApp().then(hideLoadingSpinnerShowButton);
+initializePixiApp()
+  .then(initializeDetailPane)
+  .then(hideLoadingSpinnerShowButton);
 
 // Setup UI Interactions
 startUIInteractions();

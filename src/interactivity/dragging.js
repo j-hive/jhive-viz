@@ -1,6 +1,6 @@
 // dragging.js
 
-function dragElement(elmnt) {
+function dragElement(element) {
   let pos1 = 0,
     pos2 = 0,
     pos3 = 0,
@@ -8,13 +8,13 @@ function dragElement(elmnt) {
 
   let draggingHandle;
 
-  if (document.getElementById(elmnt.id + "-bar")) {
+  if (document.getElementById(element.id + "-bar")) {
     /* if present, the bar is where you move the DIV from:*/
 
-    draggingHandle = document.getElementById(elmnt.id + "-bar");
+    draggingHandle = document.getElementById(element.id + "-bar");
   } else {
     /* otherwise, move the DIV from anywhere inside the DIV:*/
-    draggingHandle = elmnt;
+    draggingHandle = element;
   }
 
   draggingHandle.addEventListener("mousedown", dragMouseDown);
@@ -40,8 +40,8 @@ function dragElement(elmnt) {
     pos3 = e.clientX;
     pos4 = e.clientY;
     // set the element's new position:
-    elmnt.style.top = elmnt.offsetTop - pos2 + "px";
-    elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
+    element.style.top = element.offsetTop - pos2 + "px";
+    element.style.left = element.offsetLeft - pos1 + "px";
   }
 
   function closeDragElement(e) {
