@@ -284,9 +284,6 @@ export async function initializePixiApp() {
 
   replotData();
 
-  // TODO: Remove this
-  turnOffZoom();
-  turnOnBrush();
   // Currently Resize Not Working, Turning Off
   // window.addEventListener("resize", resizeWindow);
 }
