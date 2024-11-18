@@ -21,6 +21,7 @@ import {
 } from "./interactivity/datainteractions";
 import { initializeDetailPane } from "./panes/detailpane";
 import { replotData } from "./utils/plot";
+import { nice } from "d3";
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
@@ -217,15 +218,17 @@ export async function initializePixiApp() {
 
   const mainBrush = d3.brush().on("start brush end", highlightPoints);
 
-  let brushElement = appendToSVG("g");
+  const svgBrushOutlineElement = await appendToSVG("g");
+  let brushElement = null;
 
   function turnOffBrush() {
     d3.selectAll(brushElement).remove();
   }
 
-  function turnOnBrush() {
-    brushElement = appendToSVG("g").call(mainBrush);
+  async function turnOnBrush() {
+    brushElement = svgBrushOutlineElement.call(mainBrush);
     windowState.mouseMode = "select";
+    console.log("Brush Turned On");
   }
 
   // Adding mouse function changing to buttons:
