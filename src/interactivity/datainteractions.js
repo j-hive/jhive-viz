@@ -163,7 +163,7 @@ export function zoomPlot(transform) {
 // Axis Switching Functions.
 
 let xAxisOptions = document.getElementById("x-axis-selector");
-let y_axis_options = document.getElementById("y-axis-selector");
+let yAxisOptions = document.getElementById("y-axis-selector");
 
 /**
  * Function to Switch X-axis
@@ -212,7 +212,7 @@ export function switchXAxis() {
  * Function to Switch Y Axis
  */
 export function switchYAxis() {
-  let newAxis = y_axis_options.value;
+  let newAxis = yAxisOptions.value;
 
   let newYExtent = getRangeWithBorder(dataContainers.metadata[newAxis]);
   newYExtent.reverse();
@@ -251,6 +251,46 @@ export function switchYAxis() {
 }
 
 // Brushing Functions
+
+/**
+ * Function to Initialize Brushing
+ */
+
+export async function initBrush() {
+  const mainContainer = document.getElementById("app");
+
+  const mainZoom = d3
+    .zoom()
+    .scaleExtent([1, 20])
+    .on("zoom", ({ transform }) => zoomPlot(transform));
+
+  d3.select(mainContainer).call(mainZoom);
+  windowState.mouseMode = "zoom";
+
+  function turnOffZoom() {
+    d3.select(mainContainer).on(".zoom", null);
+  }
+
+  function turnOnZoom() {
+    d3.select(mainContainer).call(mainZoom);
+    windowState.mouseMode = "zoom";
+  }
+
+  const mainBrush = d3.brush().on("start brush end", highlightPoints);
+
+  const svgBrushOutlineElement = await appendToSVG("g");
+  let brushElement = null;
+
+  function turnOffBrush() {
+    d3.selectAll(brushElement).remove();
+  }
+
+  async function turnOnBrush() {
+    brushElement = svgBrushOutlineElement.call(mainBrush);
+    windowState.mouseMode = "select";
+    console.log("Brush Turned On");
+  }
+}
 
 /**
  * Function to highlight points
