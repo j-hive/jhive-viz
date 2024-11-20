@@ -298,7 +298,13 @@ export async function initBrush() {
  * @param {*} param0
  */
 
-export function highlightPoints({ selection: [[x0, y0], [x1, y1]] }) {
+export function highlightPoints(brushEvent) {
+  let x0, x1, y0, y1;
+
+  if (brushEvent.selection) {
+    [[x0, y0], [x1, y1]] = brushEvent.selection;
+  }
+
   dataContainers.data.map((d) => {
     let tmpSprite = dataContainers.dataToSprite.get(d);
     if (

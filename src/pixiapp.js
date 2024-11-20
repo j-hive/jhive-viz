@@ -193,7 +193,7 @@ export async function initializePixiApp() {
     windowState.mouseMode = "zoom";
   }
 
-  const mainBrush = d3.brush().on("start brush end", highlightPoints);
+  const mainBrush = d3.brush().on("start end", highlightPoints);
 
   const svgBrushOutlineElement = await appendToSVG("g");
   let brushElement = null;
