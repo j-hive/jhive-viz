@@ -85,11 +85,10 @@ export function updateDetailPanel(dataPoint) {
 
   // Change Cutout Image:
 
-  detailsImage.style.backgroundImage = `url(/data/cutouts/f200w/abell2744clu_grizli-v7.2_uncover-dr3_f200w_${dataPoint[
+  detailsImage.style.backgroundImage = `url(https://www.j-hive.org/data/cutouts/f200w/abell2744clu_grizli-v7.2_uncover-dr3_f200w_${dataPoint[
     "id"
   ].padStart(5, "0")}_cutout.jpg)`;
 }
-
 /**
  * Initialize the Detail Pane
  */

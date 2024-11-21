@@ -5,6 +5,7 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  base: "",
   plugins: [
     handlebars({
       partialDirectory: resolve(__dirname, "partials"),
