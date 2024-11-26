@@ -7,9 +7,8 @@ import {
   add_data_options_to_axis_selectors,
   getRangeWithBorder,
 } from "./data";
-import { appendToSVG, initializePlotAxis, resizePlotAxis } from "./plotaxis";
+import { initializePlotAxis, resizePlotAxis } from "./plotaxis";
 import {
-  highlightPoints,
   initColorAxis,
   initOpacitySlider,
   onPointerClick,
@@ -19,9 +18,9 @@ import {
   switchYAxis,
   zoomPlot,
 } from "./interactivity/datainteractions";
-import { initializeDetailPane } from "./panes/detailpane";
 import { replotData } from "./utils/plot";
-import { nice } from "d3";
+import { initBrushing } from "./interactivity/brushing";
+import { initZooming } from "./interactivity/zooming";
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
@@ -176,55 +175,9 @@ export async function initializePixiApp() {
 
   // Adding D3 Zoom:
 
-  const mainZoom = d3
-    .zoom()
-    .scaleExtent([1, 20])
-    .on("zoom", ({ transform }) => zoomPlot(transform));
+  initZooming();
 
-  d3.select(mainContainer).call(mainZoom);
-  windowState.mouseMode = "zoom";
-
-  function turnOffZoom() {
-    d3.select(mainContainer).on(".zoom", null);
-  }
-
-  function turnOnZoom() {
-    d3.select(mainContainer).call(mainZoom);
-    windowState.mouseMode = "zoom";
-  }
-
-  const mainBrush = d3.brush().on("start end", highlightPoints);
-
-  const svgBrushOutlineElement = await appendToSVG("g");
-  let brushElement = null;
-
-  function turnOffBrush() {
-    d3.selectAll(brushElement).remove();
-  }
-
-  async function turnOnBrush() {
-    brushElement = svgBrushOutlineElement.call(mainBrush);
-    windowState.mouseMode = "select";
-    console.log("Brush Turned On");
-  }
-
-  // Adding mouse function changing to buttons:
-
-  let zoom_button = document.getElementById("mouse-zoom-button");
-  let select_button = document.getElementById("mouse-select-button");
-
-  function clickZoomButton() {
-    turnOffBrush();
-    turnOnZoom();
-  }
-
-  function clickSelectButton() {
-    turnOffZoom();
-    turnOnBrush();
-  }
-
-  zoom_button.addEventListener("pointerdown", clickZoomButton);
-  select_button.addEventListener("pointerdown", clickSelectButton);
+  initBrushing();
 
   // Axis Switching Functions
 
