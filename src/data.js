@@ -2,9 +2,11 @@
 import { d3 } from "./imports";
 import { dataURL, metadataURL, dataContainers, plottingConfig } from "./config";
 
-// Initial Data Loading Function
-
-export async function load_data() {
+/**
+ * Loads data and Metadata from data URLS
+ * @returns {[d3.DSVRowArray, object]} Data and Metadata
+ */
+export async function loadData() {
   const data = await d3.csv(dataURL);
   const metadata_response = await fetch(metadataURL);
   const metadata = await metadata_response.json();
@@ -16,7 +18,14 @@ export async function load_data() {
 
 // Data Axis Functions
 
-export function make_selector_options_from_metadata(
+/**
+ * Create all of the Data Axis Options
+ * @param {object} metadataJSON - the Metadata JSON
+ * @param {string} [defaultValue=null] - The default value in the selector
+ * @param {boolean} [addNone = false] - If "None" should be added to the Selector
+ * @returns {HTMLOptionElement[]} List of HTML Option Tags
+ */
+export function makeSelectorOptionsFromMetadata(
   metadataJSON,
   defaultValue,
   addNone = false
@@ -42,25 +51,25 @@ export function make_selector_options_from_metadata(
   return optionList;
 }
 
-export function add_data_options_to_axis_selectors(
+/**
+ * Function to Add Data Options to the Axis Selectors
+ * @param {object} metadataJSON - the Metadata JSON
+ * @param {string} [xDefault = "ra"] - the key of the default x-axis default field
+ * @param {string} [yDefault = "dec"] - the key of the default y-axis default field
+ */
+export function addDataOptionsToAxisSelectors(
   metadataJSON,
-  x_default = "ra",
-  y_default = "dec"
+  xDefault = "ra",
+  yDefault = "dec"
 ) {
   // Get Axis Selectors First:
   const xAxisSelector = document.getElementById("x-axis-selector");
   const yAxisSelector = document.getElementById("y-axis-selector");
   const colourAxisSelector = document.getElementById("colour-axis-selector");
 
-  let xOptionList = make_selector_options_from_metadata(
-    metadataJSON,
-    x_default
-  );
-  let yOptionList = make_selector_options_from_metadata(
-    metadataJSON,
-    y_default
-  );
-  let colourOptionList = make_selector_options_from_metadata(
+  let xOptionList = makeSelectorOptionsFromMetadata(metadataJSON, xDefault);
+  let yOptionList = makeSelectorOptionsFromMetadata(metadataJSON, yDefault);
+  let colourOptionList = makeSelectorOptionsFromMetadata(
     metadataJSON,
     "None",
     true
@@ -97,7 +106,7 @@ export function make_axis_label(metadataJSON) {
 /**
  * Gets the Range for a data column and adds a border
  *
- * @param {*} entryMetadata - The Entry Metadata Object
+ * @param {object} entryMetadata - The Entry Metadata Object
  * @returns {Array} the Extent Array with Border
  */
 export function getRangeWithBorder(entryMetadata) {

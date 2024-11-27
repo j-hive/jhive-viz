@@ -4,7 +4,7 @@ import { turnOnZoom, turnOffZoom } from "./zooming";
 import { turnOnBrush, turnOffBrush } from "./brushing";
 
 /**
- * Select Mouse Function
+ * Function to swap mouse functions
  * @param {*} event
  */
 function selectMouseFunction(event) {
@@ -34,11 +34,17 @@ function selectMouseFunction(event) {
   }
 }
 
+/**
+ * Function for when Zoom Button is Clicked
+ */
 function clickZoomButton() {
   turnOffBrush();
   turnOnZoom();
 }
 
+/**
+ * Function for when the Select Button is Clicked
+ */
 function clickSelectButton() {
   turnOffZoom();
   turnOnBrush();

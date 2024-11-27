@@ -65,4 +65,5 @@ export const windowState = {
   yScaler: null,
   SEDxScaler: null,
   SEDyScaler: null,
+  currentOpacity: null,
 };

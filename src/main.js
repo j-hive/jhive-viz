@@ -4,7 +4,7 @@ import { initializePixiApp } from "./pixiapp.js";
 import {
   initializeLoadingMessage,
   hideLoadingSpinnerShowButton,
-} from "./loading.js";
+} from "./panes/loadingpane.js";
 
 import "./style/style.scss";
 import { initializeDetailPane } from "./panes/detailpane.js";

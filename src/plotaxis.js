@@ -78,6 +78,11 @@ export function initializePlotAxis() {
 
 // Scaling/Zooming Axes
 
+/**
+ * scale the plot axis (for zooms)
+ * @param {*} zoomedXScaler
+ * @param {*} zoomedYScaler
+ */
 export function scalePlotAxis(zoomedXScaler, zoomedYScaler) {
   plotAxisContainers.xAxis.call(
     d3
@@ -96,6 +101,10 @@ export function scalePlotAxis(zoomedXScaler, zoomedYScaler) {
 
 // Transforming between Axes
 
+/**
+ * function to transform the x-axis
+ * @param {*} zoomedXScaler
+ */
 export function transformXAxis(zoomedXScaler) {
   plotAxisContainers.xAxis
     .transition()
@@ -108,6 +117,10 @@ export function transformXAxis(zoomedXScaler) {
     );
 }
 
+/**
+ * function to transform the y-axis
+ * @param {*} zoomedYScaler
+ */
 export function transformYAxis(zoomedYScaler) {
   plotAxisContainers.yAxis
     .transition()
@@ -130,15 +143,19 @@ export function setXLabel(text) {
   plotAxisContainers.xLabel.text(text);
 }
 
-// Appending to SVG
-
+/**
+ * Add an Element to the plot axis SVG
+ * @param {string} element - the element type to add to the plot axis
+ * @returns {SVGElement}
+ */
 export async function appendToSVG(element) {
   const newElement = plotAxisContainers.svg.append(element);
   return newElement;
 }
 
-// Resizing SVG
-
+/**
+ * Resize the SVG to the current window size
+ */
 export function resizePlotAxis() {
   plotAxisContainers.svg
     .attr("width", windowState.WIDTH)

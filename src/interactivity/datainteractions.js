@@ -13,6 +13,7 @@ import {
 } from "../plotaxis";
 import { moveDataPoints, replotData } from "../utils/plot";
 import { getRangeWithBorder, make_axis_label } from "../data";
+import { turnOffBrush, turnOnBrush } from "./brushing";
 
 /** @import { FederatedPointerEvent } from "pixi.js" */
 
@@ -21,7 +22,8 @@ import { getRangeWithBorder, make_axis_label } from "../data";
  */
 export function initOpacitySlider() {
   let opacity_slider = document.getElementById("opacity-slider");
-  opacity_slider.value = plottingConfig.DEFAULT_ALPHA;
+  windowState.currentOpacity = plottingConfig.DEFAULT_ALPHA;
+  opacity_slider.value = windowState.currentOpacity;
   opacity_slider.addEventListener("input", changeOpacity);
 }
 
@@ -31,11 +33,11 @@ export function initOpacitySlider() {
 export function changeOpacity() {
   let new_opacity = this.value;
 
-  plottingConfig.DEFAULT_ALPHA = new_opacity;
+  windowState.currentOpacity = new_opacity;
 
   dataContainers.data.map((d) => {
     let tmpSprite = dataContainers.dataToSprite.get(d);
-    tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA;
+    tmpSprite.alpha = windowState.currentOpacity;
   });
 }
 
@@ -99,7 +101,7 @@ export function onPointerOver(event) {
  */
 export function onPointerOut(event) {
   let tmpColor = plottingConfig.DEFAULT_POINT_COLOR;
-  let tmpAlpha = plottingConfig.DEFAULT_ALPHA;
+  let tmpAlpha = windowState.currentOpacity;
   const target = event.target;
 
   if (dataContainers.spriteToSelected.get(target)) {
@@ -175,9 +177,10 @@ export function switchXAxis() {
 
   windowState.xScaler.domain(newXExtent);
 
-  // if (windowState.mouseMode === "select") {
-  //   turnOffBrush();
-  // }
+  // Turn off brushing while changing axis
+  if (windowState.mouseMode === "select") {
+    turnOffBrush();
+  }
 
   const zoomedXScaler = windowState.currentZoom
     .rescaleX(windowState.xScaler)
@@ -203,9 +206,10 @@ export function switchXAxis() {
   windowState.currentXAxis = newAxis;
   replotData();
 
-  // if (windowState.mouseMode === "select") {
-  //   turnOnBrush();
-  // }
+  // Turn on brushing if was on prior to axis change
+  if (windowState.mouseMode === "select") {
+    turnOnBrush();
+  }
 }
 
 /**
@@ -217,9 +221,10 @@ export function switchYAxis() {
   let newYExtent = getRangeWithBorder(dataContainers.metadata[newAxis]);
   newYExtent.reverse();
 
-  // if (windowState.mouseMode === "select") {
-  //   turnOffBrush();
-  // }
+  // Turn off brushing while changing axis
+  if (windowState.mouseMode === "select") {
+    turnOffBrush();
+  }
 
   windowState.yScaler.domain(newYExtent);
 
@@ -245,9 +250,19 @@ export function switchYAxis() {
   windowState.currentYAxis = newAxis;
   replotData();
 
-  // if (windowState.mouseMode === "select") {
-  //   turnOnBrush();
-  // }
+  // Turn on brushing if was on prior to axis change
+  if (windowState.mouseMode === "select") {
+    turnOnBrush();
+  }
+}
+
+/**
+ * Function to initialize the axis changes
+ */
+
+export function initAxisChange() {
+  xAxisOptions.addEventListener("change", switchXAxis);
+  yAxisOptions.addEventListener("change", switchYAxis);
 }
 
 /**
@@ -277,7 +292,7 @@ export function highlightPoints(brushEvent) {
       dataContainers.spriteToHighlighted.set(tmpSprite, true);
     } else {
       tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
-      tmpSprite.alpha = plottingConfig.DEFAULT_ALPHA;
+      tmpSprite.alpha = windowState.currentOpacity;
       dataContainers.spriteToHighlighted.set(tmpSprite, false);
     }
   });

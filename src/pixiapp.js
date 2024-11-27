@@ -3,20 +3,18 @@
 import { d3, PIXI } from "./imports";
 import { plottingConfig, dataContainers, windowState } from "./config";
 import {
-  load_data,
-  add_data_options_to_axis_selectors,
+  loadData,
+  addDataOptionsToAxisSelectors,
   getRangeWithBorder,
 } from "./data";
 import { initializePlotAxis, resizePlotAxis } from "./plotaxis";
 import {
+  initAxisChange,
   initColorAxis,
   initOpacitySlider,
   onPointerClick,
   onPointerOut,
   onPointerOver,
-  switchXAxis,
-  switchYAxis,
-  zoomPlot,
 } from "./interactivity/datainteractions";
 import { replotData } from "./utils/plot";
 import { initBrushing } from "./interactivity/brushing";
@@ -87,10 +85,10 @@ windowState.HEIGHT = getAppHeight();
 export async function initializePixiApp() {
   // Loading Data:
 
-  [dataContainers.data, dataContainers.metadata] = await load_data();
+  [dataContainers.data, dataContainers.metadata] = await loadData();
 
   // Adding Options to UI
-  add_data_options_to_axis_selectors(dataContainers.metadata);
+  addDataOptionsToAxisSelectors(dataContainers.metadata);
 
   // Setting Initial Plot Status
   windowState.currentXAxis = document.getElementById("x-axis-selector").value;
@@ -173,47 +171,32 @@ export async function initializePixiApp() {
 
   initializePlotAxis();
 
-  // Adding D3 Zoom:
+  // Adding Zooming, Brushing, Axis Changing, Opacity Changing, and Color Axis Changing:
 
   initZooming();
-
   initBrushing();
-
-  // Axis Switching Functions
-
-  // Adding axis changing functions to selection boxes:
-
-  let x_axis_options = document.getElementById("x-axis-selector");
-  let y_axis_options = document.getElementById("y-axis-selector");
-
-  x_axis_options.addEventListener("change", switchXAxis);
-  y_axis_options.addEventListener("change", switchYAxis);
-
-  // Opacity Slider
-
+  initAxisChange();
   initOpacitySlider();
-
-  // Colour Axis
-
   initColorAxis();
 
-  function resizeWindow() {
-    windowState.HEIGHT = getAppHeight();
-    windowState.WIDTH = getAppWidth();
+  // Currently not working:
+  // function resizeWindow() {
+  //   windowState.HEIGHT = getAppHeight();
+  //   windowState.WIDTH = getAppWidth();
 
-    // Resize Pixi app
-    app.resize();
+  //   // Resize Pixi app
+  //   app.resize();
 
-    // Resize Decorators SVG
-    resizePlotAxis();
+  //   // Resize Decorators SVG
+  //   resizePlotAxis();
 
-    // Update Scalers
-    x_scaler.range([0, windowState.WIDTH]);
-    windowState.yScaler.range([0, windowState.HEIGHT]);
+  //   // Update Scalers
+  //   x_scaler.range([0, windowState.WIDTH]);
+  //   windowState.yScaler.range([0, windowState.HEIGHT]);
 
-    // Replot Data
-    replotData();
-  }
+  //   // Replot Data
+  //   replotData();
+  // }
 
   replotData();
 
