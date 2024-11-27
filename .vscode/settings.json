@@ -1,10 +1,13 @@
 {
-    "workbench.colorCustomizations": {
-        "activityBar.background": "#571712",
-        "titleBar.activeBackground": "#792119",
-        "titleBar.activeForeground": "#FEFCFC"
-    },
-    "cSpell.words": [
-        "JWST's"
-    ]
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#571712",
+    "titleBar.activeBackground": "#792119",
+    "titleBar.activeForeground": "#FEFCFC"
+  },
+  "cSpell.words": ["JWST's", "LEFTMARGIN"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
