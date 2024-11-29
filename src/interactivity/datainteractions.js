@@ -131,8 +131,8 @@ export function onPointerClick(event) {
 
   target.tint = plottingConfig.CLICKED_POINT_COLOR;
   if (windowState.selectedPoint) {
-    windowState.selectedPoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
-    windowState.selectedPoint.alpha = 1.0;
+    windowState.selectedPoint.tint = getPointColor(windowState.selectedPoint);
+    windowState.selectedPoint.alpha = windowState.currentOpacity;
     dataContainers.spriteToSelected.set(windowState.selectedPoint, false);
   }
   windowState.selectedPoint = target;
