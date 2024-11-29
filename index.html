@@ -15,12 +15,14 @@
     <div class="container">
       {{> _header}} {{> _interactionpanel}} {{> _contextpanel}}
 
-      <div id="app">
-        <div id="plot-decorators"></div>
+      <div id="app-container">
+        <div id="app">
+          <div id="plot-decorators"></div>
+        </div>
       </div>
-      <script type="module" src="/src/main.js"></script>
 
       {{> _detailpanel}}
     </div>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

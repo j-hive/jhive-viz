@@ -180,26 +180,27 @@ export async function initializePixiApp() {
   initColorAxis();
 
   // Currently not working:
-  // function resizeWindow() {
-  //   windowState.HEIGHT = getAppHeight();
-  //   windowState.WIDTH = getAppWidth();
+  function resizeWindow() {
+    windowState.HEIGHT = getAppHeight();
+    windowState.WIDTH = getAppWidth();
+    // console.log(windowState.WIDTH, windowState.HEIGHT);
 
-  //   // Resize Pixi app
-  //   app.resize();
+    // Update Scalers
+    windowState.xScaler.range([0, windowState.WIDTH]);
+    windowState.yScaler.range([0, windowState.HEIGHT]);
 
-  //   // Resize Decorators SVG
-  //   resizePlotAxis();
+    // Resize Decorators SVG
+    resizePlotAxis();
 
-  //   // Update Scalers
-  //   x_scaler.range([0, windowState.WIDTH]);
-  //   windowState.yScaler.range([0, windowState.HEIGHT]);
+    // Resize Pixi app
+    app.resize();
 
-  //   // Replot Data
-  //   replotData();
-  // }
+    // Replot Data
+    replotData();
+  }
 
   replotData();
 
   // Currently Resize Not Working, Turning Off
-  // window.addEventListener("resize", resizeWindow);
+  window.addEventListener("resize", resizeWindow);
 }

@@ -72,7 +72,7 @@ export function initializePlotAxis() {
     .attr("class", "x-label")
     .attr("text-anchor", "middle")
     .attr("x", windowState.WIDTH / 2)
-    .attr("y", windowState.HEIGHT - plottingConfig.LOWERMARGIN / 2 + 3)
+    .attr("y", windowState.HEIGHT - plottingConfig.LOWERMARGIN / 2 + 10)
     .text(make_axis_label(dataContainers.metadata[windowState.currentXAxis]));
 }
 
@@ -167,5 +167,33 @@ export async function appendToSVG(element) {
 export function resizePlotAxis() {
   plotAxisContainers.svg
     .attr("width", windowState.WIDTH)
-    .attr("height", windowState.HEIGHT);
+    .attr("height", windowState.HEIGHT)
+    .attr("viewBox", [0, 0, windowState.WIDTH, windowState.HEIGHT]);
+
+  plotAxisContainers.yAxis.call(
+    d3
+      .axisLeft(windowState.yScaler)
+      .tickSizeOuter(0)
+      .tickSize(-windowState.WIDTH * 1.3)
+  );
+
+  plotAxisContainers.xAxis
+    .attr(
+      "transform",
+      `translate(0,${windowState.HEIGHT - plottingConfig.LEFTMARGIN})`
+    )
+    .call(
+      d3
+        .axisBottom(windowState.xScaler)
+        .tickSizeOuter(0)
+        .tickSize(-windowState.HEIGHT * 1.3)
+    );
+
+  plotAxisContainers.yLabel
+    .attr("y", windowState.HEIGHT / 2)
+    .attr("transform", `rotate(-90, 20, ${windowState.HEIGHT / 2})`);
+
+  plotAxisContainers.xLabel
+    .attr("x", windowState.WIDTH / 2)
+    .attr("y", windowState.HEIGHT - plottingConfig.LOWERMARGIN / 2 + 10);
 }
