@@ -6,11 +6,6 @@ import { appendToSVG } from "../plotaxis";
 import { highlightPoints } from "./datainteractions";
 
 /**
- * Primary D3 Brush Object
- */
-let mainBrush = null;
-
-/**
  * Brush Outline Element
  */
 let svgBrushOutlineElement = null;
@@ -20,12 +15,14 @@ let svgBrushOutlineElement = null;
  */
 let brushElement = null;
 
+const brushTools = { mainBrush: null };
+
 /**
  * Initialize Brushing
  */
 export async function initBrushing() {
-  mainBrush = d3.brush().on("start end", highlightPoints);
   svgBrushOutlineElement = await appendToSVG("g");
+  brushTools.mainBrush = d3.brush().on("start end", highlightPoints);
 }
 
 /**
@@ -33,12 +30,14 @@ export async function initBrushing() {
  */
 export function turnOffBrush() {
   d3.selectAll(brushElement).remove();
+  d3.selectAll(svgBrushOutlineElement).remove();
 }
 
 /**
  * Turning on Brushing
  */
 export async function turnOnBrush() {
-  brushElement = svgBrushOutlineElement.call(mainBrush);
+  svgBrushOutlineElement = await appendToSVG("g");
+  brushElement = svgBrushOutlineElement.call(brushTools.mainBrush);
   windowState.mouseMode = "select";
 }

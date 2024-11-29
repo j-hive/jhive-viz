@@ -129,16 +129,24 @@ export function transformYAxis(zoomedYScaler) {
       d3
         .axisLeft(zoomedYScaler)
         .tickSizeOuter(0)
-        .tickSize(-windowState.HEIGHT * 1.3)
+        .tickSize(-windowState.WIDTH * 1.3)
     );
 }
 
 // Setting Axis Labels
 
+/**
+ * Change Y-Axis Label
+ * @param {string} text - New Y-Axis Label
+ */
 export function setYLabel(text) {
   plotAxisContainers.yLabel.text(text);
 }
 
+/**
+ * Change X-Axis Label
+ * @param {string} text - New X-Axis Label
+ */
 export function setXLabel(text) {
   plotAxisContainers.xLabel.text(text);
 }

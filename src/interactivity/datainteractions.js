@@ -56,23 +56,29 @@ export function switchColorAxis() {
   let new_axis = this.value;
 
   if (new_axis === "None") {
+    // Setting Window State Parameters
+    windowState.currentColorAxis = null;
+    windowState.colorRange = null;
+    windowState.colorScaler = null;
+
     dataContainers.data.map((d) => {
       let tmpSprite = dataContainers.dataToSprite.get(d);
-      tmpSprite.color = plottingConfig.DEFAULT_POINT_COLOR;
+      tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
     });
   } else {
-    let new_color_extent = d3.extent(dataContainers.data, (d) =>
+    windowState.currentColorAxis = new_axis;
+    windowState.colorRange = d3.extent(dataContainers.data, (d) =>
       parseFloat(d[new_axis])
     );
 
-    let colorScaler = d3
+    windowState.colorScaler = d3
       .scaleSequential()
-      .domain(new_color_extent)
+      .domain(windowState.colorRange)
       .interpolator(d3.interpolateViridis);
 
     dataContainers.data.map((d) => {
       let tmpSprite = dataContainers.dataToSprite.get(d);
-      tmpSprite.tint = colorScaler(d[new_axis]);
+      tmpSprite.tint = windowState.colorScaler(d[new_axis]);
     });
   }
 }
@@ -100,19 +106,16 @@ export function onPointerOver(event) {
  * @param {FederatedPointerEvent} event - Initial Event
  */
 export function onPointerOut(event) {
-  let tmpColor = plottingConfig.DEFAULT_POINT_COLOR;
   let tmpAlpha = windowState.currentOpacity;
   const target = event.target;
 
   if (dataContainers.spriteToSelected.get(target)) {
-    tmpColor = plottingConfig.CLICKED_POINT_COLOR;
     tmpAlpha = 1.0;
   } else if (dataContainers.spriteToHighlighted.get(target)) {
-    tmpColor = plottingConfig.HIGHLIGHT_POINT_COLOR;
     tmpAlpha = 1.0;
   }
 
-  target.tint = tmpColor;
+  target.tint = getPointColor(target);
   target.z = 2;
   target.alpha = tmpAlpha;
   setHoverPaneInfo();
@@ -173,9 +176,11 @@ let yAxisOptions = document.getElementById("y-axis-selector");
 export function switchXAxis() {
   let newAxis = xAxisOptions.value;
 
-  let newXExtent = getRangeWithBorder(dataContainers.metadata[newAxis]);
+  // Get new range
+  let newXRange = getRangeWithBorder(dataContainers.metadata[newAxis]);
+  windowState.xRange = newXRange;
 
-  windowState.xScaler.domain(newXExtent);
+  windowState.xScaler.domain(windowState.xRange);
 
   // Turn off brushing while changing axis
   if (windowState.mouseMode === "select") {
@@ -196,11 +201,7 @@ export function switchXAxis() {
   dataContainers.data.map((d) => {
     let plotPoint = dataContainers.dataToSprite.get(d);
 
-    plotPoint.tint = dataContainers.spriteToHighlighted.get(plotPoint)
-      ? plottingConfig.HIGHLIGHT_POINT_COLOR
-      : dataContainers.spriteToSelected.get(plotPoint)
-      ? plottingConfig.CLICKED_POINT_COLOR
-      : plottingConfig.DEFAULT_POINT_COLOR;
+    plotPoint.tint = getPointColor(plotPoint);
   });
 
   windowState.currentXAxis = newAxis;
@@ -218,15 +219,17 @@ export function switchXAxis() {
 export function switchYAxis() {
   let newAxis = yAxisOptions.value;
 
-  let newYExtent = getRangeWithBorder(dataContainers.metadata[newAxis]);
-  newYExtent.reverse();
+  // Getting New extent
+  let newYRange = getRangeWithBorder(dataContainers.metadata[newAxis]);
+  newYRange.reverse();
+  windowState.yRange = newYRange;
 
   // Turn off brushing while changing axis
   if (windowState.mouseMode === "select") {
     turnOffBrush();
   }
 
-  windowState.yScaler.domain(newYExtent);
+  windowState.yScaler.domain(windowState.yRange);
 
   const zoomedYScaler = windowState.currentZoom
     .rescaleY(windowState.yScaler)
@@ -240,11 +243,7 @@ export function switchYAxis() {
   dataContainers.data.map((d) => {
     let plotPoint = dataContainers.dataToSprite.get(d);
 
-    plotPoint.tint = dataContainers.spriteToHighlighted.get(plotPoint)
-      ? plottingConfig.HIGHLIGHT_POINT_COLOR
-      : dataContainers.spriteToSelected.get(plotPoint)
-      ? plottingConfig.CLICKED_POINT_COLOR
-      : plottingConfig.DEFAULT_POINT_COLOR;
+    plotPoint.tint = getPointColor(plotPoint);
   });
 
   windowState.currentYAxis = newAxis;
@@ -291,9 +290,29 @@ export function highlightPoints(brushEvent) {
       tmpSprite.bringToFront();
       dataContainers.spriteToHighlighted.set(tmpSprite, true);
     } else {
-      tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
+      tmpSprite.tint = getPointColor(tmpSprite);
       tmpSprite.alpha = windowState.currentOpacity;
       dataContainers.spriteToHighlighted.set(tmpSprite, false);
     }
   });
+}
+
+/**
+ * Get appropriate point colour
+ */
+
+export function getPointColor(sprite) {
+  let currentColor = plottingConfig.DEFAULT_POINT_COLOR;
+
+  if (dataContainers.spriteToSelected.get(sprite)) {
+    currentColor = plottingConfig.CLICKED_POINT_COLOR;
+  } else if (dataContainers.spriteToHighlighted.get(sprite)) {
+    currentColor = plottingConfig.HIGHLIGHT_POINT_COLOR;
+  } else if (windowState.currentColorAxis) {
+    currentColor = windowState.colorScaler(
+      dataContainers.spriteToData.get(sprite)[windowState.currentColorAxis]
+    );
+  }
+
+  return currentColor;
 }
