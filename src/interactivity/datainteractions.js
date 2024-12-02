@@ -91,6 +91,7 @@ export function switchColorAxis() {
  * @param {FederatedPointerEvent} event - Initial Event
  */
 export function onPointerOver(event) {
+  windowState.mouseOverPoint = event.target;
   event.target.tint = plottingConfig.MOUSEOVER_POINT_COLOR;
   event.target.z = 10000;
   event.target.alpha = 1.0;
@@ -114,7 +115,7 @@ export function onPointerOut(event) {
   } else if (dataContainers.spriteToHighlighted.get(target)) {
     tmpAlpha = 1.0;
   }
-
+  windowState.mouseOverPoint = false;
   target.tint = getPointColor(target);
   target.z = 2;
   target.alpha = tmpAlpha;
@@ -131,9 +132,9 @@ export function onPointerClick(event) {
 
   target.tint = plottingConfig.CLICKED_POINT_COLOR;
   if (windowState.selectedPoint) {
+    dataContainers.spriteToSelected.set(windowState.selectedPoint, false);
     windowState.selectedPoint.tint = getPointColor(windowState.selectedPoint);
     windowState.selectedPoint.alpha = windowState.currentOpacity;
-    dataContainers.spriteToSelected.set(windowState.selectedPoint, false);
   }
   windowState.selectedPoint = target;
   dataContainers.spriteToSelected.set(target, true);

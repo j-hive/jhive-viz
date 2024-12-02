@@ -2,6 +2,7 @@
 
 import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
+import { getPointColor } from "../interactivity/datainteractions";
 
 /**
  * Function to Move Points on the Main Axis based on provided scalers
@@ -15,6 +16,26 @@ export function moveDataPoints(xScaler, yScaler) {
     let plotPoint = dataContainers.dataToSprite.get(d);
     plotPoint.position.x = xScaler(d[windowState.currentXAxis]);
     plotPoint.position.y = yScaler(d[windowState.currentYAxis]);
+  });
+}
+
+/**
+ * Function to bring points to the correct colour
+ */
+
+export function recolorData() {
+  dataContainers.data.map((d) => {
+    let plotPoint = dataContainers.dataToSprite.get(d);
+    plotPoint.tint = getPointColor(plotPoint);
+
+    let tmpAlpha = windowState.currentOpacity;
+    if (dataContainers.spriteToSelected.get(plotPoint)) {
+      tmpAlpha = 1.0;
+    } else if (dataContainers.spriteToHighlighted.get(plotPoint)) {
+      tmpAlpha = 1.0;
+    }
+
+    plotPoint.alpha = tmpAlpha;
   });
 }
 

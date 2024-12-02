@@ -56,6 +56,7 @@ export const windowState = {
   HEIGHT: null,
   mouseMode: "zoom",
   selectedPoint: false,
+  mouseOverPoint: false,
   currentXAxis: null,
   currentYAxis: null,
   currentColorAxis: null,

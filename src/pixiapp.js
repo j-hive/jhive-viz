@@ -19,6 +19,7 @@ import {
 import { replotData } from "./utils/plot";
 import { initBrushing } from "./interactivity/brushing";
 import { initZooming } from "./interactivity/zooming";
+import { openContextMenu } from "./interactivity/contextmenu";
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
@@ -154,7 +155,8 @@ export async function initializePixiApp() {
     plotPoint
       .on("pointerover", onPointerOver)
       .on("pointerout", onPointerOut)
-      .on("pointerdown", onPointerClick);
+      .on("pointerdown", onPointerClick)
+      .on("rightclick", openContextMenu);
 
     point_container.addChild(plotPoint);
 
