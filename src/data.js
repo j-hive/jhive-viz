@@ -54,7 +54,7 @@ export async function mergeMetadataJSONs(metadata1, metadata2) {
 }
 
 export async function loadAllDataFromFieldsFile() {
-  const mergedData = new Array();
+  let mergedData = new Array();
   let mergedMetadata = { num_objects: 0, columns: {} };
 
   let tmpData = null;
@@ -82,7 +82,7 @@ export async function loadAllDataFromFieldsFile() {
 
     addFieldNameToData(tmpData, key);
 
-    mergedData.push(...tmpData);
+    mergedData = [...mergedData, ...tmpData];
   }
 
   return [mergedData, mergedMetadata];

@@ -111,9 +111,15 @@ function openFITSMap() {
   const ra = dataPoint.ra;
   const dec = dataPoint.dec;
 
-  let FITSMapURL = `https://s3.amazonaws.com/grizli-v2/ClusterTiles/Map/abell2744/jwst.html?coord=${ra},${dec}&zoom=8`;
+  let baseURL = dataContainers.fieldsFile[dataPoint.fieldName]["fitsmap_url"];
 
-  open(FITSMapURL, "FITSMapWindow");
+  if (baseURL) {
+    let FITSMapURL = `${baseURL}?coord=${ra},${dec}&zoom=8`;
+
+    open(FITSMapURL, "_blank");
+  } else {
+    console.log("No FITSMap available");
+  }
 }
 
 function copyDataToClipboard() {
