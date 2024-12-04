@@ -21,7 +21,7 @@ export function setHoverPaneInfo(dataPoint = {}) {
   hoverPaneDECVal.innerHTML = dataPoint["dec"]
     ? d3.format(".5f")(dataPoint["dec"]) + "&deg;"
     : "";
-  hoverPaneZPhotVal.innerHTML = dataPoint["z_phot"]
-    ? d3.format(".2f")(dataPoint["z_phot"])
+  hoverPaneZPhotVal.innerHTML = dataPoint["zfit_50"]
+    ? d3.format(".2f")(dataPoint["zfit_50"])
     : "";
 }

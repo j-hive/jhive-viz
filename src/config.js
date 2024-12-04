@@ -3,16 +3,30 @@
 // Data URLs
 
 /**
+ * The URL to the data root
+ * @type {string}
+ */
+
+export const dataRootURL = "/data/";
+
+/**
+ * The filename of the fields File
+ * @type {string}
+ */
+export const fieldsFileName = "fields_data.json";
+
+/**
  * The URL to the Data File
  * @type {string}
  */
-export const dataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.csv";
+export const testDataURL = "/data/v1.0/ceers-full-grizli-v7.2/catalog.csv";
 
 /**
  * The URL to the Metadata File
  * @type {string}
  */
-export const metadataURL = "/data/dja_abell2744clu-grizli-v7.2_jhive_viz.json";
+export const testMetadataURL =
+  "/data/v1.0/ceers-full-grizli-v7.2/metadata.json";
 
 /**
  * Configuration Parameters for Plotting
@@ -22,6 +36,8 @@ export const plottingConfig = {
   HIGHLIGHT_POINT_COLOR: 0x849cba,
   MOUSEOVER_POINT_COLOR: 0xfacb73,
   CLICKED_POINT_COLOR: 0x73adfa,
+  DEFAULT_X_AXIS: "logSFRinst_50",
+  DEFAULT_Y_AXIS: "logM_50",
   POINTRADIUS: 3,
   DATABORDERBUFFER: 0.07,
   LEFTMARGIN: 50,
@@ -40,6 +56,7 @@ export const plottingConfig = {
  * Object to contain all relevant data
  */
 export const dataContainers = {
+  fieldsFile: null,
   data: null,
   metadata: null,
   spriteToData: new WeakMap(),

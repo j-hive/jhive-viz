@@ -178,7 +178,7 @@ export function switchXAxis() {
   let newAxis = xAxisOptions.value;
 
   // Get new range
-  let newXRange = getRangeWithBorder(dataContainers.metadata[newAxis]);
+  let newXRange = getRangeWithBorder(dataContainers.metadata.columns[newAxis]);
   windowState.xRange = newXRange;
 
   windowState.xScaler.domain(windowState.xRange);
@@ -196,7 +196,7 @@ export function switchXAxis() {
   transformXAxis(zoomedXScaler);
 
   // Changing Labels
-  setXLabel(make_axis_label(dataContainers.metadata[newAxis]));
+  setXLabel(make_axis_label(dataContainers.metadata.columns[newAxis]));
 
   // Transforming Map
   dataContainers.data.map((d) => {
@@ -221,7 +221,7 @@ export function switchYAxis() {
   let newAxis = yAxisOptions.value;
 
   // Getting New extent
-  let newYRange = getRangeWithBorder(dataContainers.metadata[newAxis]);
+  let newYRange = getRangeWithBorder(dataContainers.metadata.columns[newAxis]);
   newYRange.reverse();
   windowState.yRange = newYRange;
 
@@ -239,7 +239,7 @@ export function switchYAxis() {
   transformYAxis(zoomedYScaler);
 
   // Changing Labels
-  setYLabel(make_axis_label(dataContainers.metadata[newAxis]));
+  setYLabel(make_axis_label(dataContainers.metadata.columns[newAxis]));
 
   dataContainers.data.map((d) => {
     let plotPoint = dataContainers.dataToSprite.get(d);

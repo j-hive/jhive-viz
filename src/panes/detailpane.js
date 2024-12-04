@@ -2,6 +2,7 @@
 
 import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
+import { getCutoutURL } from "../utils/cutouts";
 
 const detailsPanel = document.getElementById("detailpanel");
 const detailsImage = document.getElementById("source-cutout");
@@ -24,13 +25,13 @@ const SEDContainer = document.getElementById("detail-sed-plot");
 
 /**
  * Get Points from SED
- * @param {*} dataPoint
- * @returns
+ * @param {Object} dataPoint
+ * @returns {Array} - SED points
  */
 export function getSEDPoints(dataPoint) {
   let sed = [];
 
-  Object.entries(dataContainers.metadata).forEach((entry) => {
+  Object.entries(dataContainers.metadata.columns).forEach((entry) => {
     const [key, value] = entry;
     if (value["is_magnitude"]) {
       let tmpEntry = {};
@@ -85,9 +86,10 @@ export function updateDetailPanel(dataPoint) {
 
   // Change Cutout Image:
 
-  detailsImage.style.backgroundImage = `url(/data/cutouts/f200w/abell2744clu_grizli-v7.2_uncover-dr3_f200w_${dataPoint[
-    "id"
-  ].padStart(5, "0")}_cutout.jpg)`;
+  detailsImage.style.backgroundImage = `url(${getCutoutURL(
+    dataPoint["id"],
+    "test"
+  )})`;
 }
 
 /**

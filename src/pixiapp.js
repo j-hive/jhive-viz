@@ -3,9 +3,11 @@
 import { d3, PIXI } from "./imports";
 import { plottingConfig, dataContainers, windowState } from "./config";
 import {
-  loadData,
+  loadTestData,
   addDataOptionsToAxisSelectors,
   getRangeWithBorder,
+  loadFieldsFile,
+  loadAllDataFromFieldsFile,
 } from "./data";
 import { initializePlotAxis, resizePlotAxis } from "./plotaxis";
 import {
@@ -84,12 +86,20 @@ windowState.HEIGHT = getAppHeight();
  * Initializing Pixi Application
  */
 export async function initializePixiApp() {
+  // Loading Fields File:
+  dataContainers.fieldsFile = await loadFieldsFile();
+
   // Loading Data:
 
-  [dataContainers.data, dataContainers.metadata] = await loadData();
+  [dataContainers.data, dataContainers.metadata] =
+    await loadAllDataFromFieldsFile();
 
   // Adding Options to UI
-  addDataOptionsToAxisSelectors(dataContainers.metadata);
+  addDataOptionsToAxisSelectors(
+    dataContainers.metadata,
+    plottingConfig.DEFAULT_X_AXIS,
+    plottingConfig.DEFAULT_Y_AXIS
+  );
 
   // Setting Initial Plot Status
   windowState.currentXAxis = document.getElementById("x-axis-selector").value;
@@ -116,10 +126,10 @@ export async function initializePixiApp() {
   // Setup Initial Plotting
 
   windowState.xRange = getRangeWithBorder(
-    dataContainers.metadata[windowState.currentXAxis]
+    dataContainers.metadata.columns[windowState.currentXAxis]
   );
   windowState.yRange = getRangeWithBorder(
-    dataContainers.metadata[windowState.currentYAxis]
+    dataContainers.metadata.columns[windowState.currentYAxis]
   ).reverse();
 
   // Setting up Initial Scalers

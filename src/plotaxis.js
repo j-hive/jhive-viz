@@ -65,7 +65,9 @@ export function initializePlotAxis() {
     .attr("x", plottingConfig.LEFTMARGIN / 2)
     .attr("y", windowState.HEIGHT / 2)
     .attr("transform", `rotate(-90, 20, ${windowState.HEIGHT / 2})`)
-    .text(make_axis_label(dataContainers.metadata[windowState.currentYAxis]));
+    .text(
+      make_axis_label(dataContainers.metadata.columns[windowState.currentYAxis])
+    );
 
   plotAxisContainers.xLabel = plotAxisContainers.svg
     .append("text")
@@ -73,7 +75,9 @@ export function initializePlotAxis() {
     .attr("text-anchor", "middle")
     .attr("x", windowState.WIDTH / 2)
     .attr("y", windowState.HEIGHT - plottingConfig.LOWERMARGIN / 2 + 10)
-    .text(make_axis_label(dataContainers.metadata[windowState.currentXAxis]));
+    .text(
+      make_axis_label(dataContainers.metadata.columns[windowState.currentXAxis])
+    );
 }
 
 // Scaling/Zooming Axes
