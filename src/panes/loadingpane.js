@@ -3,6 +3,7 @@
 const loadingBox = document.getElementById("loadingbox");
 const loadingButton = document.getElementById("loadingclosebutton");
 const loadingSpinner = document.getElementById("loadingspinner");
+const loadingStatus = document.getElementById("loadingstatus");
 
 /**
  * Close the loading pane
@@ -12,10 +13,11 @@ function closeLoadingPane() {
 }
 
 /**
- * Hide Loading Spinner
+ * Hide Loading Spinner and Alert Messages
  */
 export function hideLoadingSpinnerShowButton() {
   loadingSpinner.style.display = "None";
+  loadingStatus.style.display = "None";
   loadingButton.style.display = "block";
 }
 
@@ -24,4 +26,12 @@ export function hideLoadingSpinnerShowButton() {
  */
 export function initializeLoadingMessage() {
   loadingButton.addEventListener("click", closeLoadingPane);
+}
+
+/**
+ * Change the Loading Status Message
+ * @param {string} statusMessage
+ */
+export function changeLoadingStatus(statusMessage) {
+  loadingStatus.innerHTML = statusMessage;
 }

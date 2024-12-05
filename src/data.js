@@ -10,6 +10,7 @@ import {
 } from "./config";
 import { v8_0_0 } from "pixi.js";
 import { addField, removeField } from "./utils/plot";
+import { changeLoadingStatus } from "./panes/loadingpane";
 
 /**
  * Loads data and Metadata from data URLS
@@ -75,6 +76,9 @@ export async function loadAllDataFromFieldsFile() {
   // Loading Data from Each Field
   for (const key in dataContainers.fieldsFile) {
     console.log(`Loading Data from ${dataContainers.fieldsFile[key].display}`);
+    changeLoadingStatus(
+      `Loading Data from ${dataContainers.fieldsFile[key].display}...`
+    );
 
     const metadataResponse = await fetch(
       dataRootURL + dataContainers.fieldsFile[key].metadata_file
@@ -138,6 +142,7 @@ function createFunctionSelector(fieldName) {
  */
 
 export async function loadFieldsFile() {
+  changeLoadingStatus("Loading Fields Reference...");
   const fieldsFileResponse = await fetch(dataRootURL + fieldsFileName).catch(
     (error) => console.log(`Could not load Fields File: ${error.message}`)
   );

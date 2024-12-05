@@ -22,6 +22,7 @@ import { replotData } from "./utils/plot";
 import { initBrushing } from "./interactivity/brushing";
 import { initZooming } from "./interactivity/zooming";
 import { openContextMenu } from "./interactivity/contextmenu";
+import { changeLoadingStatus } from "./panes/loadingpane";
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
@@ -94,6 +95,8 @@ export async function initializePixiApp() {
   [dataContainers.data, dataContainers.metadata] =
     await loadAllDataFromFieldsFile();
 
+  changeLoadingStatus("Initializing Plotting...");
+
   // Adding Options to UI
   addDataOptionsToAxisSelectors(
     dataContainers.metadata,
@@ -107,9 +110,6 @@ export async function initializePixiApp() {
   windowState.currentZoom = d3.zoomIdentity;
   windowState.WIDTH = getAppWidth();
   windowState.HEIGHT = getAppHeight();
-
-  console.log(`Current X-Axis: ${windowState.currentXAxis}`);
-  console.log(`Current Y-Axis: ${windowState.currentYAxis}`);
 
   const app = new PIXI.Application();
   await app.init({
@@ -191,7 +191,9 @@ export async function initializePixiApp() {
   initOpacitySlider();
   initColorAxis();
 
-  // Currently not working:
+  /**
+   * Function to handle window resizes by replotting
+   */
   function resizeWindow() {
     windowState.HEIGHT = getAppHeight();
     windowState.WIDTH = getAppWidth();

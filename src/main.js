@@ -19,11 +19,7 @@ initializeLoadingMessage();
 
 // Initializing Pixi App
 initializePixiApp()
-  .then(initializeDetailPane)
-  .then(hideLoadingSpinnerShowButton);
-
-// Setup UI Interactions
-startUIInteractions();
-
-// Adding Dragging to Elements
-addDraggingToElements();
+  .then(initializeDetailPane) // Initialize Detail Panel
+  .then(startUIInteractions) // Setup UI Interactions
+  .then(addDraggingToElements) // Adding Dragging to Elements
+  .then(hideLoadingSpinnerShowButton); // Hide Loading Spinner
