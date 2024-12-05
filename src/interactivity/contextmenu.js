@@ -3,6 +3,7 @@
 import { dataContainers, windowState } from "../config";
 import { recolorData, replotData } from "../utils/plot";
 import { getPointColor } from "./datainteractions";
+import { showAlert } from "./uiinteractions";
 
 class ContextMenu {
   constructor(data) {
@@ -119,6 +120,11 @@ function openFITSMap() {
     open(FITSMapURL, "_blank");
   } else {
     console.log("No FITSMap available");
+    showAlert(
+      `No FITSMap available for the ${
+        dataContainers.fieldsFile[dataPoint.fieldName]["display"]
+      } field`
+    );
   }
 }
 

@@ -50,6 +50,9 @@ function clickSelectButton() {
   turnOnBrush();
 }
 
+/**
+ * Function to open and close the field selector section
+ */
 function clickFieldSelectorRow() {
   const fieldSelectorContainer = document.getElementById(
     "field-selector-container"
@@ -68,6 +71,22 @@ function clickFieldSelectorRow() {
       fieldSelectorContainer.scrollHeight + "px";
     fieldSelectorIndicator.innerHTML = '<i class="fa-solid fa-caret-down"></i>';
   }
+}
+
+export function showAlert(message) {
+  const alertBox = document.getElementById("alert-box");
+  const alertInterior = document.getElementById("alert-interior");
+
+  if (!alertBox.classList.contains("alert-visible")) {
+    alertBox.classList.add("alert-visible");
+  }
+
+  alertInterior.innerHTML = message;
+
+  setTimeout(() => {
+    alertBox.classList.remove("alert-visible");
+    alertInterior.innerHTML = "";
+  }, 2500);
 }
 
 /**
