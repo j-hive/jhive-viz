@@ -131,18 +131,20 @@ function openFITSMap() {
 function copyDataToClipboard() {
   let dataPoint = dataContainers.spriteToData.get(windowState.selectedPoint);
 
-  let dataString = `id: ${dataPoint.id}, ra: ${dataPoint.ra}, dec: ${
-    dataPoint.dec
-  }, ${windowState.currentXAxis}: ${dataPoint[windowState.currentXAxis]}, ${
-    windowState.currentYAxis
-  }: ${dataPoint[windowState.currentYAxis]}`;
+  let dataString = `fieldName: ${dataPoint.fieldName}, id: ${
+    dataPoint.id
+  }, ra: ${dataPoint.ra}, dec: ${dataPoint.dec}, ${windowState.currentXAxis}: ${
+    dataPoint[windowState.currentXAxis]
+  }, ${windowState.currentYAxis}: ${dataPoint[windowState.currentYAxis]}`;
 
   navigator.clipboard
     .writeText(dataString)
     .then(() => {
       console.log("Copied to Clipboard", dataString);
+      showAlert("Copied to Clipboard");
     })
     .catch((err) => {
       console.error("Failed to copy: ", err);
+      showAlert("Failed to Copy");
     });
 }
