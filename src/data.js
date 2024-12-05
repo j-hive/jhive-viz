@@ -28,6 +28,12 @@ export async function loadTestData() {
   return [data, metadata];
 }
 
+/**
+ * Merges two field metadata files, adjusting min/max values for common fields
+ * @param {object} metadata1
+ * @param {object} metadata2
+ * @returns object
+ */
 export async function mergeMetadataJSONs(metadata1, metadata2) {
   let newMin, newMax;
 
@@ -53,6 +59,11 @@ export async function mergeMetadataJSONs(metadata1, metadata2) {
 
   return metadata1;
 }
+
+/**
+ * Loads all data from the fields file
+ * @returns {[d3.DSVRowArray, object]}
+ */
 
 export async function loadAllDataFromFieldsFile() {
   let mergedData = new Array();
@@ -96,6 +107,9 @@ function createFunctionSelector(fieldName) {
     "field-selector-container"
   );
 
+  const fieldContainer = document.createElement("div");
+  fieldContainer.classList.add("field-selector-field-container");
+
   const fieldInput = document.createElement("input");
   fieldInput.type = "checkbox";
   fieldInput.name = fieldName;
@@ -113,9 +127,9 @@ function createFunctionSelector(fieldName) {
   fieldLabel.htmlFor = fieldInput.id;
   fieldLabel.innerHTML = dataContainers.fieldsFile[fieldName].display;
 
-  fieldSelectorContainer.appendChild(fieldInput);
-  fieldSelectorContainer.appendChild(fieldLabel);
-  fieldSelectorContainer.appendChild(document.createElement("br"));
+  fieldContainer.appendChild(fieldInput);
+  fieldContainer.appendChild(fieldLabel);
+  fieldSelectorContainer.appendChild(fieldContainer);
 }
 
 /**
