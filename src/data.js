@@ -188,7 +188,6 @@ export function makeSelectorOptionsFromMetadata(
   // If addNone is True
 
   if (addNone) {
-    defaultValue = "None";
     optionList.push(new Option("None", "None", true, true));
   }
 
@@ -208,11 +207,13 @@ export function makeSelectorOptionsFromMetadata(
  * @param {object} metadataJSON - the Metadata JSON
  * @param {string} [xDefault = "ra"] - the key of the default x-axis default field
  * @param {string} [yDefault = "dec"] - the key of the default y-axis default field
+ * @param {string} [colDefault = "None"] - the key of the default colour axis default field
  */
 export function addDataOptionsToAxisSelectors(
   metadataJSON,
   xDefault = "ra",
-  yDefault = "dec"
+  yDefault = "dec",
+  colDefault = "None"
 ) {
   // Get Axis Selectors First:
   const xAxisSelector = document.getElementById("x-axis-selector");
@@ -223,7 +224,7 @@ export function addDataOptionsToAxisSelectors(
   let yOptionList = makeSelectorOptionsFromMetadata(metadataJSON, yDefault);
   let colourOptionList = makeSelectorOptionsFromMetadata(
     metadataJSON,
-    "None",
+    colDefault,
     true
   );
 

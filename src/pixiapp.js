@@ -17,6 +17,7 @@ import {
   onPointerClick,
   onPointerOut,
   onPointerOver,
+  switchColorAxis,
 } from "./interactivity/datainteractions";
 import { replotData } from "./utils/plot";
 import { initBrushing } from "./interactivity/brushing";
@@ -101,7 +102,8 @@ export async function initializePixiApp() {
   addDataOptionsToAxisSelectors(
     dataContainers.metadata,
     plottingConfig.DEFAULT_X_AXIS,
-    plottingConfig.DEFAULT_Y_AXIS
+    plottingConfig.DEFAULT_Y_AXIS,
+    plottingConfig.DEFAULT_COLOR_AXIS
   );
 
   // Setting Initial Plot Status
@@ -182,6 +184,10 @@ export async function initializePixiApp() {
   // Adding and Styling Axes
 
   initializePlotAxis();
+
+  // Setting Default Colour Map
+
+  switchColorAxis();
 
   // Adding Zooming, Brushing, Axis Changing, Opacity Changing, and Color Axis Changing:
 

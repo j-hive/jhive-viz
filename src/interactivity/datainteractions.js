@@ -53,7 +53,7 @@ export function initColorAxis() {
  * Function to switch what is on the colour axis
  */
 export function switchColorAxis() {
-  let new_axis = this.value;
+  let new_axis = document.getElementById("colour-axis-selector").value;
 
   if (new_axis === "None") {
     // Setting Window State Parameters

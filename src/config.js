@@ -38,6 +38,7 @@ export const plottingConfig = {
   CLICKED_POINT_COLOR: 0x73adfa,
   DEFAULT_X_AXIS: "logSFRinst_50",
   DEFAULT_Y_AXIS: "logM_50",
+  DEFAULT_COLOR_AXIS: "logZsol_50",
   POINTRADIUS: 3,
   DATABORDERBUFFER: 0.07,
   LEFTMARGIN: 50,
