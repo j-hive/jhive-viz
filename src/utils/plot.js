@@ -45,3 +45,20 @@ export function recolorData() {
 export function replotData() {
   moveDataPoints(windowState.xScaler, windowState.yScaler);
 }
+
+export function removeField(fieldName) {
+  console.log(`Removing Field ${fieldName}`);
+
+  // Not working correctly
+  // dataContainers.data.forEach((element) => {
+  //   if (element.fieldName == fieldName) {
+  //     let tmpSprite = dataContainers.dataToSprite.get(element);
+
+  //     tmpSprite.parent.removeChild(tmpSprite);
+  //   }
+  // });
+}
+
+export function addField(fieldName) {
+  console.log(`Adding Field ${fieldName}`);
+}

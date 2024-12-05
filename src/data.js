@@ -9,6 +9,7 @@ import {
   fieldsFileName,
 } from "./config";
 import { v8_0_0 } from "pixi.js";
+import { addField, removeField } from "./utils/plot";
 
 /**
  * Loads data and Metadata from data URLS
@@ -83,9 +84,38 @@ export async function loadAllDataFromFieldsFile() {
     addFieldNameToData(tmpData, key);
 
     mergedData = [...mergedData, ...tmpData];
+
+    createFunctionSelector(key);
   }
 
   return [mergedData, mergedMetadata];
+}
+
+function createFunctionSelector(fieldName) {
+  const fieldSelectorContainer = document.getElementById(
+    "field-selector-container"
+  );
+
+  const fieldInput = document.createElement("input");
+  fieldInput.type = "checkbox";
+  fieldInput.name = fieldName;
+  fieldInput.id = "field_selector_" + fieldName;
+  fieldInput.checked = true;
+  fieldInput.addEventListener("click", (event) => {
+    if (event.target.checked) {
+      addField(fieldName);
+    } else {
+      removeField(fieldName);
+    }
+  });
+
+  const fieldLabel = document.createElement("label");
+  fieldLabel.htmlFor = fieldInput.id;
+  fieldLabel.innerHTML = dataContainers.fieldsFile[fieldName].display;
+
+  fieldSelectorContainer.appendChild(fieldInput);
+  fieldSelectorContainer.appendChild(fieldLabel);
+  fieldSelectorContainer.appendChild(document.createElement("br"));
 }
 
 /**
@@ -103,7 +133,6 @@ export async function loadFieldsFile() {
       console.log(`Could not parse Fields File: ${error.message}`)
     );
   console.log("Loaded Fields File");
-  console.log(fieldsFile);
 
   return fieldsFile;
 }

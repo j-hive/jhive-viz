@@ -61,7 +61,10 @@ export function updateDetailPanel(dataPoint) {
   const SEDsvg = d3.select("#SEDContainer");
 
   // Set Titles:
-  detailsTitleID.innerHTML = dataPoint["id"];
+  detailsTitleID.innerHTML =
+    dataContainers.fieldsFile[dataPoint["fieldName"]].display +
+    " " +
+    dataPoint["id"];
   detailsTitleRA.innerHTML = d3.format(".5f")(dataPoint["ra"]) + "&deg;";
   detailsTitleDEC.innerHTML = d3.format(".5f")(dataPoint["dec"]) + "&deg;";
   detailsTitleMagf150w.innerHTML =

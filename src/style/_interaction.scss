@@ -3,104 +3,111 @@
 // _interaction.scss
 
 .interaction-panel {
-    position: absolute;
-    right: 2em;
-    top: 5em;
-    width: 15em;
-    // height: 20em;
-    background: colours.$Main-bg-transparent;
-    border: 1px solid colours.$Main-secondary-text-hex;
-    z-index: 10;
-    backdrop-filter: blur(2px);
-    display: flex;
-    flex-direction: column;
+  position: absolute;
+  right: 2em;
+  top: 5em;
+  width: 15em;
+  // height: 20em;
+  background: colours.$Main-bg-transparent;
+  border: 1px solid colours.$Main-secondary-text-hex;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
 
-    font-family: "Bebas Neue", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-
-
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 #interaction-panel-bar {
-    width: 100%;
-    height: 10px;
-    background-color: colours.$Main-secondary-text-hex;
-    z-index: 11;
-    cursor: grab;
+  width: 100%;
+  height: 10px;
+  background-color: colours.$Main-secondary-text-hex;
+  z-index: 11;
+  cursor: grab;
 }
 
 #interaction-panel-selectors {
-    // min-width: 100%;
-    flex-grow: 10;
-    padding: 0.5em;
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    justify-content: flex-start;
+  // min-width: 100%;
+  flex-grow: 10;
+  padding: 0.5em;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .interaction-panel-selector-row {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 
-    color: #ccc;
+  color: #ccc;
 
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  // align-items: center;
+
+  .axis-selector-label {
+    margin-right: 0.5em;
     display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    // align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
 
-    .axis-selector-label {
-        margin-right: 0.5em;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+  .axis-selector {
+    background-color: transparent;
+    font-family: "Spectral", serif;
+    color: #ccc;
+    border: 1px solid colours.$Main-secondary-text-hex;
+  }
 
-    .axis-selector {
-        background-color: transparent;
-        font-family: "Spectral", serif;
-        color: #ccc;
-        border: 1px solid colours.$Main-secondary-text-hex;
-    }
-
-
-    option {
-        background-color: colours.$Main-bg-hex;
-    }
-
+  option {
+    background-color: colours.$Main-bg-hex;
+  }
 }
 
 .interaction-panel-button-row {
+  color: colours.$Main-secondary-text-hex;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+
+  a {
+    text-decoration: none;
     color: colours.$Main-secondary-text-hex;
+    margin: 0;
+    padding: 0.25em;
+    border: 0.25px solid colours.$Main-secondary-text-hex;
+    transition: background-color 250ms;
+    flex-grow: 2;
+    text-align: center;
+    cursor: pointer;
 
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-
-    a {
-        text-decoration: none;
-        color: colours.$Main-secondary-text-hex;
-        margin: 0;
-        padding: 0.25em;
-        border: 0.25px solid colours.$Main-secondary-text-hex;
-        transition: background-color 250ms;
-        flex-grow: 2;
-        text-align: center;
-        cursor: pointer;
-
-        &:hover {
-            background-color: colours.$J-HIVE-Theme-1-hex;
-        }
+    &:hover {
+      background-color: colours.$J-HIVE-Theme-1-hex;
     }
+  }
 
-    .selected {
-        background-color: colours.$J-HIVE-Theme-2-hex;
-        color: white;
-        border-color: white;
-    }
+  .selected {
+    background-color: colours.$J-HIVE-Theme-2-hex;
+    color: white;
+    border-color: white;
+  }
+}
 
+// Field Selectors
+
+#field-selector-row {
+  align-items: start;
+}
+
+#field-selector-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
 }

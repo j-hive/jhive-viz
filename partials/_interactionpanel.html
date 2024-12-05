@@ -1,39 +1,52 @@
 <!-- _interactionpanel.html -->
 
 <div class="interaction-panel" id="interaction-panel">
-    <div id="interaction-panel-bar"></div>
-    <div id="interaction-panel-selectors">
-
-        <div class="interaction-panel-selector-row">
-            <div class="axis-selector-label">X-Axis:</div>
-            <select name="x-axis" id="x-axis-selector" class="axis-selector">
-            </select>
-        </div>
-
-        <div class="interaction-panel-selector-row">
-            <div class="axis-selector-label">Y-Axis:</div>
-            <select name="y-axis" id="y-axis-selector" class="axis-selector">
-            </select>
-        </div>
-
-        <div class="interaction-panel-selector-row">
-            <div class="axis-selector-label">Colour:</div>
-            <select name="colour-axis" id="colour-axis-selector" class="axis-selector">
-            </select>
-        </div>
-
-
-        <div class="interaction-panel-selector-row">
-            <div class="axis-selector-label">Opacity:</div>
-            <input type="range" min="0.05" max="1" value="0.5" step="0.05" id="opacity-slider">
-        </div>
-
-
+  <div id="interaction-panel-bar"></div>
+  <div id="interaction-panel-selectors">
+    <div class="interaction-panel-selector-row">
+      <div class="axis-selector-label">X-Axis:</div>
+      <select name="x-axis" id="x-axis-selector" class="axis-selector"></select>
     </div>
 
-    <div class="interaction-panel-button-row">
-        <a id="mouse-zoom-button" class="selected">Zoom & Pan</a>
-        <a id="mouse-select-button">Select</a>
+    <div class="interaction-panel-selector-row">
+      <div class="axis-selector-label">Y-Axis:</div>
+      <select name="y-axis" id="y-axis-selector" class="axis-selector"></select>
     </div>
 
+    <div class="interaction-panel-selector-row">
+      <div class="axis-selector-label">Colour:</div>
+      <select
+        name="colour-axis"
+        id="colour-axis-selector"
+        class="axis-selector"
+      ></select>
+    </div>
+
+    <div class="interaction-panel-selector-row">
+      <div class="axis-selector-label">Opacity:</div>
+      <input
+        type="range"
+        min="0.05"
+        max="1"
+        value="0.5"
+        step="0.05"
+        id="opacity-slider"
+      />
+    </div>
+
+    <div class="interaction-panel-selector-row" id="field-selector-row">
+      <div class="axis-selector-label" id="field-selector-label">Fields</div>
+      <div>
+        <div id="field-selector-indicator">
+          <i class="fa-solid fa-caret-right"></i>
+        </div>
+        <div id="field-selector-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="interaction-panel-button-row">
+    <a id="mouse-zoom-button" class="selected">Zoom & Pan</a>
+    <a id="mouse-select-button">Select</a>
+  </div>
 </div>

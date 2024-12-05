@@ -50,6 +50,26 @@ function clickSelectButton() {
   turnOnBrush();
 }
 
+function clickFieldSelectorRow() {
+  const fieldSelectorContainer = document.getElementById(
+    "field-selector-container"
+  );
+
+  const fieldSelectorIndicator = document.getElementById(
+    "field-selector-indicator"
+  );
+
+  if (fieldSelectorContainer.style.maxHeight) {
+    fieldSelectorContainer.style.maxHeight = null;
+    fieldSelectorIndicator.innerHTML =
+      '<i class="fa-solid fa-caret-right"></i>';
+  } else {
+    fieldSelectorContainer.style.maxHeight =
+      fieldSelectorContainer.scrollHeight + "px";
+    fieldSelectorIndicator.innerHTML = '<i class="fa-solid fa-caret-down"></i>';
+  }
+}
+
 /**
  * Starting UI Interactions
  */
@@ -57,9 +77,16 @@ export function startUIInteractions() {
   // Add selectMouseFunction to Interaction Panel Buttons
   const mouseZoomButton = document.getElementById("mouse-zoom-button");
   const mouseSelectButton = document.getElementById("mouse-select-button");
+  const fieldSelectorLabel = document.getElementById("field-selector-label");
+  const fieldSelectorIndicator = document.getElementById(
+    "field-selector-indicator"
+  );
 
   mouseZoomButton.addEventListener("click", selectMouseFunction);
   mouseZoomButton.addEventListener("click", clickZoomButton);
   mouseSelectButton.addEventListener("click", selectMouseFunction);
   mouseSelectButton.addEventListener("click", clickSelectButton);
+
+  fieldSelectorLabel.addEventListener("click", clickFieldSelectorRow);
+  fieldSelectorIndicator.addEventListener("click", clickFieldSelectorRow);
 }
