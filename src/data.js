@@ -266,9 +266,11 @@ export function getRangeWithBorder(entryMetadata) {
   let fullExtent = [entryMetadata["min_val"], entryMetadata["max_val"]];
 
   // Reversing if Magnitude
-  if (entryMetadata["is_mag"]) {
+  if (entryMetadata["is_magnitude"]) {
     fullExtent.reverse();
   }
+
+  console.log(fullExtent);
 
   let initialRange = fullExtent[1] - fullExtent[0];
 
