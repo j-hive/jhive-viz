@@ -24,6 +24,7 @@ import { initBrushing } from "./interactivity/brushing";
 import { initZooming } from "./interactivity/zooming";
 import { openContextMenu } from "./interactivity/contextmenu";
 import { changeLoadingStatus } from "./panes/loadingpane";
+import { createColorBar } from "./panes/hoverpane";
 
 // Adding sprite function to Bring Sprite to Front
 PIXI.Sprite.prototype.bringToFront = function () {
@@ -196,6 +197,7 @@ export async function initializePixiApp() {
   initAxisChange();
   initOpacitySlider();
   initColorAxis();
+  createColorBar();
 
   /**
    * Function to handle window resizes by replotting

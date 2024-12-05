@@ -97,8 +97,8 @@ export function onPointerOver(event) {
   event.target.alpha = 1.0;
   event.target.bringToFront();
 
-  let dataPoint = dataContainers.spriteToData.get(event.target);
-  setHoverPaneInfo(dataPoint);
+  // let dataPoint = dataContainers.spriteToData.get(event.target);
+  // setHoverPaneInfo(dataPoint);
 }
 
 /**
@@ -119,7 +119,7 @@ export function onPointerOut(event) {
   target.tint = getPointColor(target);
   target.z = 2;
   target.alpha = tmpAlpha;
-  setHoverPaneInfo();
+  // setHoverPaneInfo();
 }
 
 /**

@@ -3,46 +3,51 @@
 // _context.scss
 
 .context-panel {
-    position: absolute;
-    left: 2em;
-    top: 5em;
-    width: 7em;
-    // height: 10em;
-    background: colours.$Main-bg-transparent;
-    border: 1px solid colours.$Main-secondary-text-hex;
-    z-index: 10;
-    backdrop-filter: blur(2px);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  position: absolute;
+  left: 2em;
+  top: 5em;
+  width: 7em;
+  // height: 10em;
+  background: colours.$Main-bg-transparent;
+  border: 1px solid colours.$Main-secondary-text-hex;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 
+  #colorbarSVG {
+    margin: 0.5em 0.25em;
+    width: 80%;
+    height: 1.5em;
+  }
 }
 
 #context-panel-bar {
-    width: 100%;
-    height: 10px;
-    background-color: colours.$Main-secondary-text-hex;
-    z-index: 11;
-    cursor: grab;
+  width: 100%;
+  height: 10px;
+  background-color: colours.$Main-secondary-text-hex;
+  z-index: 11;
+  cursor: grab;
 }
 
 .context-panel-row {
-    // width: 100%;
-    flex-grow: 10;
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
-    padding-left: 1.0em;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  // width: 100%;
+  flex-grow: 10;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  padding-left: 1em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .context-panel-row-label {
-    font-family: "Bebas Neue", sans-serif;
-    color: #ccc;
+  font-family: "Bebas Neue", sans-serif;
+  color: #ccc;
 }
 
 .context-panel-row-value {
-    color: #fff;
-    font-size: 0.95rem;
+  color: #fff;
+  font-size: 0.95rem;
 }
