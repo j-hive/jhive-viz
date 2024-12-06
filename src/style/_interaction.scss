@@ -80,6 +80,7 @@
   a {
     text-decoration: none;
     color: colours.$Main-secondary-text-hex;
+    width: 50%;
     margin: 0;
     padding: 0.25em;
     border: 0.25px solid colours.$Main-secondary-text-hex;
@@ -90,6 +91,7 @@
 
     &:hover {
       background-color: colours.$J-HIVE-Theme-1-hex;
+      color: white;
     }
   }
 

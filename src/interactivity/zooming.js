@@ -27,3 +27,7 @@ export function turnOnZoom() {
   d3.select(mainContainer).call(mainZoom);
   windowState.mouseMode = "zoom";
 }
+
+export function resetZoom() {
+  d3.select(mainContainer).call(mainZoom.transform, d3.zoomIdentity);
+}

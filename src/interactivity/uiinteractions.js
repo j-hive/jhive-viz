@@ -2,6 +2,8 @@
 
 import { turnOnZoom, turnOffZoom } from "./zooming";
 import { turnOnBrush, turnOffBrush } from "./brushing";
+import { saveScreenshot } from "./screenshot";
+import { resetPlot } from "./datainteractions";
 
 /**
  * Function to swap mouse functions
@@ -100,11 +102,16 @@ export function startUIInteractions() {
   const fieldSelectorIndicator = document.getElementById(
     "field-selector-indicator"
   );
+  const screenshotButton = document.getElementById("screenshot-button");
+  const resetPlotButton = document.getElementById("resetplot-button");
 
   mouseZoomButton.addEventListener("click", selectMouseFunction);
   mouseZoomButton.addEventListener("click", clickZoomButton);
   mouseSelectButton.addEventListener("click", selectMouseFunction);
   mouseSelectButton.addEventListener("click", clickSelectButton);
+
+  screenshotButton.addEventListener("click", saveScreenshot);
+  resetPlotButton.addEventListener("click", resetPlot);
 
   fieldSelectorLabel.addEventListener("click", clickFieldSelectorRow);
   fieldSelectorIndicator.addEventListener("click", clickFieldSelectorRow);

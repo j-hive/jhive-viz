@@ -43,7 +43,15 @@ export function recolorData() {
  * Function to Replot Data
  */
 export function replotData() {
-  moveDataPoints(windowState.xScaler, windowState.yScaler);
+  const zoomedYScaler = windowState.currentZoom
+    .rescaleY(windowState.yScaler)
+    .interpolate(d3.interpolateRound);
+
+  const zoomedXScaler = windowState.currentZoom
+    .rescaleX(windowState.xScaler)
+    .interpolate(d3.interpolateRound);
+
+  moveDataPoints(zoomedXScaler, zoomedYScaler);
 }
 
 export function removeField(fieldName) {

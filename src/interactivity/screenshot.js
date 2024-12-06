@@ -26,6 +26,6 @@ function saveAs(uri, filename) {
 
 export function saveScreenshot() {
   html2canvas(screenshotTarget).then((canvas) => {
-    saveAs(canvas.toDataURL("image/png"), "tmp.png");
+    saveAs(canvas.toDataURL("image/png"), "jhive_screenshot.png");
   });
 }

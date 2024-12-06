@@ -223,9 +223,6 @@ export async function initializePixiApp() {
 
   replotData();
 
-  // Creating Screenshot:
-  // app.renderer.extract.download(point_container);
-
   // Currently Resize Not Working, Turning Off
   window.addEventListener("resize", resizeWindow);
 }

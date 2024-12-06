@@ -270,8 +270,6 @@ export function getRangeWithBorder(entryMetadata) {
     fullExtent.reverse();
   }
 
-  console.log(fullExtent);
-
   let initialRange = fullExtent[1] - fullExtent[0];
 
   fullExtent[0] =

@@ -14,6 +14,7 @@ import {
 import { moveDataPoints, replotData } from "../utils/plot";
 import { getRangeWithBorder, make_axis_label } from "../data";
 import { turnOffBrush, turnOnBrush } from "./brushing";
+import { resetZoom } from "./zooming";
 
 /** @import { FederatedPointerEvent } from "pixi.js" */
 
@@ -316,4 +317,20 @@ export function getPointColor(sprite) {
   }
 
   return currentColor;
+}
+
+export function resetPlot() {
+  const xAxisSelector = document.getElementById("x-axis-selector");
+  const yAxisSelector = document.getElementById("y-axis-selector");
+  const colourAxisSelector = document.getElementById("colour-axis-selector");
+
+  xAxisSelector.value = plottingConfig.DEFAULT_X_AXIS;
+  yAxisSelector.value = plottingConfig.DEFAULT_Y_AXIS;
+  colourAxisSelector.value = plottingConfig.DEFAULT_COLOR_AXIS;
+
+  resetZoom();
+
+  switchXAxis();
+  switchYAxis();
+  switchColorAxis();
 }
