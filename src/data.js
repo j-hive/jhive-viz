@@ -9,8 +9,9 @@ import {
   fieldsFileName,
 } from "./config";
 import { v8_0_0 } from "pixi.js";
-import { addField, removeField } from "./utils/plot";
+import { addField, replotData } from "./utils/plot";
 import { changeLoadingStatus } from "./panes/loadingpane";
+import { addDataToPlot } from "./pixiapp";
 
 /**
  * Loads data and Metadata from data URLS
@@ -72,6 +73,7 @@ export async function loadAllDataFromFieldsFile() {
 
   let tmpData = null;
   let tmpMetadata = null;
+  let tmpMinIndex, tmpMaxIndex;
 
   // Loading Data from Each Field
   for (const key in dataContainers.fieldsFile) {
@@ -98,12 +100,71 @@ export async function loadAllDataFromFieldsFile() {
 
     addFieldNameToData(tmpData, key);
 
+    tmpMinIndex = mergedData.length;
     mergedData = [...mergedData, ...tmpData];
+    tmpMaxIndex = mergedData.length;
+
+    dataContainers.fieldIndices[key] = { min: tmpMinIndex, max: tmpMaxIndex };
 
     createFunctionSelector(key);
   }
 
+  console.log(mergedMetadata);
+
   return [mergedData, mergedMetadata];
+}
+
+/**
+ * Remove Field Data from plot points, data, and metadata
+ * @param {string} fieldName
+ */
+
+export function removeFieldData(fieldName) {
+  console.log(`Removing Field ${fieldName}`);
+
+  let tmpMinIndex = dataContainers.fieldIndices[fieldName].min;
+  let tmpMaxIndex = dataContainers.fieldIndices[fieldName].max;
+  let tmpSize = tmpMaxIndex - tmpMinIndex;
+
+  dataContainers.pointContainer.removeChildren(tmpMinIndex, tmpMaxIndex);
+  dataContainers.data.splice(tmpMinIndex, tmpSize);
+  dataContainers.metadata.num_objects -= tmpSize;
+  delete dataContainers.fieldIndices[fieldName];
+
+  // Adjusting the Field Indices
+  let fieldsList = Object.keys(dataContainers.fieldIndices);
+
+  fieldsList.forEach((tmpFieldName) => {
+    if (dataContainers.fieldIndices[tmpFieldName].min >= tmpMaxIndex) {
+      dataContainers.fieldIndices[tmpFieldName].min -= tmpSize;
+      dataContainers.fieldIndices[tmpFieldName].max -= tmpSize;
+    }
+  });
+
+  replotData();
+}
+
+export async function addFieldData(fieldName) {
+  let tmpData = await d3.csv(
+    dataRootURL + dataContainers.fieldsFile[fieldName].data_file
+  );
+
+  addFieldNameToData(tmpData, fieldName);
+
+  let tmpMinIndex = dataContainers.data.length;
+  dataContainers.data = [...dataContainers.data, ...tmpData];
+  let tmpMaxIndex = dataContainers.data.length;
+
+  dataContainers.fieldIndices[fieldName] = {
+    min: tmpMinIndex,
+    max: tmpMaxIndex,
+  };
+
+  dataContainers.metadata.num_objects += tmpMaxIndex - tmpMinIndex;
+
+  addDataToPlot(tmpMinIndex, tmpMaxIndex);
+
+  console.log(dataContainers.fieldIndices);
 }
 
 function createFunctionSelector(fieldName) {
@@ -121,9 +182,9 @@ function createFunctionSelector(fieldName) {
   fieldInput.checked = true;
   fieldInput.addEventListener("click", (event) => {
     if (event.target.checked) {
-      addField(fieldName);
+      addFieldData(fieldName);
     } else {
-      removeField(fieldName);
+      removeFieldData(fieldName);
     }
   });
 

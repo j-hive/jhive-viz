@@ -60,10 +60,13 @@ export const dataContainers = {
   fieldsFile: null,
   data: null,
   metadata: null,
+  pointContainer: null,
+  fieldIndices: {},
   spriteToData: new WeakMap(),
   dataToSprite: new WeakMap(),
   spriteToSelected: new WeakMap(),
   spriteToHighlighted: new WeakMap(),
+  pixiTexture: null,
 };
 
 /**

@@ -35,6 +35,9 @@ PIXI.Sprite.prototype.bringToFront = function () {
   }
 };
 
+// Adding field parameter to sprite
+PIXI.Sprite.prototype.field = "";
+
 // Grabbing Main Container
 const mainContainer = document.getElementById("app");
 
@@ -148,14 +151,14 @@ export async function initializePixiApp() {
     .range([0, windowState.HEIGHT]);
 
   // Making Pixi Point Texture
-  const texture = makePixiTemplate(app);
+  dataContainers.pixiTexture = makePixiTemplate(app);
 
   // Initial Plotting
 
-  const point_container = new PIXI.Container();
+  dataContainers.pointContainer = new PIXI.Container();
 
   dataContainers.data.map((d) => {
-    const plotPoint = new PIXI.Sprite(texture);
+    const plotPoint = new PIXI.Sprite(dataContainers.pixiTexture);
 
     plotPoint.position.x = windowState.xScaler(d[windowState.currentXAxis]);
     plotPoint.position.y = windowState.yScaler(d[windowState.currentYAxis]);
@@ -171,7 +174,7 @@ export async function initializePixiApp() {
       .on("pointerdown", onPointerClick)
       .on("rightclick", openContextMenu);
 
-    point_container.addChild(plotPoint);
+    dataContainers.pointContainer.addChild(plotPoint);
 
     dataContainers.spriteToData.set(plotPoint, d);
     dataContainers.dataToSprite.set(d, plotPoint);
@@ -180,7 +183,7 @@ export async function initializePixiApp() {
   });
 
   // Adding Point Container to Pixi Stage
-  app.stage.addChild(point_container);
+  app.stage.addChild(dataContainers.pointContainer);
 
   // Adding and Styling Axes
 
@@ -225,4 +228,37 @@ export async function initializePixiApp() {
 
   // Currently Resize Not Working, Turning Off
   window.addEventListener("resize", resizeWindow);
+}
+
+export function addDataToPlot(minIndex, maxIndex) {
+  let d;
+
+  for (let i = minIndex; i < maxIndex; i++) {
+    d = dataContainers.data[i];
+
+    const plotPoint = new PIXI.Sprite(dataContainers.pixiTexture);
+
+    plotPoint.position.x = windowState.xScaler(d[windowState.currentXAxis]);
+    plotPoint.position.y = windowState.yScaler(d[windowState.currentYAxis]);
+    plotPoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
+    plotPoint.alpha = plottingConfig.DEFAULT_ALPHA;
+
+    plotPoint.eventMode = "static";
+    plotPoint.cursor = "pointer";
+
+    plotPoint
+      .on("pointerover", onPointerOver)
+      .on("pointerout", onPointerOut)
+      .on("pointerdown", onPointerClick)
+      .on("rightclick", openContextMenu);
+
+    dataContainers.pointContainer.addChild(plotPoint);
+
+    dataContainers.spriteToData.set(plotPoint, d);
+    dataContainers.dataToSprite.set(d, plotPoint);
+    dataContainers.spriteToSelected.set(plotPoint, false);
+    dataContainers.spriteToHighlighted.set(plotPoint, false);
+  }
+
+  switchColorAxis();
 }
