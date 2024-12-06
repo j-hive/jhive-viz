@@ -7,6 +7,15 @@
       J-HIVE: JWST's Homogeneous Information-Rich Visualization of Extragalactic
       Datasets
     </title>
+    <script>
+      HTMLCanvasElement.prototype.getContext = (function (origFn) {
+        return function (type, attribs) {
+          attribs = attribs || {};
+          attribs.preserveDrawingBuffer = true;
+          return origFn.call(this, type, attribs);
+        };
+      })(HTMLCanvasElement.prototype.getContext);
+    </script>
   </head>
 
   <body>

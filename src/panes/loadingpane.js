@@ -1,5 +1,7 @@
 // Loading Pane Functions
 
+import html2canvas from "html2canvas";
+
 const loadingBox = document.getElementById("loadingbox");
 const loadingButton = document.getElementById("loadingclosebutton");
 const loadingSpinner = document.getElementById("loadingspinner");
