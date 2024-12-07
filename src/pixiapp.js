@@ -230,7 +230,7 @@ export async function initializePixiApp() {
   window.addEventListener("resize", resizeWindow);
 }
 
-export function addDataToPlot(minIndex, maxIndex) {
+export async function addDataToPlot(minIndex, maxIndex) {
   let d;
 
   for (let i = minIndex; i < maxIndex; i++) {

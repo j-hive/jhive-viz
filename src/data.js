@@ -109,8 +109,6 @@ export async function loadAllDataFromFieldsFile() {
     createFunctionSelector(key);
   }
 
-  console.log(mergedMetadata);
-
   return [mergedData, mergedMetadata];
 }
 
@@ -119,14 +117,21 @@ export async function loadAllDataFromFieldsFile() {
  * @param {string} fieldName
  */
 
-export function removeFieldData(fieldName) {
+export async function removeFieldData(fieldName) {
+  const pausingScreen = document.getElementById("pausingscreen");
+  pausingScreen.classList.remove("pausingscreen-hidden");
+
   console.log(`Removing Field ${fieldName}`);
 
   let tmpMinIndex = dataContainers.fieldIndices[fieldName].min;
   let tmpMaxIndex = dataContainers.fieldIndices[fieldName].max;
   let tmpSize = tmpMaxIndex - tmpMinIndex;
 
-  dataContainers.pointContainer.removeChildren(tmpMinIndex, tmpMaxIndex);
+  console.log(tmpMaxIndex);
+  console.log(tmpMinIndex);
+  console.log("Children:", dataContainers.pointContainer.children.length);
+
+  await dataContainers.pointContainer.removeChildren(tmpMinIndex, tmpMaxIndex);
   dataContainers.data.splice(tmpMinIndex, tmpSize);
   dataContainers.metadata.num_objects -= tmpSize;
   delete dataContainers.fieldIndices[fieldName];
@@ -142,9 +147,15 @@ export function removeFieldData(fieldName) {
   });
 
   replotData();
+  console.log("Done Removing Field");
+  pausingScreen.classList.add("pausingscreen-hidden");
 }
 
 export async function addFieldData(fieldName) {
+  const pausingScreen = document.getElementById("pausingscreen");
+
+  pausingScreen.classList.remove("pausingscreen-hidden");
+
   let tmpData = await d3.csv(
     dataRootURL + dataContainers.fieldsFile[fieldName].data_file
   );
@@ -162,9 +173,11 @@ export async function addFieldData(fieldName) {
 
   dataContainers.metadata.num_objects += tmpMaxIndex - tmpMinIndex;
 
-  addDataToPlot(tmpMinIndex, tmpMaxIndex);
+  await addDataToPlot(tmpMinIndex, tmpMaxIndex);
 
-  console.log(dataContainers.fieldIndices);
+  replotData();
+
+  pausingScreen.classList.add("pausingscreen-hidden");
 }
 
 function createFunctionSelector(fieldName) {
