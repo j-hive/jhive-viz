@@ -63,7 +63,6 @@ export const dataContainers = {
   pixiApp: null,
   pointContainer: {},
   fieldList: [],
-  fieldIndices: {},
   spriteToData: new WeakMap(),
   dataToSprite: new WeakMap(),
   spriteToSelected: new WeakMap(),

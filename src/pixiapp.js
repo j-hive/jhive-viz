@@ -3,12 +3,10 @@
 import { d3, PIXI } from "./imports";
 import { plottingConfig, dataContainers, windowState } from "./config";
 import {
-  loadTestData,
   addDataOptionsToAxisSelectors,
   getRangeWithBorder,
   loadFieldsFile,
   loadAllDataFromFieldsFile,
-  updateFieldList,
 } from "./data";
 import { initializePlotAxis, resizePlotAxis } from "./plotaxis";
 import {
@@ -189,8 +187,8 @@ export async function initializePixiApp() {
   });
 
   // Adding Point Container to Pixi Stage
-  Object.keys(dataContainers.pointContainer).forEach((k, i) => {
-    dataContainers.app.stage.addChild(dataContainers.pointContainer[k]);
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.app.stage.addChild(dataContainers.pointContainer[fieldName]);
   });
 
   // Adding and Styling Axes
