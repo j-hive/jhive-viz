@@ -12,10 +12,12 @@ import { getPointColor } from "../interactivity/datainteractions";
  * @param {*} yScaler - the Scaler for the y-axis
  */
 export function moveDataPoints(xScaler, yScaler) {
-  dataContainers.data.map((d) => {
-    let plotPoint = dataContainers.dataToSprite.get(d);
-    plotPoint.position.x = xScaler(d[windowState.currentXAxis]);
-    plotPoint.position.y = yScaler(d[windowState.currentYAxis]);
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.data[fieldName].map((d) => {
+      let plotPoint = dataContainers.dataToSprite.get(d);
+      plotPoint.position.x = xScaler(d[windowState.currentXAxis]);
+      plotPoint.position.y = yScaler(d[windowState.currentYAxis]);
+    });
   });
 }
 
@@ -24,18 +26,20 @@ export function moveDataPoints(xScaler, yScaler) {
  */
 
 export function recolorData() {
-  dataContainers.data.map((d) => {
-    let plotPoint = dataContainers.dataToSprite.get(d);
-    plotPoint.tint = getPointColor(plotPoint);
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.data[fieldName].map((d) => {
+      let plotPoint = dataContainers.dataToSprite.get(d);
+      plotPoint.tint = getPointColor(plotPoint);
 
-    let tmpAlpha = windowState.currentOpacity;
-    if (dataContainers.spriteToSelected.get(plotPoint)) {
-      tmpAlpha = 1.0;
-    } else if (dataContainers.spriteToHighlighted.get(plotPoint)) {
-      tmpAlpha = 1.0;
-    }
+      let tmpAlpha = windowState.currentOpacity;
+      if (dataContainers.spriteToSelected.get(plotPoint)) {
+        tmpAlpha = 1.0;
+      } else if (dataContainers.spriteToHighlighted.get(plotPoint)) {
+        tmpAlpha = 1.0;
+      }
 
-    plotPoint.alpha = tmpAlpha;
+      plotPoint.alpha = tmpAlpha;
+    });
   });
 }
 

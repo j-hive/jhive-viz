@@ -36,9 +36,11 @@ export function changeOpacity() {
 
   windowState.currentOpacity = new_opacity;
 
-  dataContainers.data.map((d) => {
-    let tmpSprite = dataContainers.dataToSprite.get(d);
-    tmpSprite.alpha = windowState.currentOpacity;
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.data[fieldName].map((d) => {
+      let tmpSprite = dataContainers.dataToSprite.get(d);
+      tmpSprite.alpha = windowState.currentOpacity;
+    });
   });
 }
 
@@ -54,22 +56,24 @@ export function initColorAxis() {
  * Function to switch what is on the colour axis
  */
 export function switchColorAxis() {
-  let new_axis = document.getElementById("colour-axis-selector").value;
+  let newAxis = document.getElementById("colour-axis-selector").value;
 
-  if (new_axis === "None") {
+  if (newAxis === "None") {
     // Setting Window State Parameters
     windowState.currentColorAxis = null;
     windowState.colorRange = null;
     windowState.colorScaler = null;
 
-    dataContainers.data.map((d) => {
-      let tmpSprite = dataContainers.dataToSprite.get(d);
-      tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
+    dataContainers.fieldList.map((fieldName) => {
+      dataContainers.data[fieldName].map((d) => {
+        let tmpSprite = dataContainers.dataToSprite.get(d);
+        tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
+      });
     });
   } else {
-    windowState.currentColorAxis = new_axis;
-    windowState.colorRange = d3.extent(dataContainers.data, (d) =>
-      parseFloat(d[new_axis])
+    windowState.currentColorAxis = newAxis;
+    windowState.colorRange = getRangeWithBorder(
+      dataContainers.metadata.columns[newAxis]
     );
 
     windowState.colorScaler = d3
@@ -77,9 +81,11 @@ export function switchColorAxis() {
       .domain(windowState.colorRange)
       .interpolator(d3.interpolateViridis);
 
-    dataContainers.data.map((d) => {
-      let tmpSprite = dataContainers.dataToSprite.get(d);
-      tmpSprite.tint = windowState.colorScaler(d[new_axis]);
+    dataContainers.fieldList.map((fieldName) => {
+      dataContainers.data[fieldName].map((d) => {
+        let tmpSprite = dataContainers.dataToSprite.get(d);
+        tmpSprite.tint = windowState.colorScaler(d[newAxis]);
+      });
     });
   }
 }
@@ -200,10 +206,12 @@ export function switchXAxis() {
   setXLabel(make_axis_label(dataContainers.metadata.columns[newAxis]));
 
   // Transforming Map
-  dataContainers.data.map((d) => {
-    let plotPoint = dataContainers.dataToSprite.get(d);
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.data[fieldName].map((d) => {
+      let plotPoint = dataContainers.dataToSprite.get(d);
 
-    plotPoint.tint = getPointColor(plotPoint);
+      plotPoint.tint = getPointColor(plotPoint);
+    });
   });
 
   windowState.currentXAxis = newAxis;
@@ -242,10 +250,12 @@ export function switchYAxis() {
   // Changing Labels
   setYLabel(make_axis_label(dataContainers.metadata.columns[newAxis]));
 
-  dataContainers.data.map((d) => {
-    let plotPoint = dataContainers.dataToSprite.get(d);
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.data[fieldName].map((d) => {
+      let plotPoint = dataContainers.dataToSprite.get(d);
 
-    plotPoint.tint = getPointColor(plotPoint);
+      plotPoint.tint = getPointColor(plotPoint);
+    });
   });
 
   windowState.currentYAxis = newAxis;
@@ -279,23 +289,25 @@ export function highlightPoints(brushEvent) {
     [[x0, y0], [x1, y1]] = brushEvent.selection;
   }
 
-  dataContainers.data.map((d) => {
-    let tmpSprite = dataContainers.dataToSprite.get(d);
-    if (
-      tmpSprite.x > x0 &&
-      (tmpSprite.x < x1 - plottingConfig.POINTRADIUS) &
-        (tmpSprite.y < y1 - plottingConfig.POINTRADIUS) &&
-      tmpSprite.y > y0
-    ) {
-      tmpSprite.tint = plottingConfig.HIGHLIGHT_POINT_COLOR;
-      tmpSprite.alpha = 1.0;
-      tmpSprite.bringToFront();
-      dataContainers.spriteToHighlighted.set(tmpSprite, true);
-    } else {
-      tmpSprite.tint = getPointColor(tmpSprite);
-      tmpSprite.alpha = windowState.currentOpacity;
-      dataContainers.spriteToHighlighted.set(tmpSprite, false);
-    }
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.data[fieldName].map((d) => {
+      let tmpSprite = dataContainers.dataToSprite.get(d);
+      if (
+        tmpSprite.x > x0 &&
+        (tmpSprite.x < x1 - plottingConfig.POINTRADIUS) &
+          (tmpSprite.y < y1 - plottingConfig.POINTRADIUS) &&
+        tmpSprite.y > y0
+      ) {
+        tmpSprite.tint = plottingConfig.HIGHLIGHT_POINT_COLOR;
+        tmpSprite.alpha = 1.0;
+        tmpSprite.bringToFront();
+        dataContainers.spriteToHighlighted.set(tmpSprite, true);
+      } else {
+        tmpSprite.tint = getPointColor(tmpSprite);
+        tmpSprite.alpha = windowState.currentOpacity;
+        dataContainers.spriteToHighlighted.set(tmpSprite, false);
+      }
+    });
   });
 }
 
@@ -319,6 +331,9 @@ export function getPointColor(sprite) {
   return currentColor;
 }
 
+/**
+ * Reset plot to original state
+ */
 export function resetPlot() {
   const xAxisSelector = document.getElementById("x-axis-selector");
   const yAxisSelector = document.getElementById("y-axis-selector");

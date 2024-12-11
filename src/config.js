@@ -60,6 +60,7 @@ export const dataContainers = {
   fieldsFile: null,
   data: null,
   metadata: null,
+  pixiApp: null,
   pointContainer: {},
   fieldList: [],
   fieldIndices: {},

@@ -12,6 +12,7 @@ import { v8_0_0 } from "pixi.js";
 import { addField, replotData } from "./utils/plot";
 import { changeLoadingStatus } from "./panes/loadingpane";
 import { addDataToPlot } from "./pixiapp";
+import { filter } from "d3";
 
 /**
  * Loads data and Metadata from data URLS
@@ -68,12 +69,11 @@ export async function mergeMetadataJSONs(metadata1, metadata2) {
  */
 
 export async function loadAllDataFromFieldsFile() {
-  let mergedData = new Array();
+  const mergedData = new Object();
   let mergedMetadata = { num_objects: 0, columns: {} };
 
   let tmpData = null;
   let tmpMetadata = null;
-  let tmpMinIndex, tmpMaxIndex;
 
   // Loading Data from Each Field
   for (const key in dataContainers.fieldsFile) {
@@ -100,11 +100,7 @@ export async function loadAllDataFromFieldsFile() {
 
     addFieldNameToData(tmpData, key);
 
-    tmpMinIndex = mergedData.length;
-    mergedData = [...mergedData, ...tmpData];
-    tmpMaxIndex = mergedData.length;
-
-    dataContainers.fieldIndices[key] = { min: tmpMinIndex, max: tmpMaxIndex };
+    mergedData[key] = tmpData;
 
     createFunctionSelector(key);
   }
@@ -120,40 +116,19 @@ export async function loadAllDataFromFieldsFile() {
  */
 
 export async function removeFieldData(fieldName) {
-  // const pausingScreen = document.getElementById("pausingscreen");
-  // pausingScreen.classList.remove("pausingscreen-hidden");
-
   console.log(`Removing Field ${fieldName}`);
   updateFieldList();
-
-  let tmpMinIndex = dataContainers.fieldIndices[fieldName].min;
-  let tmpMaxIndex = dataContainers.fieldIndices[fieldName].max;
-  let tmpSize = tmpMaxIndex - tmpMinIndex;
-
-  console.log(tmpMaxIndex);
-  console.log(tmpMinIndex);
-  console.log("Children:", dataContainers.pointContainer.children.length);
-
-  await dataContainers.pointContainer.removeChildren(tmpMinIndex, tmpMaxIndex);
-  dataContainers.data.splice(tmpMinIndex, tmpSize);
-  dataContainers.metadata.num_objects -= tmpSize;
-  delete dataContainers.fieldIndices[fieldName];
-
-  // Adjusting the Field Indices
-  let fieldsList = Object.keys(dataContainers.fieldIndices);
-
-  fieldsList.forEach((tmpFieldName) => {
-    if (dataContainers.fieldIndices[tmpFieldName].min >= tmpMaxIndex) {
-      dataContainers.fieldIndices[tmpFieldName].min -= tmpSize;
-      dataContainers.fieldIndices[tmpFieldName].max -= tmpSize;
-    }
-  });
+  dataContainers.pointContainer[fieldName].removeChildren();
+  delete dataContainers.pointContainer[fieldName];
+  delete dataContainers.data[fieldName];
 
   replotData();
-  // console.log("Done Removing Field");
-  // pausingScreen.classList.add("pausingscreen-hidden");
 }
 
+/**
+ * Update the dataContainers Field List based on current
+ * selection state of the checkboxes
+ */
 export function updateFieldList() {
   const checkedFieldSelectorOptions = document.querySelectorAll(
     "input[name=field_selector_option]:checked"
@@ -166,11 +141,11 @@ export function updateFieldList() {
   console.log(dataContainers.fieldList);
 }
 
+/**
+ * Add a field to the plot
+ * @param {String} fieldName - the name of the field
+ */
 export async function addFieldData(fieldName) {
-  // const pausingScreen = document.getElementById("pausingscreen");
-
-  // pausingScreen.classList.remove("pausingscreen-hidden");
-
   updateFieldList();
 
   let tmpData = await d3.csv(
@@ -179,22 +154,13 @@ export async function addFieldData(fieldName) {
 
   addFieldNameToData(tmpData, fieldName);
 
-  let tmpMinIndex = dataContainers.data.length;
-  dataContainers.data = [...dataContainers.data, ...tmpData];
-  let tmpMaxIndex = dataContainers.data.length;
+  dataContainers.data[fieldName] = tmpData;
 
-  dataContainers.fieldIndices[fieldName] = {
-    min: tmpMinIndex,
-    max: tmpMaxIndex,
-  };
+  dataContainers.metadata.num_objects += tmpData.length;
 
-  dataContainers.metadata.num_objects += tmpMaxIndex - tmpMinIndex;
-
-  await addDataToPlot(tmpMinIndex, tmpMaxIndex);
+  await addDataToPlot(fieldName);
 
   replotData();
-
-  // pausingScreen.classList.add("pausingscreen-hidden");
 }
 
 function createFunctionSelector(fieldName) {
@@ -352,9 +318,13 @@ export function make_axis_label(metadataJSON) {
  * Gets the Range for a data column and adds a border
  *
  * @param {object} entryMetadata - The Entry Metadata Object
+ * @param {Number} dataBorderBuffer - The Border to Use
  * @returns {Array} the Extent Array with Border
  */
-export function getRangeWithBorder(entryMetadata) {
+export function getRangeWithBorder(
+  entryMetadata,
+  dataBorderBuffer = plottingConfig.DATABORDERBUFFER
+) {
   let fullExtent = [entryMetadata["min_val"], entryMetadata["max_val"]];
 
   // Reversing if Magnitude
@@ -364,10 +334,8 @@ export function getRangeWithBorder(entryMetadata) {
 
   let initialRange = fullExtent[1] - fullExtent[0];
 
-  fullExtent[0] =
-    fullExtent[0] - plottingConfig.DATABORDERBUFFER * initialRange;
-  fullExtent[1] =
-    fullExtent[1] + plottingConfig.DATABORDERBUFFER * initialRange;
+  fullExtent[0] = fullExtent[0] - dataBorderBuffer * initialRange;
+  fullExtent[1] = fullExtent[1] + dataBorderBuffer * initialRange;
 
   return fullExtent;
 }

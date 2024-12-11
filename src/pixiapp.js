@@ -118,8 +118,8 @@ export async function initializePixiApp() {
   windowState.WIDTH = getAppWidth();
   windowState.HEIGHT = getAppHeight();
 
-  const app = new PIXI.Application();
-  await app.init({
+  dataContainers.app = new PIXI.Application();
+  await dataContainers.app.init({
     width: windowState.WIDTH,
     height: windowState.HEIGHT,
     antialias: true,
@@ -128,7 +128,7 @@ export async function initializePixiApp() {
   });
 
   // Putting Pixi Scene into Container
-  mainContainer.appendChild(app.canvas);
+  mainContainer.appendChild(dataContainers.app.canvas);
 
   // Setup Initial Plotting
 
@@ -152,39 +152,46 @@ export async function initializePixiApp() {
     .range([0, windowState.HEIGHT]);
 
   // Making Pixi Point Texture
-  dataContainers.pixiTexture = makePixiTemplate(app);
+  dataContainers.pixiTexture = makePixiTemplate(dataContainers.app);
 
   // Initial Plotting
 
-  dataContainers.pointContainer = new PIXI.Container();
+  // Creating Point Containers for each Field
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.pointContainer[fieldName] = new PIXI.Container();
+  });
 
-  dataContainers.data.map((d) => {
-    const plotPoint = new PIXI.Sprite(dataContainers.pixiTexture);
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.data[fieldName].map((d) => {
+      const plotPoint = new PIXI.Sprite(dataContainers.pixiTexture);
 
-    plotPoint.position.x = windowState.xScaler(d[windowState.currentXAxis]);
-    plotPoint.position.y = windowState.yScaler(d[windowState.currentYAxis]);
-    plotPoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
-    plotPoint.alpha = plottingConfig.DEFAULT_ALPHA;
+      plotPoint.position.x = windowState.xScaler(d[windowState.currentXAxis]);
+      plotPoint.position.y = windowState.yScaler(d[windowState.currentYAxis]);
+      plotPoint.tint = plottingConfig.DEFAULT_POINT_COLOR;
+      plotPoint.alpha = plottingConfig.DEFAULT_ALPHA;
 
-    plotPoint.eventMode = "static";
-    plotPoint.cursor = "pointer";
+      plotPoint.eventMode = "static";
+      plotPoint.cursor = "pointer";
 
-    plotPoint
-      .on("pointerover", onPointerOver)
-      .on("pointerout", onPointerOut)
-      .on("pointerdown", onPointerClick)
-      .on("rightclick", openContextMenu);
+      plotPoint
+        .on("pointerover", onPointerOver)
+        .on("pointerout", onPointerOut)
+        .on("pointerdown", onPointerClick)
+        .on("rightclick", openContextMenu);
 
-    dataContainers.pointContainer.addChild(plotPoint);
+      dataContainers.pointContainer[d.fieldName].addChild(plotPoint);
 
-    dataContainers.spriteToData.set(plotPoint, d);
-    dataContainers.dataToSprite.set(d, plotPoint);
-    dataContainers.spriteToSelected.set(plotPoint, false);
-    dataContainers.spriteToHighlighted.set(plotPoint, false);
+      dataContainers.spriteToData.set(plotPoint, d);
+      dataContainers.dataToSprite.set(d, plotPoint);
+      dataContainers.spriteToSelected.set(plotPoint, false);
+      dataContainers.spriteToHighlighted.set(plotPoint, false);
+    });
   });
 
   // Adding Point Container to Pixi Stage
-  app.stage.addChild(dataContainers.pointContainer);
+  Object.keys(dataContainers.pointContainer).forEach((k, i) => {
+    dataContainers.app.stage.addChild(dataContainers.pointContainer[k]);
+  });
 
   // Adding and Styling Axes
 
@@ -219,7 +226,7 @@ export async function initializePixiApp() {
     resizePlotAxis();
 
     // Resize Pixi app
-    app.resize();
+    dataContainers.app.resize();
 
     // Replot Data
     replotData();
@@ -231,12 +238,10 @@ export async function initializePixiApp() {
   window.addEventListener("resize", resizeWindow);
 }
 
-export async function addDataToPlot(minIndex, maxIndex) {
-  let d;
+export async function addDataToPlot(fieldName) {
+  dataContainers.pointContainer[fieldName] = new PIXI.Container();
 
-  for (let i = minIndex; i < maxIndex; i++) {
-    d = dataContainers.data[i];
-
+  dataContainers.data[fieldName].map((d) => {
     const plotPoint = new PIXI.Sprite(dataContainers.pixiTexture);
 
     plotPoint.position.x = windowState.xScaler(d[windowState.currentXAxis]);
@@ -253,13 +258,15 @@ export async function addDataToPlot(minIndex, maxIndex) {
       .on("pointerdown", onPointerClick)
       .on("rightclick", openContextMenu);
 
-    dataContainers.pointContainer.addChild(plotPoint);
+    dataContainers.pointContainer[fieldName].addChild(plotPoint);
 
     dataContainers.spriteToData.set(plotPoint, d);
     dataContainers.dataToSprite.set(d, plotPoint);
     dataContainers.spriteToSelected.set(plotPoint, false);
     dataContainers.spriteToHighlighted.set(plotPoint, false);
-  }
+  });
+
+  dataContainers.app.stage.addChild(dataContainers.pointContainer[fieldName]);
 
   switchColorAxis();
 }
