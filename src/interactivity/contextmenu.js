@@ -32,7 +32,7 @@ class ContextMenu {
 
     const span = document.createElement("span");
     span.classList.add(`context-menu-text`);
-    span.textContent = option.name;
+    span.textContent = option.value;
 
     button.appendChild(i);
     button.appendChild(span);

@@ -109,6 +109,8 @@ export async function loadAllDataFromFieldsFile() {
     createFunctionSelector(key);
   }
 
+  updateFieldList();
+
   return [mergedData, mergedMetadata];
 }
 
@@ -118,10 +120,11 @@ export async function loadAllDataFromFieldsFile() {
  */
 
 export async function removeFieldData(fieldName) {
-  const pausingScreen = document.getElementById("pausingscreen");
-  pausingScreen.classList.remove("pausingscreen-hidden");
+  // const pausingScreen = document.getElementById("pausingscreen");
+  // pausingScreen.classList.remove("pausingscreen-hidden");
 
   console.log(`Removing Field ${fieldName}`);
+  updateFieldList();
 
   let tmpMinIndex = dataContainers.fieldIndices[fieldName].min;
   let tmpMaxIndex = dataContainers.fieldIndices[fieldName].max;
@@ -147,14 +150,28 @@ export async function removeFieldData(fieldName) {
   });
 
   replotData();
-  console.log("Done Removing Field");
-  pausingScreen.classList.add("pausingscreen-hidden");
+  // console.log("Done Removing Field");
+  // pausingScreen.classList.add("pausingscreen-hidden");
+}
+
+export function updateFieldList() {
+  const checkedFieldSelectorOptions = document.querySelectorAll(
+    "input[name=field_selector_option]:checked"
+  );
+  dataContainers.fieldList.length = 0;
+  checkedFieldSelectorOptions.forEach((checkBox) => {
+    dataContainers.fieldList.push(checkBox.value);
+  });
+
+  console.log(dataContainers.fieldList);
 }
 
 export async function addFieldData(fieldName) {
-  const pausingScreen = document.getElementById("pausingscreen");
+  // const pausingScreen = document.getElementById("pausingscreen");
 
-  pausingScreen.classList.remove("pausingscreen-hidden");
+  // pausingScreen.classList.remove("pausingscreen-hidden");
+
+  updateFieldList();
 
   let tmpData = await d3.csv(
     dataRootURL + dataContainers.fieldsFile[fieldName].data_file
@@ -177,7 +194,7 @@ export async function addFieldData(fieldName) {
 
   replotData();
 
-  pausingScreen.classList.add("pausingscreen-hidden");
+  // pausingScreen.classList.add("pausingscreen-hidden");
 }
 
 function createFunctionSelector(fieldName) {
@@ -190,7 +207,8 @@ function createFunctionSelector(fieldName) {
 
   const fieldInput = document.createElement("input");
   fieldInput.type = "checkbox";
-  fieldInput.name = fieldName;
+  fieldInput.name = "field_selector_option";
+  fieldInput.value = fieldName;
   fieldInput.id = "field_selector_" + fieldName;
   fieldInput.checked = true;
   fieldInput.addEventListener("click", (event) => {

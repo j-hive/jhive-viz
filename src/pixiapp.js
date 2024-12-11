@@ -8,6 +8,7 @@ import {
   getRangeWithBorder,
   loadFieldsFile,
   loadAllDataFromFieldsFile,
+  updateFieldList,
 } from "./data";
 import { initializePlotAxis, resizePlotAxis } from "./plotaxis";
 import {
