@@ -4,10 +4,11 @@ import { d3, PIXI } from "./imports";
 import { plottingConfig, dataContainers, windowState } from "./config";
 import {
   addDataOptionsToAxisSelectors,
+  createFunctionSelector,
   getRangeWithBorder,
-  loadFieldsFile,
-  loadAllDataFromFieldsFile,
+  updateFieldList,
 } from "./data";
+import { loadAllDataFromFieldsFile, loadFieldsFile } from "./dataLoading";
 import { initializePlotAxis, resizePlotAxis } from "./plotaxis";
 import {
   initAxisChange,
@@ -98,6 +99,12 @@ export async function initializePixiApp() {
 
   [dataContainers.data, dataContainers.metadata] =
     await loadAllDataFromFieldsFile();
+
+  Object.keys(dataContainers.data).map((fieldName) => {
+    createFunctionSelector(fieldName);
+  });
+
+  updateFieldList();
 
   changeLoadingStatus("Initializing Plotting...");
 
@@ -214,7 +221,6 @@ export async function initializePixiApp() {
   function resizeWindow() {
     windowState.HEIGHT = getAppHeight();
     windowState.WIDTH = getAppWidth();
-    // console.log(windowState.WIDTH, windowState.HEIGHT);
 
     // Update Scalers
     windowState.xScaler.range([0, windowState.WIDTH]);

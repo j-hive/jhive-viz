@@ -35,5 +35,7 @@ export function initializeLoadingMessage() {
  * @param {string} statusMessage
  */
 export function changeLoadingStatus(statusMessage) {
-  loadingStatus.innerHTML = statusMessage;
+  if (loadingStatus) {
+    loadingStatus.innerHTML = statusMessage;
+  }
 }

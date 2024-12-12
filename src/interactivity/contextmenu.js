@@ -32,7 +32,7 @@ class ContextMenu {
 
     const span = document.createElement("span");
     span.classList.add(`context-menu-text`);
-    span.textContent = option.value;
+    span.textContent = option.name;
 
     button.appendChild(i);
     button.appendChild(span);
@@ -73,7 +73,7 @@ const menu = new ContextMenu({
     {
       icon: "magnifying-glass",
       name: "Open Details",
-      action: () => console.log("Open Details"),
+      action: openDetails,
     },
     {
       icon: "image",
@@ -104,6 +104,15 @@ export function openContextMenu(event) {
 export function hideContextMenu(event) {
   menu.hide();
   document.removeEventListener("click", hideContextMenu);
+}
+
+function openDetails() {
+  let dataPoint = dataContainers.spriteToData.get(windowState.selectedPoint);
+  const fieldName = dataPoint.fieldName;
+  const id = dataPoint.id;
+
+  let mainURL = `details.html?fieldName=${fieldName}&id=${id}`;
+  open(mainURL, "jhiveDetails");
 }
 
 function openFITSMap() {
