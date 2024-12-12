@@ -82,8 +82,13 @@ const menu = new ContextMenu({
     },
     {
       icon: "copy",
-      name: "Copy Data to Clipboard",
-      action: copyDataToClipboard,
+      name: "Copy Selected Data to Clipboard",
+      action: copySelectedDataToClipboard,
+    },
+    {
+      icon: "copy",
+      name: "Copy All Data to Clipboard",
+      action: copyAllDataToClipboard,
     },
   ],
 });
@@ -137,19 +142,46 @@ function openFITSMap() {
   }
 }
 
-function copyDataToClipboard() {
+function copySelectedDataToClipboard() {
   let dataPoint = dataContainers.spriteToData.get(windowState.selectedPoint);
 
-  let dataString = `fieldName: ${dataPoint.fieldName}, id: ${
-    dataPoint.id
-  }, ra: ${dataPoint.ra}, dec: ${dataPoint.dec}, ${windowState.currentXAxis}: ${
-    dataPoint[windowState.currentXAxis]
-  }, ${windowState.currentYAxis}: ${dataPoint[windowState.currentYAxis]}`;
+  let headerString = `fieldName, id, ra, dec, ${windowState.currentXAxis}, ${windowState.currentYAxis}\n`;
+  let dataString = `${dataPoint.fieldName}, ${dataPoint.id}, ${dataPoint.ra}, ${
+    dataPoint.dec
+  }, ${dataPoint[windowState.currentXAxis]}, ${
+    dataPoint[windowState.currentYAxis]
+  }`;
 
   navigator.clipboard
-    .writeText(dataString)
+    .writeText(headerString + dataString)
     .then(() => {
-      console.log("Copied to Clipboard", dataString);
+      console.log("Copied Selected Data to Clipboard");
+      showAlert("Copied to Clipboard");
+    })
+    .catch((err) => {
+      console.error("Failed to copy: ", err);
+      showAlert("Failed to Copy");
+    });
+}
+
+function copyAllDataToClipboard() {
+  let dataPoint = dataContainers.spriteToData.get(windowState.selectedPoint);
+
+  let headerString = "";
+  let dataString = "";
+
+  Object.keys(dataPoint).map((fieldName) => {
+    headerString += `${fieldName},`;
+    dataString += `${dataPoint[fieldName]},`;
+  });
+
+  headerString = headerString.slice(0, -1);
+  dataString = dataString.slice(0, -1);
+
+  navigator.clipboard
+    .writeText(headerString + "\n" + dataString)
+    .then(() => {
+      console.log("Copied Selected Data to Clipboard");
       showAlert("Copied to Clipboard");
     })
     .catch((err) => {
