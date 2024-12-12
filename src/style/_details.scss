@@ -72,7 +72,7 @@
 }
 
 .detail-title-card {
-  width: 20em;
+  min-width: 15em;
 }
 
 .cutout-container {
@@ -85,22 +85,21 @@
   background-position: center;
 }
 
-#detail-title-card-label {
+.detail-title-card-row {
   font-family: "Bebas Neue", sans-serif;
+  font-size: 1em;
+  color: #ccc;
+}
+
+#detail-title-card-label {
   color: #fff;
   font-size: 1.5em;
 }
 
 #detail-title-card-positions {
-  font-family: "Bebas Neue", sans-serif;
-  color: #ccc;
-  font-size: 1em;
 }
 
 #detail-title-card-magnitudes {
-  font-family: "Bebas Neue", sans-serif;
-  color: #ccc;
-  font-size: 1em;
 }
 
 #detail-sed-plot {

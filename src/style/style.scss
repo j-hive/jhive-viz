@@ -30,6 +30,11 @@ body {
   overflow: hidden;
 }
 
+sub {
+  vertical-align: sub;
+  font-size: 70%;
+}
+
 a {
   color: colours.$J-HIVE-Theme-3-hex;
   text-decoration: none;

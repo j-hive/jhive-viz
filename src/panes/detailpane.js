@@ -9,6 +9,9 @@ const detailsImage = document.getElementById("source-cutout");
 const detailsTitleID = document.getElementById("detail-title-header-val");
 const detailsTitleRA = document.getElementById("detail-title-ra-val");
 const detailsTitleDEC = document.getElementById("detail-title-dec-val");
+const detailsTitleZ = document.getElementById("detail-title-z-val");
+const detailsTitleSFR = document.getElementById("detail-title-sfr-val");
+
 const detailsTitleMagf150w = document.getElementById(
   "detail-title-mag-f150w-val"
 );
@@ -67,6 +70,8 @@ export function updateDetailPanel(dataPoint) {
     dataPoint["id"];
   detailsTitleRA.innerHTML = d3.format(".5f")(dataPoint["ra"]) + "&deg;";
   detailsTitleDEC.innerHTML = d3.format(".5f")(dataPoint["dec"]) + "&deg;";
+  detailsTitleZ.innerHTML = d3.format(".2f")(dataPoint["zfit_50"]);
+  detailsTitleSFR.innerHTML = d3.format(".1f")(dataPoint["logSFRinst_50"]);
   detailsTitleMagf150w.innerHTML =
     d3.format(".1f")(dataPoint["abmag_f150w"]) + " (f150w)";
   detailsTitleMagf200w.innerHTML =
