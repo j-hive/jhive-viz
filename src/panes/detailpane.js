@@ -3,6 +3,7 @@
 import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
 import { getCutoutURL } from "../utils/cutouts";
+import { getRangeWithBorder } from "../data";
 
 const detailsPanel = document.getElementById("detailpanel");
 const detailsImage = document.getElementById("source-cutout");
@@ -25,6 +26,9 @@ const detailsTitleMagf277w = document.getElementById(
 // Getting SED Container
 
 const SEDContainer = document.getElementById("detail-sed-plot");
+
+let SEDxAxis = null;
+let SEDyAxis = null;
 
 /**
  * Get Points from SED
@@ -83,6 +87,22 @@ export function updateDetailPanel(dataPoint) {
 
   // Change SED Points:
 
+  console.log(sedData);
+
+  let tmpYPoints = sedData.map((a) => a.y);
+
+  windowState.SEDyScaler.domain(d3.extent(tmpYPoints));
+
+  SEDyAxis.transition()
+    .duration(1000)
+    .call(
+      d3
+        .axisLeft(windowState.SEDyScaler)
+        .ticks(5)
+        .tickSizeOuter(0)
+        .tickSize(-windowState.WIDTH * 1.3)
+    );
+
   SEDsvg.selectAll("circle")
     .data(sedData)
     .transition()
@@ -139,7 +159,7 @@ export function initializeDetailPane() {
         ")"
     );
 
-  SEDsvg.append("g")
+  SEDxAxis = SEDsvg.append("g")
     .attr(
       "transform",
       "translate(0," + (SEDHeight - plottingConfig.SEDLOWERMARGIN + 5) + ")"
@@ -147,7 +167,7 @@ export function initializeDetailPane() {
     .attr("class", "sed-x-axis")
     .call(d3.axisBottom(windowState.SEDxScaler).ticks(5));
 
-  SEDsvg.append("g")
+  SEDyAxis = SEDsvg.append("g")
     .attr("class", "sed-y-axis")
     .call(
       d3
@@ -196,7 +216,7 @@ export function initializeDetailPane() {
     .attr("text-anchor", "middle")
     .attr(
       "transform",
-      `translate(${plottingConfig.SEDLEFTMARGIN},${
+      `translate(${plottingConfig.SEDLEFTMARGIN - 20},${
         (plottingConfig.SEDUPPERMARGIN +
           SEDHeight -
           plottingConfig.SEDLOWERMARGIN) /
