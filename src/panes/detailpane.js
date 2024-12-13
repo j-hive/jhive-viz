@@ -182,7 +182,7 @@ export function updateDetailPanel(dataPoint) {
       return windowState.MSFRyScaler(setNanToLow(d.logM_50));
     })
     .attr("cx", (d) => {
-      return windowState.MSFRxScaler(setNanToLow(d.zfit_50));
+      return windowState.MSFRxScaler(setNanToLow(d.logSFRinst_50));
     });
 
   // M-Z Plot:
@@ -219,7 +219,7 @@ export function initializeSEDPlot() {
 
   windowState.SEDxScaler = d3.scaleLinear(
     [0.4, 5],
-    [2 * plottingConfig.SEDLEFTMARGIN, SEDWidth - plottingConfig.SEDRIGHTMARGIN]
+    [plottingConfig.SEDLEFTMARGIN, SEDWidth - plottingConfig.SEDRIGHTMARGIN]
   );
   windowState.SEDyScaler = d3.scaleLinear(
     [17, 41],
@@ -248,20 +248,20 @@ export function initializeSEDPlot() {
   SEDxAxis = SEDsvg.append("g")
     .attr(
       "transform",
-      "translate(0," + (SEDHeight - 1.5 * plottingConfig.SEDLOWERMARGIN) + ")"
+      "translate(0," + (SEDHeight - 1.1 * plottingConfig.SEDLOWERMARGIN) + ")"
     )
     .attr("class", "sed-x-axis")
-    .call(d3.axisBottom(windowState.SEDxScaler).ticks(5));
+    .call(d3.axisBottom(windowState.SEDxScaler).ticks(5).tickSizeOuter(0));
 
   SEDyAxis = SEDsvg.append("g")
     .attr("class", "sed-y-axis")
-    .attr("transform", `translate(${2.3 * plottingConfig.SEDRIGHTMARGIN}, 0)`)
+    .attr("transform", `translate(0, 0)`)
     .call(
       d3
         .axisLeft(windowState.SEDyScaler)
         .ticks(5)
         .tickSizeOuter(0)
-        .tickSize(-SEDWidth + plottingConfig.SEDRIGHTMARGIN)
+        .tickSizeInner(-SEDWidth, 0, 0)
     );
 
   let baseData = getSEDPoints({});
@@ -339,7 +339,7 @@ export function initializeSEDPlot() {
     .attr("text-anchor", "middle")
     .attr(
       "transform",
-      `translate(${-1.1 * plottingConfig.SEDRIGHTMARGIN},${
+      `translate(${plottingConfig.SEDLEFTMARGIN},${
         (plottingConfig.SEDUPPERMARGIN +
           SEDHeight -
           plottingConfig.SEDLOWERMARGIN) /
@@ -359,8 +359,8 @@ export function initializeSEDPlot() {
  * Initializing the M-SFR Plot
  */
 export function initializeMSFRPlot() {
-  let minSFR = 0.007524;
-  let maxSFR = 11.997524;
+  let minSFR = -5.9915;
+  let maxSFR = 3.9685;
   let minM = 4.0265;
   let maxM = 13.1475;
 
@@ -384,16 +384,8 @@ export function initializeMSFRPlot() {
     .select(MSFRContainer)
     .append("svg")
     .attr("id", "MSFRContainer")
-    .attr(
-      "width",
-      MSFRWidth + plottingConfig.MSFRLEFTMARGIN + plottingConfig.MSFRRIGHTMARGIN
-    )
-    .attr(
-      "height",
-      MSFRHeight +
-        plottingConfig.MSFRUPPERMARGIN +
-        plottingConfig.MSFRLOWERMARGIN
-    )
+    .attr("width", MSFRWidth)
+    .attr("height", MSFRHeight)
     .append("g")
     .attr(
       "transform",
@@ -407,18 +399,19 @@ export function initializeMSFRPlot() {
   const MSFRxAxis = MSFRsvg.append("g")
     .attr(
       "transform",
-      "translate(0," + (MSFRHeight - plottingConfig.MSFRLOWERMARGIN + 5) + ")"
+      "translate(0," + (MSFRHeight - 1.1 * plottingConfig.MSFRLOWERMARGIN) + ")"
     )
     .attr("class", "msfr-x-axis")
     .call(
       d3
         .axisBottom(windowState.MSFRxScaler)
         .tickValues([Math.ceil(minSFR), Math.floor(maxSFR)])
+        .tickSizeOuter(0)
     );
 
   const MSFRyAxis = MSFRsvg.append("g")
     .attr("class", "msfr-y-axis")
-    .attr("transform", `translate(0, 0)`)
+    .attr("transform", `translate(${plottingConfig.MSFRLEFTMARGIN}, 0)`)
     .call(
       d3
         .axisLeft(windowState.MSFRyScaler)
@@ -441,7 +434,7 @@ export function initializeMSFRPlot() {
     .attr("height", minY - maxY)
     .attr("preserveAspectRatio", "none")
     .attr("opacity", 0.3)
-    .attr("xlink:href", "/data/zM-contours.svg");
+    .attr("xlink:href", "/data/sfr-contours.svg");
 
   let baseData = [{ zfit_50: 10 }];
 
@@ -526,14 +519,8 @@ export function initializeMZPlot() {
     .select(MZContainer)
     .append("svg")
     .attr("id", "MZContainer")
-    .attr(
-      "width",
-      MZWidth + plottingConfig.MZLEFTMARGIN + plottingConfig.MZRIGHTMARGIN
-    )
-    .attr(
-      "height",
-      MZHeight + plottingConfig.MZUPPERMARGIN + plottingConfig.MZLOWERMARGIN
-    )
+    .attr("width", MZWidth)
+    .attr("height", MZHeight)
     .append("g")
     .attr(
       "transform",
@@ -547,18 +534,19 @@ export function initializeMZPlot() {
   const MZxAxis = MZsvg.append("g")
     .attr(
       "transform",
-      "translate(0," + (MZHeight - plottingConfig.MZLOWERMARGIN + 5) + ")"
+      "translate(0," + (MZHeight - 1.1 * plottingConfig.MZLOWERMARGIN) + ")"
     )
     .attr("class", "mz-x-axis")
     .call(
       d3
         .axisBottom(windowState.MZxScaler)
         .tickValues([Math.ceil(minZ), Math.floor(maxZ)])
+        .tickSizeOuter(0)
     );
 
   const MZyAxis = MZsvg.append("g")
     .attr("class", "mz-y-axis")
-    .attr("transform", `translate(0, 0)`)
+    .attr("transform", `translate(${plottingConfig.MZLEFTMARGIN}, 0)`)
     .call(
       d3
         .axisLeft(windowState.MZyScaler)

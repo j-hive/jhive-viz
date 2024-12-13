@@ -104,6 +104,7 @@
 }
 
 #detail-sed-plot {
+  position: relative;
   height: 9em;
   min-width: 30em;
   margin-left: 0em;
@@ -112,9 +113,12 @@
   margin-right: 1em;
 }
 
-.sed-y-axis .domain,
-.sed-x-axis .domain {
+.sed-y-axis .domain {
   stroke: none;
+}
+
+.sed-x-axis .domain {
+  stroke: #ccc;
 }
 
 .sed-y-axis .tick line {
@@ -127,29 +131,60 @@
 // }
 
 #detail-msfr-plot {
+  position: relative;
   height: 9em;
   min-width: 25em;
   margin-left: 1em;
   margin-top: 0;
   margin-bottom: 0;
-  margin-right: 2em;
+  margin-right: 1em;
 }
 
-.msfr-y-axis .domain,
 .msfr-x-axis .domain {
+  stroke: #ccc;
+}
+
+.msfr-y-axis .domain {
   stroke: none;
 }
+
+// .mz-x-axis .domain {
+//   fill: none;
+//   stroke: #ccc;
+//   stroke-width: 1px;
+// }
 
 #detail-mz-plot {
+  position: relative;
   height: 9em;
   min-width: 25em;
   margin-left: 1em;
   margin-top: 0;
   margin-bottom: 0;
-  margin-right: 2em;
+  margin-right: 1em;
 }
 
-.mz-y-axis .domain,
 .mz-x-axis .domain {
+  stroke: #ccc;
+}
+
+.mz-y-axis .domain {
   stroke: none;
+}
+
+.detail-vertical-spacer {
+  border-left: 2pt solid #444;
+  height: 7em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.detail-panel-label {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 1.2em;
+  color: #aaa;
+  padding-right: 0.2em;
 }
