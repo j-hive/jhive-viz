@@ -4,6 +4,10 @@ import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
 import { getCutoutURL } from "../utils/cutouts";
 import { getRangeWithBorder } from "../data";
+import {
+  convertABmagnitudeToLogFlux,
+  redshiftRestWavelength,
+} from "../utils/astro";
 
 const detailsPanel = document.getElementById("detailpanel");
 const detailsImage = document.getElementById("source-cutout");
@@ -43,7 +47,9 @@ export function getSEDPoints(dataPoint) {
     if (value["is_magnitude"]) {
       let tmpEntry = {};
       tmpEntry["x"] = value["wl_micron"];
-      tmpEntry["y"] = dataPoint[key] ? dataPoint[key] : NaN;
+      tmpEntry["y"] = dataPoint[key]
+        ? convertABmagnitudeToLogFlux(dataPoint[key])
+        : NaN;
       sed.push(tmpEntry);
     }
   });
@@ -52,12 +58,30 @@ export function getSEDPoints(dataPoint) {
 }
 
 /**
+ * Create a Redshifted Reference Line
+ * @param {Object} dataPoint - datapoint
+ * @param {Number} wavelength - wavelength to redshift
+ * @param {Array} extent - y-extent
+ * @returns {Array} Redshifted Line
+ */
+export function getRedshiftedLine(dataPoint, wavelength, extent) {
+  let redshiftedLine = dataPoint.zfit_50
+    ? redshiftRestWavelength(wavelength, parseFloat(dataPoint["zfit_50"]))
+    : wavelength;
+
+  let topEntry = { x: redshiftedLine, y: extent[1] };
+  let bottomEntry = { x: redshiftedLine, y: extent[0] };
+
+  return [topEntry, bottomEntry];
+}
+
+/**
  * Setting NaNs to Arbitrary Low Number
  * @param {number} x  - Input Number
  * @returns {number} Number set to low if NaN
  */
 export function setNanToLow(x) {
-  return isNaN(x) ? 60 : x;
+  return isNaN(x) ? -60 : x;
 }
 
 /**
@@ -84,14 +108,17 @@ export function updateDetailPanel(dataPoint) {
     d3.format(".1f")(dataPoint["abmag_f277w"]) + " (f277w)";
 
   let sedData = getSEDPoints(dataPoint);
-
   // Change SED Points:
-
-  console.log(sedData);
 
   let tmpYPoints = sedData.map((a) => a.y);
 
   windowState.SEDyScaler.domain(d3.extent(tmpYPoints));
+
+  let refLine = getRedshiftedLine(
+    dataPoint,
+    0.4,
+    windowState.SEDyScaler.domain()
+  );
 
   SEDyAxis.transition()
     .duration(1000)
@@ -112,6 +139,29 @@ export function updateDetailPanel(dataPoint) {
       return windowState.SEDyScaler(setNanToLow(d.y));
     });
 
+  SEDsvg.selectAll("#refLine")
+    .datum(refLine)
+    .transition()
+    .delay(100)
+    .duration(1000)
+    .attr(
+      "d",
+      d3
+        .line()
+        .x((d) => {
+          return windowState.SEDxScaler(d.x);
+        })
+        .y((d) => {
+          return windowState.SEDyScaler(d.y);
+        })
+    );
+
+  SEDsvg.selectAll("#refLineLabel")
+    .transition()
+    .delay(100)
+    .duration(1000)
+    .attr("x", windowState.SEDxScaler(refLine[0].x));
+
   // Change Cutout Image:
 
   detailsImage.style.backgroundImage = `url(${getCutoutURL(
@@ -130,11 +180,11 @@ export function initializeDetailPane() {
 
   windowState.SEDxScaler = d3.scaleLinear(
     [0.4, 5],
-    [plottingConfig.SEDLEFTMARGIN, SEDWidth - plottingConfig.SEDRIGHTMARGIN]
+    [2 * plottingConfig.SEDLEFTMARGIN, SEDWidth - plottingConfig.SEDRIGHTMARGIN]
   );
   windowState.SEDyScaler = d3.scaleLinear(
-    [17, 40],
-    [plottingConfig.SEDUPPERMARGIN, SEDHeight - plottingConfig.SEDLOWERMARGIN]
+    [17, 41],
+    [SEDHeight - plottingConfig.SEDLOWERMARGIN, plottingConfig.SEDUPPERMARGIN]
   );
 
   let SEDsvg = d3
@@ -143,7 +193,9 @@ export function initializeDetailPane() {
     .attr("id", "SEDContainer")
     .attr(
       "width",
-      SEDWidth + plottingConfig.SEDLEFTMARGIN + plottingConfig.SEDRIGHTMARGIN
+      SEDWidth +
+        2 * plottingConfig.SEDLEFTMARGIN +
+        plottingConfig.SEDRIGHTMARGIN
     )
     .attr(
       "height",
@@ -169,6 +221,7 @@ export function initializeDetailPane() {
 
   SEDyAxis = SEDsvg.append("g")
     .attr("class", "sed-y-axis")
+    .attr("transform", `translate(${2.2 * plottingConfig.SEDRIGHTMARGIN}, 0)`)
     .call(
       d3
         .axisLeft(windowState.SEDyScaler)
@@ -187,10 +240,44 @@ export function initializeDetailPane() {
       return windowState.SEDxScaler(d.x);
     })
     .attr("cy", (d) => {
-      return windowState.SEDyScaler(80);
+      return windowState.SEDyScaler(-80);
     })
     .attr("r", 5)
     .style("fill", "#73ADFA");
+
+  let restLine = getRedshiftedLine({}, 0.4, windowState.SEDyScaler.domain());
+
+  SEDsvg.append("path")
+    .datum(restLine)
+    .attr("id", "refLine")
+    .attr("fill", "none")
+    .attr("stroke", "#a69a83")
+    .attr("stroke-opacity", 0.3)
+    .attr("stroke-dasharray", "5,5")
+    .attr("stroke-width", 1.5)
+    .attr(
+      "d",
+      d3
+        .line()
+        .x((d) => {
+          return windowState.SEDxScaler(d.x);
+        })
+        .y((d) => {
+          return windowState.SEDyScaler(d.y);
+        })
+    );
+
+  SEDsvg.append("text")
+    .attr("id", "refLineLabel")
+    .attr("x", windowState.SEDxScaler(restLine[0].x))
+    .attr(
+      "y",
+      windowState.SEDyScaler.range()[1] - plottingConfig.SEDUPPERMARGIN
+    )
+    .attr("text-anchor", "middle")
+    .text("0.4 \u03BCm")
+    .style("font-size", "10pt")
+    .style("fill", "#a69a83");
 
   SEDsvg.append("text")
     .attr(
@@ -216,7 +303,7 @@ export function initializeDetailPane() {
     .attr("text-anchor", "middle")
     .attr(
       "transform",
-      `translate(${plottingConfig.SEDLEFTMARGIN - 20},${
+      `translate(${-1.1 * plottingConfig.SEDRIGHTMARGIN},${
         (plottingConfig.SEDUPPERMARGIN +
           SEDHeight -
           plottingConfig.SEDLOWERMARGIN) /
@@ -226,7 +313,7 @@ export function initializeDetailPane() {
     .call((text) =>
       text
         .append("tspan")
-        .text("AB Magnitude")
+        .text("log Flux (Jy)")
         .style("fill", "white")
         .style("font-size", "10pt")
     );
