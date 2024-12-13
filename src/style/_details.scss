@@ -104,11 +104,11 @@
 
 #detail-sed-plot {
   height: 8em;
-  width: 30em;
+  min-width: 30em;
   margin-left: 0em;
   margin-top: 0;
   margin-bottom: 0;
-  margin-right: 2em;
+  margin-right: 1em;
 }
 
 .sed-y-axis .domain,
@@ -124,6 +124,15 @@
 // .sed-yaxis .tick text {
 //     color: gray;
 // }
+
+#detail-msfr-plot {
+  height: 8em;
+  width: 25em;
+  margin-left: 0em;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 2em;
+}
 
 .test-detail-card {
   border: 1px solid gray;

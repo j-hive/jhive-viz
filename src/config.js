@@ -83,6 +83,7 @@ export const windowState = {
   currentYAxis: null,
   currentColorAxis: null,
   currentZoom: null,
+  currentOpacity: null,
   colorRange: null,
   xRange: null,
   yRange: null,
@@ -92,5 +93,6 @@ export const windowState = {
   colorScaler: null,
   SEDxScaler: null,
   SEDyScaler: null,
-  currentOpacity: null,
+  MSFRxScaler: null,
+  MSFRyScaler: null,
 };

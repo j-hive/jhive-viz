@@ -3,7 +3,6 @@
 import { d3 } from "../imports";
 import { dataContainers, plottingConfig, windowState } from "../config";
 import { getCutoutURL } from "../utils/cutouts";
-import { getRangeWithBorder } from "../data";
 import {
   convertABmagnitudeToLogFlux,
   redshiftRestWavelength,
@@ -31,8 +30,12 @@ const detailsTitleMagf277w = document.getElementById(
 
 const SEDContainer = document.getElementById("detail-sed-plot");
 
-let SEDxAxis = null;
 let SEDyAxis = null;
+let SEDxAxis = null;
+
+// Getting MSFR Container
+
+const MSFRContainer = document.getElementById("detail-msfr-plot");
 
 /**
  * Get Points from SED
@@ -90,6 +93,7 @@ export function setNanToLow(x) {
 export function updateDetailPanel(dataPoint) {
   // Get SVG
   const SEDsvg = d3.select("#SEDContainer");
+  const MSFRsvg = d3.select("#MSFRContainer");
 
   // Set Titles:
   detailsTitleID.innerHTML =
@@ -162,6 +166,20 @@ export function updateDetailPanel(dataPoint) {
     .duration(1000)
     .attr("x", windowState.SEDxScaler(refLine[0].x));
 
+  // M-SFR Plot:
+
+  MSFRsvg.selectAll("circle")
+    .data([dataPoint])
+    .transition()
+    .delay(100)
+    .duration(1000)
+    .attr("cy", (d) => {
+      return windowState.MSFRyScaler(setNanToLow(d.logM_50));
+    })
+    .attr("cx", (d) => {
+      return windowState.MSFRxScaler(setNanToLow(d.zfit_50));
+    });
+
   // Change Cutout Image:
 
   detailsImage.style.backgroundImage = `url(${getCutoutURL(
@@ -171,9 +189,11 @@ export function updateDetailPanel(dataPoint) {
 }
 
 /**
- * Initialize the Detail Pane
+ * Initialize the SED Plot Pane
  */
-export function initializeDetailPane() {
+export function initializeSEDPlot() {
+  // Initializing SED
+
   // Base of SED
   let SEDWidth = SEDContainer.clientWidth;
   let SEDHeight = SEDContainer.clientHeight;
@@ -317,4 +337,99 @@ export function initializeDetailPane() {
         .style("fill", "white")
         .style("font-size", "10pt")
     );
+}
+
+export function initializeMSFRPlot() {
+  console.log("Initializing M-SFR Plot");
+
+  let minSFR = 0.007524;
+  let maxSFR = 11.997524;
+  let minM = 4.0265;
+  let maxM = 13.1475;
+
+  // Base of MSFR
+  let MSFRWidth = MSFRContainer.clientWidth;
+  let MSFRHeight = MSFRContainer.clientHeight;
+
+  windowState.MSFRxScaler = d3.scaleLinear(
+    [minSFR, maxSFR],
+    [plottingConfig.SEDLEFTMARGIN, MSFRWidth - plottingConfig.SEDRIGHTMARGIN]
+  );
+  windowState.MSFRyScaler = d3.scaleLinear(
+    [minM, maxM],
+    [MSFRHeight - plottingConfig.SEDLOWERMARGIN, plottingConfig.SEDUPPERMARGIN]
+  );
+
+  let MSFRsvg = d3
+    .select(MSFRContainer)
+    .append("svg")
+    .attr("id", "MSFRContainer")
+    .attr(
+      "width",
+      MSFRWidth + plottingConfig.SEDLEFTMARGIN + plottingConfig.SEDRIGHTMARGIN
+    )
+    .attr(
+      "height",
+      MSFRHeight + plottingConfig.SEDUPPERMARGIN + plottingConfig.SEDLOWERMARGIN
+    )
+    .append("g")
+    .attr(
+      "transform",
+      "translate(" +
+        plottingConfig.SEDLEFTMARGIN +
+        "," +
+        plottingConfig.SEDUPPERMARGIN +
+        ")"
+    );
+
+  const MSFRxAxis = MSFRsvg.append("g")
+    .attr(
+      "transform",
+      "translate(0," + (MSFRHeight - plottingConfig.SEDLOWERMARGIN + 5) + ")"
+    )
+    .attr("class", "msfr-x-axis")
+    .call(d3.axisBottom(windowState.MSFRxScaler).ticks(2));
+
+  const MSFRyAxis = MSFRsvg.append("g")
+    .attr("class", "msfr-y-axis")
+    .attr("transform", `translate(0, 0)`)
+    .call(d3.axisLeft(windowState.MSFRyScaler).ticks(2));
+
+  // For Image:
+
+  let minX, maxX, minY, maxY;
+
+  minX = windowState.MSFRxScaler(minSFR);
+  minY = windowState.MSFRyScaler(minM);
+  maxX = windowState.MSFRxScaler(maxSFR);
+  maxY = windowState.MSFRyScaler(maxM);
+
+  MSFRsvg.append("svg:image")
+    .attr("x", minX)
+    .attr("y", maxY)
+    .attr("width", maxX - minX)
+    .attr("height", minY - maxY)
+    .attr("preserveAspectRatio", "none")
+    .attr("opacity", 0.3)
+    .attr("xlink:href", "/data/zM-contours.svg");
+
+  let baseData = [{ zfit_50: 10 }];
+
+  MSFRsvg.selectAll("circles")
+    .data(baseData)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => {
+      return windowState.MSFRxScaler(d.zfit_50);
+    })
+    .attr("cy", (d) => {
+      return windowState.MSFRyScaler(-20);
+    })
+    .attr("r", 5)
+    .style("fill", "#73ADFA");
+}
+
+export function initializeDetailPane() {
+  initializeSEDPlot();
+  initializeMSFRPlot();
 }
