@@ -4,13 +4,33 @@ import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
+const devTrue = process.env.NODE_ENV === "development";
+
+function getVersionName() {
+  let returnString =
+    "Version " +
+    JSON.stringify(process.env.npm_package_version).split('"').join("");
+
+  if (devTrue) {
+    returnString = "Dev Version";
+  }
+
+  return returnString;
+}
+
 export default defineConfig({
   plugins: [
     handlebars({
       partialDirectory: resolve(__dirname, "partials"),
+      context: {
+        versionNumber: getVersionName,
+      },
     }),
     ViteImageOptimizer({ jpeg: { quality: 60 } }),
   ],
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+  },
   css: {
     preprocessorOptions: {
       scss: {
