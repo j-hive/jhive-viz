@@ -76,9 +76,10 @@
 }
 
 .cutout-container {
-  width: 8em;
+  min-width: 8em !important;
   height: 8em;
   margin-right: 1em;
+  margin-left: 0;
   background-color: #222222;
   background-repeat: no-repeat;
   background-size: cover;
@@ -103,7 +104,7 @@
 }
 
 #detail-sed-plot {
-  height: 8em;
+  height: 9em;
   min-width: 30em;
   margin-left: 0em;
   margin-top: 0;
@@ -126,19 +127,29 @@
 // }
 
 #detail-msfr-plot {
-  height: 8em;
-  width: 25em;
-  margin-left: 0em;
+  height: 9em;
+  min-width: 25em;
+  margin-left: 1em;
   margin-top: 0;
   margin-bottom: 0;
   margin-right: 2em;
 }
 
-.test-detail-card {
-  border: 1px solid gray;
-  margin: 1em;
-  padding: 1em;
-  height: 7em;
-  width: 10em;
-  flex-shrink: 0;
+.msfr-y-axis .domain,
+.msfr-x-axis .domain {
+  stroke: none;
+}
+
+#detail-mz-plot {
+  height: 9em;
+  min-width: 25em;
+  margin-left: 1em;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 2em;
+}
+
+.mz-y-axis .domain,
+.mz-x-axis .domain {
+  stroke: none;
 }

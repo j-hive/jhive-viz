@@ -47,10 +47,18 @@ export const plottingConfig = {
   UPPERMARGIN: 5,
   DEFAULT_ALPHA: 0.1,
   BACKGROUND_COLOR: 0x323232,
-  SEDLEFTMARGIN: 40,
+  SEDLEFTMARGIN: 25,
   SEDRIGHTMARGIN: 10,
   SEDLOWERMARGIN: 20,
-  SEDUPPERMARGIN: 10,
+  SEDUPPERMARGIN: 5,
+  MSFRLEFTMARGIN: 20,
+  MSFRRIGHTMARGIN: 10,
+  MSFRLOWERMARGIN: 20,
+  MSFRUPPERMARGIN: 5,
+  MZLEFTMARGIN: 20,
+  MZRIGHTMARGIN: 10,
+  MZLOWERMARGIN: 20,
+  MZUPPERMARGIN: 5,
 };
 
 /**
@@ -95,4 +103,6 @@ export const windowState = {
   SEDyScaler: null,
   MSFRxScaler: null,
   MSFRyScaler: null,
+  MZxScaler: null,
+  MZyScaler: null,
 };

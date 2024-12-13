@@ -37,6 +37,10 @@ let SEDxAxis = null;
 
 const MSFRContainer = document.getElementById("detail-msfr-plot");
 
+// Getting MZ Container
+
+const MZContainer = document.getElementById("detail-mz-plot");
+
 /**
  * Get Points from SED
  * @param {Object} dataPoint
@@ -94,6 +98,7 @@ export function updateDetailPanel(dataPoint) {
   // Get SVG
   const SEDsvg = d3.select("#SEDContainer");
   const MSFRsvg = d3.select("#MSFRContainer");
+  const MZsvg = d3.select("#MZContainer");
 
   // Set Titles:
   detailsTitleID.innerHTML =
@@ -180,6 +185,20 @@ export function updateDetailPanel(dataPoint) {
       return windowState.MSFRxScaler(setNanToLow(d.zfit_50));
     });
 
+  // M-Z Plot:
+
+  MZsvg.selectAll("circle")
+    .data([dataPoint])
+    .transition()
+    .delay(100)
+    .duration(1000)
+    .attr("cy", (d) => {
+      return windowState.MZyScaler(setNanToLow(d.logM_50));
+    })
+    .attr("cx", (d) => {
+      return windowState.MZxScaler(setNanToLow(d.zfit_50));
+    });
+
   // Change Cutout Image:
 
   detailsImage.style.backgroundImage = `url(${getCutoutURL(
@@ -204,23 +223,18 @@ export function initializeSEDPlot() {
   );
   windowState.SEDyScaler = d3.scaleLinear(
     [17, 41],
-    [SEDHeight - plottingConfig.SEDLOWERMARGIN, plottingConfig.SEDUPPERMARGIN]
+    [
+      SEDHeight - 2 * plottingConfig.SEDLOWERMARGIN,
+      plottingConfig.SEDUPPERMARGIN,
+    ]
   );
 
   let SEDsvg = d3
     .select(SEDContainer)
     .append("svg")
     .attr("id", "SEDContainer")
-    .attr(
-      "width",
-      SEDWidth +
-        2 * plottingConfig.SEDLEFTMARGIN +
-        plottingConfig.SEDRIGHTMARGIN
-    )
-    .attr(
-      "height",
-      SEDHeight + plottingConfig.SEDUPPERMARGIN + plottingConfig.SEDLOWERMARGIN
-    )
+    .attr("width", SEDWidth)
+    .attr("height", SEDHeight)
     .append("g")
     .attr(
       "transform",
@@ -234,14 +248,14 @@ export function initializeSEDPlot() {
   SEDxAxis = SEDsvg.append("g")
     .attr(
       "transform",
-      "translate(0," + (SEDHeight - plottingConfig.SEDLOWERMARGIN + 5) + ")"
+      "translate(0," + (SEDHeight - 1.5 * plottingConfig.SEDLOWERMARGIN) + ")"
     )
     .attr("class", "sed-x-axis")
     .call(d3.axisBottom(windowState.SEDxScaler).ticks(5));
 
   SEDyAxis = SEDsvg.append("g")
     .attr("class", "sed-y-axis")
-    .attr("transform", `translate(${2.2 * plottingConfig.SEDRIGHTMARGIN}, 0)`)
+    .attr("transform", `translate(${2.3 * plottingConfig.SEDRIGHTMARGIN}, 0)`)
     .call(
       d3
         .axisLeft(windowState.SEDyScaler)
@@ -295,6 +309,7 @@ export function initializeSEDPlot() {
       windowState.SEDyScaler.range()[1] - plottingConfig.SEDUPPERMARGIN
     )
     .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "hanging")
     .text("0.4 \u03BCm")
     .style("font-size", "10pt")
     .style("fill", "#a69a83");
@@ -308,7 +323,8 @@ export function initializeSEDPlot() {
         2
     )
     .attr("y", SEDHeight - plottingConfig.SEDLOWERMARGIN)
-    .attr("dy", -6)
+    // .attr("y", plottingConfig.SEDUPPERMARGIN)
+    .attr("dy", -20)
     .attr("text-anchor", "middle")
     .call((text) =>
       text
@@ -339,9 +355,10 @@ export function initializeSEDPlot() {
     );
 }
 
+/**
+ * Initializing the M-SFR Plot
+ */
 export function initializeMSFRPlot() {
-  console.log("Initializing M-SFR Plot");
-
   let minSFR = 0.007524;
   let maxSFR = 11.997524;
   let minM = 4.0265;
@@ -353,11 +370,14 @@ export function initializeMSFRPlot() {
 
   windowState.MSFRxScaler = d3.scaleLinear(
     [minSFR, maxSFR],
-    [plottingConfig.SEDLEFTMARGIN, MSFRWidth - plottingConfig.SEDRIGHTMARGIN]
+    [plottingConfig.MSFRLEFTMARGIN, MSFRWidth - plottingConfig.MSFRRIGHTMARGIN]
   );
   windowState.MSFRyScaler = d3.scaleLinear(
     [minM, maxM],
-    [MSFRHeight - plottingConfig.SEDLOWERMARGIN, plottingConfig.SEDUPPERMARGIN]
+    [
+      MSFRHeight - plottingConfig.MSFRLOWERMARGIN,
+      plottingConfig.MSFRUPPERMARGIN,
+    ]
   );
 
   let MSFRsvg = d3
@@ -366,34 +386,44 @@ export function initializeMSFRPlot() {
     .attr("id", "MSFRContainer")
     .attr(
       "width",
-      MSFRWidth + plottingConfig.SEDLEFTMARGIN + plottingConfig.SEDRIGHTMARGIN
+      MSFRWidth + plottingConfig.MSFRLEFTMARGIN + plottingConfig.MSFRRIGHTMARGIN
     )
     .attr(
       "height",
-      MSFRHeight + plottingConfig.SEDUPPERMARGIN + plottingConfig.SEDLOWERMARGIN
+      MSFRHeight +
+        plottingConfig.MSFRUPPERMARGIN +
+        plottingConfig.MSFRLOWERMARGIN
     )
     .append("g")
     .attr(
       "transform",
       "translate(" +
-        plottingConfig.SEDLEFTMARGIN +
+        plottingConfig.MSFRLEFTMARGIN +
         "," +
-        plottingConfig.SEDUPPERMARGIN +
+        plottingConfig.MSFRUPPERMARGIN +
         ")"
     );
 
   const MSFRxAxis = MSFRsvg.append("g")
     .attr(
       "transform",
-      "translate(0," + (MSFRHeight - plottingConfig.SEDLOWERMARGIN + 5) + ")"
+      "translate(0," + (MSFRHeight - plottingConfig.MSFRLOWERMARGIN + 5) + ")"
     )
     .attr("class", "msfr-x-axis")
-    .call(d3.axisBottom(windowState.MSFRxScaler).ticks(2));
+    .call(
+      d3
+        .axisBottom(windowState.MSFRxScaler)
+        .tickValues([Math.ceil(minSFR), Math.floor(maxSFR)])
+    );
 
   const MSFRyAxis = MSFRsvg.append("g")
     .attr("class", "msfr-y-axis")
     .attr("transform", `translate(0, 0)`)
-    .call(d3.axisLeft(windowState.MSFRyScaler).ticks(2));
+    .call(
+      d3
+        .axisLeft(windowState.MSFRyScaler)
+        .tickValues([Math.ceil(minM), Math.floor(maxM)])
+    );
 
   // For Image:
 
@@ -427,9 +457,190 @@ export function initializeMSFRPlot() {
     })
     .attr("r", 5)
     .style("fill", "#73ADFA");
+
+  MSFRsvg.append("text")
+    .attr(
+      "x",
+      (plottingConfig.MSFRLEFTMARGIN +
+        MSFRWidth -
+        plottingConfig.MSFRRIGHTMARGIN) /
+        2
+    )
+    .attr("y", MSFRHeight - plottingConfig.MSFRLOWERMARGIN)
+    .attr("dy", 0)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "hanging")
+    .call((text) =>
+      text
+        .append("tspan")
+        .text("log SFR")
+        // .text("log SFR (M\u2299/YR)")
+        .style("fill", "white")
+        .style("font-size", "10pt")
+    );
+
+  MSFRsvg.append("text")
+    .attr("dy", 1)
+    .attr("text-anchor", "middle")
+    .attr(
+      "transform",
+      `translate(${-1.1 * plottingConfig.MSFRRIGHTMARGIN},${
+        (plottingConfig.MSFRUPPERMARGIN +
+          MSFRHeight -
+          plottingConfig.MSFRLOWERMARGIN) /
+        2
+      }) rotate(-90)`
+    )
+    .call((text) =>
+      text
+        .append("tspan")
+        .text("log M*")
+        .style("fill", "white")
+        .style("font-size", "10pt")
+    );
 }
 
+/**
+ * Function to initialize the Mass-Redshift Plot
+ */
+export function initializeMZPlot() {
+  let minZ = 0.007524;
+  let maxZ = 11.997524;
+  let minM = 4.0265;
+  let maxM = 13.1475;
+
+  // Base of MZ
+  let MZWidth = MZContainer.clientWidth;
+  let MZHeight = MZContainer.clientHeight;
+
+  windowState.MZxScaler = d3.scaleLinear(
+    [minZ, maxZ],
+    [plottingConfig.MZLEFTMARGIN, MZWidth - plottingConfig.MZRIGHTMARGIN]
+  );
+  windowState.MZyScaler = d3.scaleLinear(
+    [minM, maxM],
+    [MZHeight - plottingConfig.MZLOWERMARGIN, plottingConfig.MZUPPERMARGIN]
+  );
+
+  let MZsvg = d3
+    .select(MZContainer)
+    .append("svg")
+    .attr("id", "MZContainer")
+    .attr(
+      "width",
+      MZWidth + plottingConfig.MZLEFTMARGIN + plottingConfig.MZRIGHTMARGIN
+    )
+    .attr(
+      "height",
+      MZHeight + plottingConfig.MZUPPERMARGIN + plottingConfig.MZLOWERMARGIN
+    )
+    .append("g")
+    .attr(
+      "transform",
+      "translate(" +
+        plottingConfig.MZLEFTMARGIN +
+        "," +
+        plottingConfig.MZUPPERMARGIN +
+        ")"
+    );
+
+  const MZxAxis = MZsvg.append("g")
+    .attr(
+      "transform",
+      "translate(0," + (MZHeight - plottingConfig.MZLOWERMARGIN + 5) + ")"
+    )
+    .attr("class", "mz-x-axis")
+    .call(
+      d3
+        .axisBottom(windowState.MZxScaler)
+        .tickValues([Math.ceil(minZ), Math.floor(maxZ)])
+    );
+
+  const MZyAxis = MZsvg.append("g")
+    .attr("class", "mz-y-axis")
+    .attr("transform", `translate(0, 0)`)
+    .call(
+      d3
+        .axisLeft(windowState.MZyScaler)
+        .tickValues([Math.ceil(minM), Math.floor(maxM)])
+    );
+
+  // For Image:
+
+  let minX, maxX, minY, maxY;
+
+  minX = windowState.MZxScaler(minZ);
+  minY = windowState.MZyScaler(minM);
+  maxX = windowState.MZxScaler(maxZ);
+  maxY = windowState.MZyScaler(maxM);
+
+  MZsvg.append("svg:image")
+    .attr("x", minX)
+    .attr("y", maxY)
+    .attr("width", maxX - minX)
+    .attr("height", minY - maxY)
+    .attr("preserveAspectRatio", "none")
+    .attr("opacity", 0.3)
+    .attr("xlink:href", "/data/zM-contours.svg");
+
+  let baseData = [{ zfit_50: 10 }];
+
+  MZsvg.selectAll("circles")
+    .data(baseData)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => {
+      return windowState.MZxScaler(d.zfit_50);
+    })
+    .attr("cy", (d) => {
+      return windowState.MZyScaler(-20);
+    })
+    .attr("r", 5)
+    .style("fill", "#73ADFA");
+
+  MZsvg.append("text")
+    .attr(
+      "x",
+      (plottingConfig.MZLEFTMARGIN + MZWidth - plottingConfig.MZRIGHTMARGIN) / 2
+    )
+    .attr("y", MZHeight - plottingConfig.MZLOWERMARGIN)
+    .attr("dy", 0)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "hanging")
+    .call((text) =>
+      text
+        .append("tspan")
+        .text("z")
+        .style("fill", "white")
+        .style("font-size", "10pt")
+    );
+
+  MZsvg.append("text")
+    .attr("dy", 1)
+    .attr("text-anchor", "middle")
+    .attr(
+      "transform",
+      `translate(${-1.1 * plottingConfig.MZRIGHTMARGIN},${
+        (plottingConfig.MZUPPERMARGIN +
+          MZHeight -
+          plottingConfig.MZLOWERMARGIN) /
+        2
+      }) rotate(-90)`
+    )
+    .call((text) =>
+      text
+        .append("tspan")
+        .text("log M*")
+        .style("fill", "white")
+        .style("font-size", "10pt")
+    );
+}
+
+/**
+ * Function to initialize the details pane
+ */
 export function initializeDetailPane() {
   initializeSEDPlot();
+  initializeMZPlot();
   initializeMSFRPlot();
 }
