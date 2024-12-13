@@ -18,12 +18,17 @@ function getVersionName() {
   return returnString;
 }
 
+function getCurrentYear() {
+  return new Date().getFullYear();
+}
+
 export default defineConfig({
   plugins: [
     handlebars({
       partialDirectory: resolve(__dirname, "partials"),
       context: {
         versionNumber: getVersionName,
+        currentYear: getCurrentYear,
       },
     }),
     ViteImageOptimizer({ jpeg: { quality: 60 } }),

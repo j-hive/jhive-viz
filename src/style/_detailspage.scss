@@ -17,8 +17,65 @@ body.details-page {
     margin-left: auto;
     margin-right: auto;
     max-width: 1200px;
-    border-left-style: solid;
-    border-right-style: solid;
+
+    @media (min-width: 1200px) {
+      border-left-style: solid;
+      border-right-style: solid;
+      border-color: colours.$Main-secondary-text-hex;
+    }
+  }
+
+  .details-module {
+    padding-top: 1.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+
+  #details-top-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  #details-cutout-image {
+    width: 20em;
+    height: 20em;
+    background-color: black;
+    margin-right: 2em;
+    margin-left: 1em;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+
+  #details-source-name {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2.5rem;
+  }
+
+  #details-position {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.5rem;
+    color: #ccc;
+  }
+
+  footer {
+    color: #aaa;
+    border-top-style: solid;
+    margin: 0;
+    padding: 1.5em 1em 1em;
     border-color: colours.$Main-secondary-text-hex;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8em;
+
+    .footer-copyright {
+      font-size: larger;
+    }
   }
 }

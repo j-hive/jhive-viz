@@ -8,7 +8,15 @@
   <body class="details-page">
     <div class="details-container">
       {{> detailspage/_header}}
-      <div id="test-container"></div>
+      <div id="details-top-info" class="details-module">
+        <div id="details-top-info-firstcolumn">
+          <div id="details-source-name">Source Name</div>
+          <div id="details-position">Position</div>
+        </div>
+        <div id="details-cutout-image"></div>
+      </div>
+      <div id="test-container" class="details-module"></div>
+      {{> detailspage/_footer}}
     </div>
     <script type="module" src="/src/details.js"></script>
   </body>
