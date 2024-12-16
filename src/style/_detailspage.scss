@@ -1,4 +1,5 @@
 @use "colours";
+@use "sass:color";
 
 body.details-page {
   overflow: unset;
@@ -28,8 +29,8 @@ body.details-page {
   .details-module {
     padding-top: 1.5em;
     padding-bottom: 0.5em;
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: 2.5em;
+    padding-right: 2.5em;
   }
 
   #details-top-info {
@@ -39,10 +40,10 @@ body.details-page {
   }
 
   #details-cutout-image {
-    width: 20em;
+    min-width: 20em;
     height: 20em;
     background-color: black;
-    margin-right: 2em;
+    margin-right: 0em;
     margin-left: 1em;
     background-repeat: no-repeat;
     background-size: cover;
@@ -53,13 +54,62 @@ body.details-page {
     font-family: "Bebas Neue", sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 
   #details-position {
     font-family: "Bebas Neue", sans-serif;
     font-size: 1.5rem;
-    color: #ccc;
+    color: #aaa;
+  }
+
+  #details-flux-radius {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.5rem;
+    color: #aaa;
+  }
+
+  #details-photometry-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 2rem;
+    margin-top: 1em;
+    margin-bottom: 0.25em;
+  }
+
+  #details-magnitude-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .details-mag-box {
+    margin: 0.3em 0 0.5em;
+    border: 1pt solid
+      color.adjust(colours.$J-HIVE-Theme-2-hex, $lightness: -20%);
+    width: 7em;
+
+    div {
+      text-align: center;
+    }
+
+    .details-mag-filt {
+      padding-left: 1em;
+      padding-right: 1em;
+      padding-top: 0.3em;
+      padding-bottom: 0.3em;
+
+      background-color: color.adjust(
+        colours.$J-HIVE-Theme-2-hex,
+        $lightness: -20%
+      );
+    }
+
+    .details-mag-val {
+      padding-top: 0.3em;
+      padding-bottom: 0.3em;
+    }
   }
 
   footer {

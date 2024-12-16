@@ -141,6 +141,10 @@ export async function addFieldNameToData(data, fieldName) {
   });
 }
 
+/**
+ * Load the Distributions Metadata
+ * @returns {Object} The Distributions Metadata File
+ */
 export async function loadDistributionMetadata() {
   changeLoadingStatus("Loading Distribution Metadata...");
   const metadataFileResponse = await fetch(distributionMetadataPath).catch(
