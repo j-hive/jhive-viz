@@ -8,6 +8,7 @@ import {
   dataContainers,
   dataRootURL,
   fieldsFileName,
+  distributionMetadataPath,
 } from "./config";
 import { changeLoadingStatus } from "./panes/loadingpane";
 
@@ -96,6 +97,8 @@ export async function loadAllDataFromFieldsFile(filterKey = null) {
   for (const key in dataContainers.fieldsFile) {
     if (filterKey && key != filterKey) {
       continue;
+    } else if (key.endsWith("_raw")) {
+      continue;
     }
 
     console.log(`Loading Data from ${dataContainers.fieldsFile[key].display}`);
@@ -127,8 +130,29 @@ export async function loadAllDataFromFieldsFile(filterKey = null) {
   return [mergedData, mergedMetadata];
 }
 
+/**
+ * Add a field name parameter to the array of data objects
+ * @param {Array} data - the data array
+ * @param {String} fieldName - the field name to append
+ */
 export async function addFieldNameToData(data, fieldName) {
   data.map((d) => {
     d.fieldName = fieldName;
   });
+}
+
+export async function loadDistributionMetadata() {
+  changeLoadingStatus("Loading Distribution Metadata...");
+  const metadataFileResponse = await fetch(distributionMetadataPath).catch(
+    (error) =>
+      console.log(`Could not load Distribution Metadata File: ${error.message}`)
+  );
+  const metadataFile = await metadataFileResponse
+    .json()
+    .catch((error) =>
+      console.log(`Could not parse Distribution Metadata: ${error.message}`)
+    );
+  console.log("Loaded Distribution Metadata");
+
+  return metadataFile;
 }

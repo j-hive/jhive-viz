@@ -16,7 +16,6 @@ import { addFieldNameToData } from "./dataLoading";
  */
 
 export async function removeFieldData(fieldName) {
-  console.log(`Removing Field ${fieldName}`);
   updateFieldList();
   dataContainers.pointContainer[fieldName].removeChildren();
   delete dataContainers.pointContainer[fieldName];
@@ -47,7 +46,11 @@ export async function addFieldData(fieldName) {
   replotData();
 }
 
-export function createFunctionSelector(fieldName) {
+export function createFunctionSelector(
+  fieldName,
+  checked = true,
+  overrideName = null
+) {
   const fieldSelectorContainer = document.getElementById(
     "field-selector-container"
   );
@@ -60,7 +63,7 @@ export function createFunctionSelector(fieldName) {
   fieldInput.name = "field_selector_option";
   fieldInput.value = fieldName;
   fieldInput.id = "field_selector_" + fieldName;
-  fieldInput.checked = true;
+  fieldInput.checked = checked;
   fieldInput.addEventListener("click", (event) => {
     if (event.target.checked) {
       addFieldData(fieldName);
@@ -71,11 +74,20 @@ export function createFunctionSelector(fieldName) {
 
   const fieldLabel = document.createElement("label");
   fieldLabel.htmlFor = fieldInput.id;
-  fieldLabel.innerHTML = dataContainers.fieldsFile[fieldName].display;
+  fieldLabel.innerHTML = overrideName
+    ? overrideName
+    : dataContainers.fieldsFile[fieldName].display;
 
   fieldContainer.appendChild(fieldInput);
   fieldContainer.appendChild(fieldLabel);
   fieldSelectorContainer.appendChild(fieldContainer);
+
+  if (fieldName.endsWith("_raw")) {
+    let hrBreak = document.createElement("hr");
+    hrBreak.classList.add("field-selector-line-break");
+
+    fieldSelectorContainer.appendChild(hrBreak);
+  }
 }
 
 /**

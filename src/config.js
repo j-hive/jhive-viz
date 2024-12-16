@@ -16,6 +16,13 @@ export const dataRootURL = "/data/";
 export const fieldsFileName = "fields_data.json";
 
 /**
+ * The URL to the Distributions Metadata
+ * @type {string}
+ */
+export const distributionMetadataPath =
+  dataRootURL + "v1.0/distributions/metadata.json";
+
+/**
  * The URL to the Data File
  * @type {string}
  */
@@ -76,6 +83,15 @@ export const dataContainers = {
   spriteToSelected: new WeakMap(),
   spriteToHighlighted: new WeakMap(),
   pixiTexture: null,
+};
+
+/**
+ * Object to contain all distributions data
+ */
+
+export const distributionDataContainers = {
+  metadata: null,
+  dist: {},
 };
 
 /**

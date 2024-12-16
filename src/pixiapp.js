@@ -1,14 +1,23 @@
 // pixiapp.js
 
 import { d3, PIXI } from "./imports";
-import { plottingConfig, dataContainers, windowState } from "./config";
+import {
+  plottingConfig,
+  dataContainers,
+  windowState,
+  distributionDataContainers,
+} from "./config";
 import {
   addDataOptionsToAxisSelectors,
   createFunctionSelector,
   getRangeWithBorder,
   updateFieldList,
 } from "./data";
-import { loadAllDataFromFieldsFile, loadFieldsFile } from "./dataLoading";
+import {
+  loadAllDataFromFieldsFile,
+  loadDistributionMetadata,
+  loadFieldsFile,
+} from "./dataLoading";
 import { initializePlotAxis, resizePlotAxis } from "./plotaxis";
 import {
   initAxisChange,
@@ -95,6 +104,11 @@ export async function initializePixiApp() {
   // Loading Fields File:
   dataContainers.fieldsFile = await loadFieldsFile();
 
+  // Loading Distribution Metadata:
+  distributionDataContainers.metadata = await loadDistributionMetadata();
+
+  console.log(distributionDataContainers.metadata);
+
   // Loading Data:
 
   [dataContainers.data, dataContainers.metadata] =
@@ -102,6 +116,10 @@ export async function initializePixiApp() {
 
   Object.keys(dataContainers.data).map((fieldName) => {
     createFunctionSelector(fieldName);
+
+    if (Object.keys(dataContainers.fieldsFile).includes(fieldName + "_raw")) {
+      createFunctionSelector(fieldName + "_raw", false, "Raw");
+    }
   });
 
   updateFieldList();
