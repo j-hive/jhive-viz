@@ -6,8 +6,9 @@
  * The URL to the data root
  * @type {string}
  */
-
 export const dataRootURL = "/data/";
+// export const dataRootURL =
+//   "http://jhive-data-public.s3-website.us-east-2.amazonaws.com/data/";
 
 /**
  * The filename of the fields File

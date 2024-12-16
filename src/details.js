@@ -1,6 +1,10 @@
 // Main Entry Point for Details Page
 import "./style/style.scss";
-import { dataContainers, distributionDataContainers } from "./config.js";
+import {
+  dataContainers,
+  dataRootURL,
+  distributionDataContainers,
+} from "./config.js";
 import {
   loadAllDataFromFieldsFile,
   loadDistributionMetadata,
@@ -15,6 +19,94 @@ let id = null;
 const testContainer = document.getElementById("test-container");
 
 let mainData = {};
+
+class DistributionPlot {
+  leftMargin = 100;
+  rightMargin = 20;
+  topMargin = 20;
+  bottomMargin = 100;
+
+  constructor(containerID, dataPoint, key) {
+    this.build(containerID, dataPoint, key);
+  }
+
+  async build(containerID, dataPoint, key) {
+    // Opening the distribution information
+    const distDataPath =
+      dataRootURL + distributionDataContainers.metadata.dist[key];
+
+    const distributionData = await d3.csv(distDataPath, d3.autoType);
+    console.log(distributionData);
+
+    // Creating Plot
+
+    const distributionContainer = document.getElementById(containerID);
+    console.log(distributionContainer);
+    let distributionContainerWidth = distributionContainer.clientWidth;
+    let distributionContainerHeight = distributionContainer.clientHeight;
+
+    // Creating Scalers
+    const distributionXScaler = d3.scaleLinear(
+      d3.extent(distributionData, (d) => parseFloat(d.bin_centres)),
+      [this.leftMargin, distributionContainerWidth - this.rightMargin]
+    );
+    const distributionYScaler = d3.scaleLinear(
+      d3.extent(distributionData, (d) => parseFloat(d.bin_values)),
+      [distributionContainerHeight - this.topMargin, this.bottomMargin]
+    );
+
+    const distributionSVG = d3
+      .select(distributionContainer)
+      .append("svg")
+      .attr("id", `${key}-distribution-plot`)
+      .attr("width", distributionContainerWidth)
+      .attr("height", distributionContainerHeight)
+      .append("g")
+      .attr("transform", "translate(0,0)");
+
+    const distributionXAxis = distributionSVG
+      .append("g")
+      .attr("class", `dist-${key}-x-axis`)
+      .attr(
+        "transform",
+        `translate(0, ${distributionContainerHeight - this.topMargin})`
+      )
+      .call(d3.axisBottom(distributionXScaler));
+
+    const distributionYAxis = distributionSVG
+      .append("g")
+      .attr("class", `dist-${key}-y-axis`)
+      .attr("transform", `translate(${this.leftMargin},0)`)
+      .call(d3.axisLeft(distributionYScaler).ticks(5));
+
+    const curve = distributionSVG
+      .append("g")
+      .append("path")
+      .attr("class", `${key}-path`)
+      .datum(distributionData)
+      .attr(
+        "d",
+        d3
+          .area()
+          .x((d) => distributionXScaler(d.bin_centres))
+          .y0(distributionYScaler(0))
+          .y1((d) => distributionYScaler(d.bin_values))
+      );
+
+    const dataIndicator = distributionSVG
+      .append("line")
+      .attr("x1", distributionXScaler(dataPoint[key]))
+      .attr("x2", distributionXScaler(dataPoint[key]))
+      .attr("y1", distributionYScaler(0))
+      .attr(
+        "y2",
+        distributionYScaler(d3.max(distributionData, (d) => d.bin_values))
+      )
+      .attr("stroke", "#facb73")
+      .attr("stroke-dasharray", 4)
+      .attr("stroke-width", "2");
+  }
+}
 
 /**
  * Convenience Function to change HTML within an element based on its ID
@@ -102,6 +194,11 @@ function populateTopInfo(fieldName, id, mainData) {
   populateMagnitudes(mainData);
 }
 
+/**
+ * Change the Cutout Image
+ * @param {String} fieldName - the key of the field
+ * @param {Number} id - the id of the object
+ */
 function changeCutoutImage(fieldName, id) {
   const cutoutImage = document.getElementById("details-cutout-image");
 
@@ -141,6 +238,12 @@ async function initDetailsPage() {
   });
 
   testContainer.innerHTML = newHTMLString;
+
+  const distPlot = new DistributionPlot(
+    "test-plot-container",
+    mainData,
+    "logM_50"
+  );
 }
 
 await initDetailsPage();

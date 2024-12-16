@@ -73,7 +73,7 @@ body.details-page {
     font-family: "Bebas Neue", sans-serif;
     font-size: 2rem;
     margin-top: 1em;
-    margin-bottom: 0.25em;
+    margin-bottom: 0em;
   }
 
   #details-magnitude-container {
@@ -109,6 +109,15 @@ body.details-page {
     .details-mag-val {
       padding-top: 0.3em;
       padding-bottom: 0.3em;
+    }
+  }
+
+  #test-plot-container {
+    width: 100%;
+    height: 20em;
+
+    .logM_50-path {
+      fill: colours.$J-HIVE-Theme-2-hex;
     }
   }
 
