@@ -1,7 +1,13 @@
 // Detail Pane Functions
 
 import { d3 } from "../imports";
-import { dataContainers, plottingConfig, windowState } from "../config";
+import {
+  dataContainers,
+  dataRootURL,
+  distributionDataContainers,
+  plottingConfig,
+  windowState,
+} from "../config";
 import { getCutoutURL } from "../utils/cutouts";
 import {
   convertABmagnitudeToLogFlux,
@@ -359,10 +365,9 @@ export function initializeSEDPlot() {
  * Initializing the M-SFR Plot
  */
 export function initializeMSFRPlot() {
-  let minSFR = -5.9915;
-  let maxSFR = 3.9685;
-  let minM = 4.0265;
-  let maxM = 13.1475;
+  let [minSFR, maxSFR] =
+    distributionDataContainers.metadata.limits["logSFRinst_50"];
+  let [minM, maxM] = distributionDataContainers.metadata.limits["logM_50"];
 
   // Base of MSFR
   let MSFRWidth = MSFRContainer.clientWidth;
@@ -399,7 +404,7 @@ export function initializeMSFRPlot() {
   const MSFRxAxis = MSFRsvg.append("g")
     .attr(
       "transform",
-      "translate(0," + (MSFRHeight - 1.1 * plottingConfig.MSFRLOWERMARGIN) + ")"
+      "translate(0," + (MSFRHeight - plottingConfig.MSFRLOWERMARGIN) + ")"
     )
     .attr("class", "msfr-x-axis")
     .call(
@@ -434,7 +439,11 @@ export function initializeMSFRPlot() {
     .attr("height", minY - maxY)
     .attr("preserveAspectRatio", "none")
     .attr("opacity", 0.3)
-    .attr("xlink:href", "/data/sfr-contours.svg");
+    .attr(
+      "xlink:href",
+      dataRootURL +
+        distributionDataContainers.metadata.plots["logSFRinst_50-logM_50"]
+    );
 
   let baseData = [{ zfit_50: 10 }];
 
@@ -477,7 +486,7 @@ export function initializeMSFRPlot() {
     .attr("text-anchor", "middle")
     .attr(
       "transform",
-      `translate(${-1.1 * plottingConfig.MSFRRIGHTMARGIN},${
+      `translate(0,${
         (plottingConfig.MSFRUPPERMARGIN +
           MSFRHeight -
           plottingConfig.MSFRLOWERMARGIN) /
@@ -497,10 +506,8 @@ export function initializeMSFRPlot() {
  * Function to initialize the Mass-Redshift Plot
  */
 export function initializeMZPlot() {
-  let minZ = 0.007524;
-  let maxZ = 11.997524;
-  let minM = 4.0265;
-  let maxM = 13.1475;
+  let [minZ, maxZ] = distributionDataContainers.metadata.limits["zfit_50"];
+  let [minM, maxM] = distributionDataContainers.metadata.limits["logM_50"];
 
   // Base of MZ
   let MZWidth = MZContainer.clientWidth;
@@ -534,7 +541,7 @@ export function initializeMZPlot() {
   const MZxAxis = MZsvg.append("g")
     .attr(
       "transform",
-      "translate(0," + (MZHeight - 1.1 * plottingConfig.MZLOWERMARGIN) + ")"
+      "translate(0," + (MZHeight - plottingConfig.MZLOWERMARGIN) + ")"
     )
     .attr("class", "mz-x-axis")
     .call(
@@ -569,7 +576,10 @@ export function initializeMZPlot() {
     .attr("height", minY - maxY)
     .attr("preserveAspectRatio", "none")
     .attr("opacity", 0.3)
-    .attr("xlink:href", "/data/zM-contours.svg");
+    .attr(
+      "xlink:href",
+      dataRootURL + distributionDataContainers.metadata.plots["zfit_50-logM_50"]
+    );
 
   let baseData = [{ zfit_50: 10 }];
 
@@ -608,7 +618,7 @@ export function initializeMZPlot() {
     .attr("text-anchor", "middle")
     .attr(
       "transform",
-      `translate(${-1.1 * plottingConfig.MZRIGHTMARGIN},${
+      `translate(0,${
         (plottingConfig.MZUPPERMARGIN +
           MZHeight -
           plottingConfig.MZLOWERMARGIN) /
