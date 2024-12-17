@@ -1,0 +1,132 @@
+@use "colours";
+@use "sass:color";
+
+body.landing-page {
+  overflow: unset;
+  margin: 0;
+
+  .landing-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    justify-content: 0 5vw 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1200px;
+    min-height: 100vh;
+
+    @media (min-width: 1200px) {
+      border-left-style: solid;
+      border-right-style: solid;
+      border-color: colours.$Main-secondary-text-hex;
+    }
+
+    .landing-header {
+      position: relative;
+      width: 100%;
+      min-height: 40vh;
+      background-color: colours.$J-HIVE-Theme-5-hex;
+      //   background: linear-gradient(color.adjust());
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .header-left {
+        display: flex;
+        flex-direction: column;
+        min-width: 50%;
+        .title {
+          font-family: "Bebas Neue", sans-serif;
+          font-weight: 400;
+          font-style: normal;
+          font-size: 12em;
+          padding: 10rem 1rem 0rem 7rem;
+          margin: 0;
+          line-height: 0.8em;
+        }
+
+        .subtitle {
+          margin: 0;
+          padding: 0rem 1rem 10rem 7.25rem;
+          font-family: "Bebas Neue", sans-serif;
+          font-weight: 400;
+          font-size: 1.8em;
+          font-style: normal;
+          line-height: 1em;
+          color: #ccc;
+        }
+      }
+
+      .header-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .tagline {
+          font-size: 1.6em;
+          margin-left: 3rem;
+          margin-right: 3rem;
+          line-height: 1.2em;
+          text-align: center;
+          color: #eee;
+        }
+
+        .enter-button {
+          font-family: "Bebas Neue", sans-serif;
+          font-weight: 400;
+          font-size: 1.6rem;
+          margin-top: 1.25em;
+          padding: 0.5em 0.75em;
+          border: 2pt solid #fff;
+          color: #fff;
+          background-color: colours.$J-HIVE-Theme-2-hex;
+        }
+
+        .enter-button:hover {
+          background-color: colours.$J-HIVE-Theme-3-hex;
+        }
+      }
+    }
+
+    .stats {
+      width: 100%;
+      min-height: 15vh;
+      background-color: colours.$J-HIVE-Theme-1-hex;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: #333;
+
+      .stat-list {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        padding-left: 3em;
+        padding-right: 3em;
+        justify-content: space-around;
+
+        li {
+          list-style: none;
+          text-align: center;
+
+          .stat-number {
+            font-family: "Bebas Neue", sans-serif;
+            font-weight: 400;
+            font-size: 7rem;
+            line-height: 0.9em;
+            padding-top: 1.5rem;
+          }
+          .stat-description {
+            line-height: 1em;
+            padding-bottom: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}

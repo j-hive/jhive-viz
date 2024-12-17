@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      J-HIVE: JWST's Homogeneous Information-Rich Visualization of Extragalactic
+      Datasets
+    </title>
+    <script>
+      HTMLCanvasElement.prototype.getContext = (function (origFn) {
+        return function (type, attribs) {
+          attribs = attribs || {};
+          attribs.preserveDrawingBuffer = true;
+          return origFn.call(this, type, attribs);
+        };
+      })(HTMLCanvasElement.prototype.getContext);
+    </script>
+  </head>
+
+  <body>
+    {{> _loading}} {{> _alert}}
+    <div class="container">
+      {{> _header}} {{> _interactionpanel}} {{> _contextpanel}}
+
+      <div id="app-container">
+        <div id="app">
+          <div id="plot-decorators"></div>
+        </div>
+      </div>
+
+      {{> _detailpanel}}
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

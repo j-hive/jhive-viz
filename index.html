@@ -7,30 +7,46 @@
       J-HIVE: JWST's Homogeneous Information-Rich Visualization of Extragalactic
       Datasets
     </title>
-    <script>
-      HTMLCanvasElement.prototype.getContext = (function (origFn) {
-        return function (type, attribs) {
-          attribs = attribs || {};
-          attribs.preserveDrawingBuffer = true;
-          return origFn.call(this, type, attribs);
-        };
-      })(HTMLCanvasElement.prototype.getContext);
-    </script>
   </head>
-
-  <body>
-    {{> _loading}} {{> _alert}}
-    <div class="container">
-      {{> _header}} {{> _interactionpanel}} {{> _contextpanel}}
-
-      <div id="app-container">
-        <div id="app">
-          <div id="plot-decorators"></div>
+  <body class="landing-page">
+    <div class="landing-container">
+      <header class="landing-header">
+        <div class="header-left">
+          <h1 class="title">J&#8288;-&#8288;HIVE</h1>
+          <h2 class="subtitle">
+            JWST's Homogeneous Information-Rich <br />
+            Visualization of Extragalactic Datasets
+          </h2>
         </div>
-      </div>
+        <div class="header-right">
+          <div class="tagline">
+            Harnessing the power of JWST to visualize the galaxy evolution over
+            cosmic time
+          </div>
 
-      {{> _detailpanel}}
+          <a href="app.html" class="enter-button">Enter the Visualization</a>
+        </div>
+      </header>
+
+      <section class="stats">
+        <ul class="stat-list">
+          <li class="stat-entry">
+            <div class="stat-number">10</div>
+            <div class="stat-description">JWST Fields</div>
+          </li>
+          <li class="stat-entry">
+            <div class="stat-number">100</div>
+            <div class="stat-description">Measured Parameters</div>
+          </li>
+          <li class="stat-entry">
+            <div class="stat-number">1000</div>
+            <div class="stat-description">Total Sources</div>
+          </li>
+        </ul>
+      </section>
+
+      <div class="testing"><a href="app.html">Go to the App</a></div>
     </div>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/landing.js"></script>
   </body>
 </html>
