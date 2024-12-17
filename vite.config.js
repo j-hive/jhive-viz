@@ -23,6 +23,14 @@ function getCurrentYear() {
 }
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        details: resolve(__dirname, "details.html"),
+      },
+    },
+  },
   plugins: [
     handlebars({
       partialDirectory: resolve(__dirname, "partials"),

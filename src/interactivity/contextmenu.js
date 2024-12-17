@@ -68,39 +68,57 @@ class ContextMenu {
   }
 }
 
+const menuItems = [
+  {
+    icon: "magnifying-glass",
+    name: "Open Details",
+    action: openDetails,
+  },
+  {
+    icon: "image",
+    name: "Open FITS Map",
+    action: openFITSMap,
+  },
+  {
+    icon: "copy",
+    name: "Copy Abridged Data to Clipboard",
+    action: copyAbridgedDataToClipboard,
+  },
+  {
+    icon: "copy",
+    name: "Copy All Data to Clipboard",
+    action: copyAllDataToClipboard,
+  },
+];
+
+const menuItemsSelected = [
+  {
+    icon: "list",
+    name: "Copy IDs of Selected Sources",
+    action: copySelectedID,
+  },
+];
+
 const menu = new ContextMenu({
-  items: [
-    {
-      icon: "magnifying-glass",
-      name: "Open Details",
-      action: openDetails,
-    },
-    {
-      icon: "image",
-      name: "Open FITS Map",
-      action: openFITSMap,
-    },
-    {
-      icon: "copy",
-      name: "Copy Selected Data to Clipboard",
-      action: copySelectedDataToClipboard,
-    },
-    {
-      icon: "copy",
-      name: "Copy All Data to Clipboard",
-      action: copyAllDataToClipboard,
-    },
-  ],
+  items: menuItems,
+});
+
+const menuSelected = new ContextMenu({
+  items: menuItemsSelected,
 });
 
 export function openContextMenu(event) {
   recolorData();
 
-  const time = menu.isOpen() ? 100 : 0;
+  let currentMenu = windowState.mouseMode === "select" ? menuSelected : menu;
+
+  const time = currentMenu.isOpen() ? 100 : 0;
 
   menu.hide();
+  menuSelected.hide();
+
   setTimeout(() => {
-    menu.show(event.pageX, event.pageY), time;
+    currentMenu.show(event.pageX, event.pageY), time;
   });
 
   document.addEventListener("click", hideContextMenu, false);
@@ -108,6 +126,7 @@ export function openContextMenu(event) {
 
 export function hideContextMenu(event) {
   menu.hide();
+  menuSelected.hide();
   document.removeEventListener("click", hideContextMenu);
 }
 
@@ -142,7 +161,7 @@ function openFITSMap() {
   }
 }
 
-function copySelectedDataToClipboard() {
+function copyAbridgedDataToClipboard() {
   let dataPoint = dataContainers.spriteToData.get(windowState.selectedPoint);
 
   let headerString = `fieldName, id, ra, dec, ${windowState.currentXAxis}, ${windowState.currentYAxis}\n`;
@@ -183,6 +202,32 @@ function copyAllDataToClipboard() {
     .then(() => {
       console.log("Copied Selected Data to Clipboard");
       showAlert("Copied to Clipboard");
+    })
+    .catch((err) => {
+      console.error("Failed to copy: ", err);
+      showAlert("Failed to Copy");
+    });
+}
+
+function copySelectedID() {
+  let headerString = `fieldName, id`;
+  let dataString = "";
+
+  dataContainers.fieldList.map((fieldName) => {
+    dataContainers.data[fieldName].map((d) => {
+      let tmpSprite = dataContainers.dataToSprite.get(d);
+
+      if (dataContainers.spriteToHighlighted.get(tmpSprite)) {
+        dataString += `${d.fieldName}, ${d.id}\n`;
+      }
+    });
+  });
+
+  navigator.clipboard
+    .writeText(headerString + "\n" + dataString)
+    .then(() => {
+      console.log("Copied Selected IDs to Clipboard");
+      showAlert("Copied IDs to Clipboard");
     })
     .catch((err) => {
       console.error("Failed to copy: ", err);

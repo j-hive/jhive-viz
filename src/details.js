@@ -314,4 +314,4 @@ async function initDetailsPage() {
   populateDenseBasis(mainData);
 }
 
-await initDetailsPage();
+initDetailsPage();

@@ -303,9 +303,9 @@ export function highlightPoints(brushEvent) {
         tmpSprite.bringToFront();
         dataContainers.spriteToHighlighted.set(tmpSprite, true);
       } else {
-        tmpSprite.tint = getPointColor(tmpSprite);
         tmpSprite.alpha = windowState.currentOpacity;
         dataContainers.spriteToHighlighted.set(tmpSprite, false);
+        tmpSprite.tint = getPointColor(tmpSprite);
       }
     });
   });

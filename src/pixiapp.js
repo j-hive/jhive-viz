@@ -107,8 +107,6 @@ export async function initializePixiApp() {
   // Loading Distribution Metadata:
   distributionDataContainers.metadata = await loadDistributionMetadata();
 
-  console.log(distributionDataContainers.metadata);
-
   // Loading Data:
 
   [dataContainers.data, dataContainers.metadata] =

@@ -1,9 +1,10 @@
 // Data Brushing Functions
 
 import { d3 } from "../imports";
-import { dataContainers, plottingConfig, windowState } from "../config";
+import { windowState } from "../config";
 import { appendToSVG } from "../plotaxis";
 import { highlightPoints } from "./datainteractions";
+import { openContextMenu } from "./contextmenu";
 
 /**
  * Brush Outline Element
@@ -31,6 +32,9 @@ export async function initBrushing() {
 export function turnOffBrush() {
   d3.selectAll(brushElement).remove();
   d3.selectAll(svgBrushOutlineElement).remove();
+  document
+    .getElementById("plot-decorators")
+    .removeEventListener("contextmenu", openContextMenu);
 }
 
 /**
@@ -39,5 +43,10 @@ export function turnOffBrush() {
 export async function turnOnBrush() {
   svgBrushOutlineElement = await appendToSVG("g");
   brushElement = svgBrushOutlineElement.call(brushTools.mainBrush);
+
+  document
+    .getElementById("plot-decorators")
+    .addEventListener("contextmenu", openContextMenu);
+
   windowState.mouseMode = "select";
 }

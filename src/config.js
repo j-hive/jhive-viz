@@ -1,14 +1,22 @@
 // Application Wide Configuration Parameters
 
+// Determining if process is running in dev or production mode
+
+const devTrue = process.env.NODE_ENV === "development";
+
 // Data URLs
 
 /**
  * The URL to the data root
  * @type {string}
  */
-export const dataRootURL = "/data/";
-// export const dataRootURL =
-//   "http://jhive-data-public.s3-website.us-east-2.amazonaws.com/data/";
+export let dataRootURL = "/data/";
+
+// Changing to Production File Locations if not in Dev Mode
+if (!devTrue) {
+  dataRootURL =
+    "http://jhive-data-public.s3-website.us-east-2.amazonaws.com/data/";
+}
 
 /**
  * The filename of the fields File
