@@ -20,11 +20,14 @@ const testContainer = document.getElementById("test-container");
 
 let mainData = {};
 
+/**
+ * Generator of Distribution Plots
+ */
 class DistributionPlot {
-  leftMargin = 100;
+  leftMargin = 80;
   rightMargin = 20;
   topMargin = 20;
-  bottomMargin = 100;
+  bottomMargin = 60;
 
   constructor(containerID, dataPoint, key) {
     this.build(containerID, dataPoint, key);
@@ -36,24 +39,35 @@ class DistributionPlot {
       dataRootURL + distributionDataContainers.metadata.dist[key];
 
     const distributionData = await d3.csv(distDataPath, d3.autoType);
-    console.log(distributionData);
 
     // Creating Plot
 
     const distributionContainer = document.getElementById(containerID);
-    console.log(distributionContainer);
+    distributionContainer.classList.add("distribution-plot");
+    const distributionTitle = document.createElement("div");
+    distributionTitle.classList.add("distribution-title");
+    distributionTitle.innerHTML = `${dataContainers.metadata.columns[key].display}`;
+    distributionContainer.appendChild(distributionTitle);
+
     let distributionContainerWidth = distributionContainer.clientWidth;
     let distributionContainerHeight = distributionContainer.clientHeight;
+
+    let graphWidth =
+      distributionContainerWidth - this.leftMargin - this.rightMargin;
+    let graphHeight =
+      distributionContainerHeight - this.topMargin - this.bottomMargin;
+
+    let maxYVal = d3.max(distributionData, (d) => d.bin_values);
+
+    let yExtent = d3.extent(distributionData, (d) => parseFloat(d.bin_values));
+    yExtent[0] = 0;
 
     // Creating Scalers
     const distributionXScaler = d3.scaleLinear(
       d3.extent(distributionData, (d) => parseFloat(d.bin_centres)),
-      [this.leftMargin, distributionContainerWidth - this.rightMargin]
+      [0, graphWidth]
     );
-    const distributionYScaler = d3.scaleLinear(
-      d3.extent(distributionData, (d) => parseFloat(d.bin_values)),
-      [distributionContainerHeight - this.topMargin, this.bottomMargin]
-    );
+    const distributionYScaler = d3.scaleLinear(yExtent, [graphHeight, 0]);
 
     const distributionSVG = d3
       .select(distributionContainer)
@@ -62,28 +76,32 @@ class DistributionPlot {
       .attr("width", distributionContainerWidth)
       .attr("height", distributionContainerHeight)
       .append("g")
-      .attr("transform", "translate(0,0)");
+      .attr("transform", `translate(${this.leftMargin},${this.topMargin})`);
 
     const distributionXAxis = distributionSVG
       .append("g")
-      .attr("class", `dist-${key}-x-axis`)
-      .attr(
-        "transform",
-        `translate(0, ${distributionContainerHeight - this.topMargin})`
-      )
+      .attr("class", `dist-${key}-x-axis x-axis`)
+      .attr("transform", `translate(0,${graphHeight})`)
       .call(d3.axisBottom(distributionXScaler));
 
     const distributionYAxis = distributionSVG
       .append("g")
-      .attr("class", `dist-${key}-y-axis`)
-      .attr("transform", `translate(${this.leftMargin},0)`)
-      .call(d3.axisLeft(distributionYScaler).ticks(5));
+      .attr("class", `dist-${key}-y-axis, y-axis`)
+      .call(
+        d3
+          .axisLeft(distributionYScaler)
+          .ticks(5)
+          .tickSizeOuter(0)
+          .tickSizeInner(-graphWidth)
+      );
 
     const curve = distributionSVG
       .append("g")
       .append("path")
       .attr("class", `${key}-path`)
       .datum(distributionData)
+      .attr("fill", "#676f7a")
+      .attr("fill-opacity", 0.8)
       .attr(
         "d",
         d3
@@ -98,14 +116,80 @@ class DistributionPlot {
       .attr("x1", distributionXScaler(dataPoint[key]))
       .attr("x2", distributionXScaler(dataPoint[key]))
       .attr("y1", distributionYScaler(0))
-      .attr(
-        "y2",
-        distributionYScaler(d3.max(distributionData, (d) => d.bin_values))
-      )
+      .attr("y2", distributionYScaler(maxYVal))
       .attr("stroke", "#facb73")
       .attr("stroke-dasharray", 4)
       .attr("stroke-width", "2");
+
+    const dataText = distributionSVG
+      .append("text")
+      .attr("fill", "#facb73")
+      .attr("x", distributionXScaler(dataPoint[key]) + 5)
+      .attr("y", distributionYScaler(maxYVal / 2))
+      .attr("alignment-baseline", "hanging")
+      .text(d3.format("0.3f")(dataPoint[key]));
+
+    const xAxisLabel = distributionSVG
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "hanging")
+      .attr("fill", "#ccc")
+      .attr("x", graphWidth / 2)
+      .attr("y", graphHeight + this.topMargin + 5)
+      .text(
+        `${dataContainers.metadata.columns[key].display} ${
+          dataContainers.metadata.columns[key].output_units
+            ? "(" + dataContainers.metadata.columns[key].output_units + ")"
+            : ""
+        }`
+      );
+
+    const yAxisLabel = distributionSVG
+      .append("text")
+      .attr("text-anchor", "center")
+      .attr("alignment-baseline", "hanging")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -this.leftMargin + 10)
+      .attr("x", -this.topMargin - graphHeight / 2)
+      .attr("fill", "#ccc")
+      .text("Counts");
   }
+}
+
+function populateDenseBasis(dataPoint) {
+  const plotContainer = document.getElementById("details-dense-basis-plots");
+
+  const fieldsToPlot = [
+    "zfit_50",
+    "logM_50",
+    "logSFRinst_50",
+    "logZsol_50",
+    "Av_50",
+    "logMt_50",
+    "logSFR10_50",
+    "logSFR100_50",
+    "logSFR300_50",
+    "logSFR1000_50",
+    "t25_50",
+    "t50_50",
+    "t75_50",
+    "chi2",
+    "fit_flags",
+    "nbands",
+  ];
+
+  fieldsToPlot.map((key) => {
+    let idName = `dbPlot-${key}`;
+    let plotDiv = document.createElement("div");
+    plotDiv.id = idName;
+    plotDiv.classList.add("plot-container");
+
+    if (dataPoint[key]) {
+      plotContainer.appendChild(plotDiv);
+
+      const distPlot = new DistributionPlot(idName, dataPoint, key);
+    }
+  });
 }
 
 /**
@@ -215,8 +299,6 @@ async function initDetailsPage() {
   fieldName = queryString.get("fieldName");
   id = queryString.get("id");
 
-  console.log(fieldName, id);
-
   if (fieldName) {
     [dataContainers.data, dataContainers.metadata] =
       await loadAllDataFromFieldsFile(fieldName);
@@ -229,21 +311,7 @@ async function initDetailsPage() {
   populateTopInfo(fieldName, id, mainData);
   changeCutoutImage(fieldName, id);
 
-  let newHTMLString = `Field: ${fieldName}, ID: ${id} <br/>`;
-
-  Object.keys(dataContainers.metadata.columns).map((key) => {
-    if (mainData[key]) {
-      newHTMLString += `${dataContainers.metadata.columns[key].display} (${key}): ${mainData[key]} <br/>`;
-    }
-  });
-
-  testContainer.innerHTML = newHTMLString;
-
-  const distPlot = new DistributionPlot(
-    "test-plot-container",
-    mainData,
-    "logM_50"
-  );
+  populateDenseBasis(mainData);
 }
 
 await initDetailsPage();
