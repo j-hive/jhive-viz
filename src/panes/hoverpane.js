@@ -10,6 +10,7 @@ const hoverPaneRAVal = document.getElementById("context-panel-ra-value");
 const hoverPaneDECVal = document.getElementById("context-panel-dec-value");
 const hoverPaneZPhotVal = document.getElementById("context-panel-zphot-value");
 const hoverPaneColorbarRow = document.getElementById("colorbar-row");
+const hoverPaneColorbarColors = document.getElementById("colorbar-colors");
 
 /**
  * Function to Set the Hover Pane Info from data point
@@ -52,5 +53,5 @@ export function createColorBar() {
     context.fillRect(i, 0, 1, 1);
   }
 
-  hoverPaneColorbarRow.appendChild(canvas);
+  hoverPaneColorbarColors.appendChild(canvas);
 }

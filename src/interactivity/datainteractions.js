@@ -56,6 +56,11 @@ export function initColorAxis() {
  * Function to switch what is on the colour axis
  */
 export function switchColorAxis() {
+  const colorbarTitle = document.getElementById("colorbar-title");
+  const colorbarUnits = document.getElementById("colorbar-units");
+  const colorbarMinValue = document.getElementById("colorbar-min-value");
+  const colorbarMaxValue = document.getElementById("colorbar-max-value");
+
   let newAxis = document.getElementById("colour-axis-selector").value;
 
   if (newAxis === "None") {
@@ -70,6 +75,11 @@ export function switchColorAxis() {
         tmpSprite.tint = plottingConfig.DEFAULT_POINT_COLOR;
       });
     });
+
+    colorbarTitle.innerHTML = "";
+    colorbarMinValue.innerHTML = "";
+    colorbarMaxValue.innerHTML = "";
+    colorbarUnits.innerHTML = "";
   } else {
     windowState.currentColorAxis = newAxis;
     windowState.colorRange = getRangeWithBorder(
@@ -87,6 +97,14 @@ export function switchColorAxis() {
         tmpSprite.tint = windowState.colorScaler(d[newAxis]);
       });
     });
+
+    colorbarTitle.innerHTML = dataContainers.metadata.columns[newAxis].display;
+    colorbarMinValue.innerHTML = d3.format("0.1f")(windowState.colorRange[0]);
+    colorbarMaxValue.innerHTML = d3.format("0.1f")(windowState.colorRange[1]);
+    colorbarUnits.innerHTML = dataContainers.metadata.columns[newAxis]
+      .output_units
+      ? "(" + dataContainers.metadata.columns[newAxis].output_units + ")"
+      : "";
   }
 }
 

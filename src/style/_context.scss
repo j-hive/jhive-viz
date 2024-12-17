@@ -6,7 +6,7 @@
   position: absolute;
   left: 2em;
   top: 5em;
-  width: 7em;
+  width: 10em;
   // height: 10em;
   background: colours.$Main-bg-transparent;
   border: 1px solid colours.$Main-secondary-text-hex;
@@ -16,10 +16,28 @@
   flex-direction: column;
   align-items: flex-start;
 
+  #colorbar-colors {
+    width: 55%;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+  }
+
+  #colorbar-title {
+    text-align: center;
+    min-height: 0.5em;
+  }
+
+  #colorbar-units {
+    text-align: center;
+    font-size: 0.8em;
+    color: #999;
+    margin-bottom: 0.5em;
+  }
+
   #colorbarSVG {
-    margin: 0.5em 0.25em;
-    width: 80%;
-    height: 1.5em;
+    width: 100%;
+    min-height: 2em;
+    height: 100%;
   }
 }
 
@@ -35,11 +53,16 @@
   // width: 100%;
   flex-grow: 10;
   padding-top: 0.2em;
-  padding-bottom: 0.2em;
-  padding-left: 1em;
+  // padding-bottom: 0.2em;
+  // padding-left: 1em;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+  font-size: 1rem;
+  font-family: "Bebas Neue", sans-serif;
+  color: #ccc;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .context-panel-row-label {
@@ -50,4 +73,9 @@
 .context-panel-row-value {
   color: #fff;
   font-size: 0.95rem;
+}
+
+#colorbar-min-value,
+#colorbar-max-value {
+  font-size: 0.9em;
 }
