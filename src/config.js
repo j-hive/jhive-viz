@@ -14,8 +14,7 @@ export let dataRootURL = "/data/";
 
 // Changing to Production File Locations if not in Dev Mode
 if (!devTrue) {
-  dataRootURL =
-    "http://jhive-data-public.s3-website.us-east-2.amazonaws.com/data/";
+  dataRootURL = "https://d2g56enz55e7ym.cloudfront.net/data/";
 }
 
 /**

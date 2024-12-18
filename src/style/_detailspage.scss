@@ -156,21 +156,4 @@ body.details-page {
     font-size: 1.5rem;
     color: colours.$J-HIVE-Theme-4-hex;
   }
-
-  footer {
-    color: #aaa;
-    border-top-style: solid;
-    margin: 0;
-    padding: 1.5em 1em 1em;
-    border-color: colours.$Main-secondary-text-hex;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.8em;
-
-    .footer-copyright {
-      font-size: larger;
-    }
-  }
 }

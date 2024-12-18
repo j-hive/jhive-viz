@@ -5,6 +5,11 @@ body.landing-page {
   overflow: unset;
   margin: 0;
 
+  .link-icon {
+    margin-left: 0.2em;
+    font-size: 0.8em;
+  }
+
   .landing-container {
     position: relative;
     display: flex;
@@ -30,8 +35,13 @@ body.landing-page {
       position: relative;
       width: 100%;
       min-height: 40vh;
-      background-color: colours.$J-HIVE-Theme-5-hex;
-      //   background: linear-gradient(color.adjust());
+      background: linear-gradient(
+          120deg,
+          rgba(0, 0, 0, 0.1) 0%,
+          rgba(0, 0, 0, 0.8) 100%
+        ),
+        url(../assets/mainbg.jpg);
+      background-size: cover;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -93,9 +103,12 @@ body.landing-page {
       }
     }
 
-    .stats {
+    section {
       width: 100%;
       min-height: 15vh;
+    }
+
+    .stats {
       background-color: colours.$J-HIVE-Theme-1-hex;
       display: flex;
       flex-direction: row;
@@ -124,6 +137,117 @@ body.landing-page {
           .stat-description {
             line-height: 1em;
             padding-bottom: 1.5rem;
+          }
+        }
+      }
+    }
+
+    .features {
+      background-color: colours.$J-HIVE-Theme-2-hex;
+      padding-top: 3em;
+      padding-bottom: 3em;
+
+      img {
+        width: 20vw;
+        height: 15vw;
+        object-fit: cover;
+        margin-right: 3em;
+        margin-top: 2em;
+        margin-bottom: 2em;
+      }
+
+      .feature-box {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        .feature-text {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          max-width: 35vw;
+
+          .feature-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-weight: 400;
+            font-size: 2.5em;
+            margin-bottom: 0;
+            line-height: 1em;
+          }
+
+          .feature-description {
+            margin-top: 0.5em;
+            font-size: 1.1em;
+          }
+        }
+      }
+    }
+
+    .collaboration {
+      background-color: color.adjust(
+        colours.$J-HIVE-Theme-4-hex,
+        $lightness: -20%
+      );
+
+      a {
+        color: colours.$J-HIVE-Theme-1-hex;
+      }
+
+      a:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
+
+      .collaboration-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        padding-top: 3em;
+        padding-bottom: 3em;
+      }
+
+      .collaboration-left {
+        margin-left: 3em;
+        margin-right: 2em;
+        flex: 1;
+        font-size: 1.2em;
+      }
+
+      .collaboration-right {
+        margin-left: 2em;
+        margin-right: 3em;
+        flex: 1;
+
+        .team-header {
+          font-family: "Bebas Neue", sans-serif;
+          font-weight: 400;
+          font-size: 1.5em;
+          line-height: 1em;
+          margin-bottom: 0;
+        }
+
+        ul {
+          list-style: none;
+          padding-left: 0;
+          display: inline-grid;
+          grid-template-columns: 1fr 1fr;
+
+          li {
+            padding: 0.5em 1em 1em 0em;
+          }
+
+          li span {
+            display: block;
+          }
+
+          li span:first-child {
+            font-size: 1.1em;
+          }
+          li span:last-child {
+            font-size: 0.8em;
+            font-style: italic;
           }
         }
       }

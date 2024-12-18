@@ -31,21 +31,129 @@
       <section class="stats">
         <ul class="stat-list">
           <li class="stat-entry">
-            <div class="stat-number">10</div>
+            <div class="stat-number" id="stat-num-field">0</div>
             <div class="stat-description">JWST Fields</div>
           </li>
           <li class="stat-entry">
-            <div class="stat-number">100</div>
+            <div class="stat-number" id="stat-num-param">0</div>
             <div class="stat-description">Measured Parameters</div>
           </li>
           <li class="stat-entry">
-            <div class="stat-number">1000</div>
+            <div class="stat-number" id="stat-num-source">0</div>
             <div class="stat-description">Total Sources</div>
           </li>
         </ul>
       </section>
 
-      <div class="testing"><a href="app.html">Go to the App</a></div>
+      <section class="features">
+        <div class="feature-box">
+          <img
+            src="src/assets/view1.png"
+            alt="Showing the exploration of the data"
+          />
+          <div class="feature-text">
+            <h3 class="feature-title">Explore Different Parameters</h3>
+            <p class="feature-description">
+              Zoom and pan across various observational and inferred parameters
+              for sources from included JWST sources. Compare distributions
+              between different parameters and put your galaxy in context.
+            </p>
+          </div>
+        </div>
+        <div class="feature-box">
+          <img src="src/assets/view2.png" alt="Showing the SED Explorer" />
+          <div class="feature-text">
+            <h3 class="feature-title">Find the context behind your source</h3>
+            <p class="feature-description">
+              See your source's SED realtime, as well as where it lies in the
+              distribution of inferred parameters.
+            </p>
+          </div>
+        </div>
+        <div class="feature-box">
+          <img src="src/assets/view3.png" alt="Showing the Details Section" />
+          <div class="feature-text">
+            <h3 class="feature-title">
+              Uncover the details of your favorite galaxy
+            </h3>
+            <p class="feature-description">
+              Scan over each of your sources's parameters and where they lie as
+              compared to the whole distribution.
+            </p>
+          </div>
+        </div>
+        <div class="feature-box">
+          <img src="src/assets/view4.png" alt="Showing the Export Functions" />
+          <div class="feature-text">
+            <h3 class="feature-title">Grab your data to do even more</h3>
+            <p class="feature-description">
+              Copy either abridged or full data for your favorite as a CSV to
+              conduct your offline investigations. Where available, jump over to
+              a FITSMap projection to see your galaxy from the original field.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="collaboration">
+        <div class="collaboration-row">
+          <div class="collaboration-left">
+            <p>
+              <b>J-HIVE</b> is created by an international team of scientists to
+              make visualization and exploration of the latest extragalactic
+              data from the James Webb Space Telescope accessible to the full
+              community of scientists, students, and interested members of the
+              public.
+            </p>
+            <p>
+              Documentation for the J-HIVE dataset and all open-source codes are
+              available on the documentation site: <br />
+              <a href="https://j-hive.github.io/jhive-docs/">
+                https://j-hive.github.io/jhive-docs/<i
+                  class="fa-solid fa-link link-icon"
+                ></i>
+              </a>
+            </p>
+          </div>
+          <div class="collaboration-right">
+            <h4 class="team-header">Team Members</h4>
+            <ul class="team-members">
+              <li>
+                <span>Prof. Lamiya Mowla</span> <span>Wellesley College</span>
+              </li>
+              <li>
+                <span>Dr. Kartheik Iyer</span> <span>Columbia University</span>
+              </li>
+              <li>
+                <span>Dr. Jonathan Kemp</span> <span>Wellesley College</span>
+              </li>
+              <li>
+                <span>Dr. Anan Lu</span>
+                <span>University of British Columbia</span>
+              </li>
+              <li>
+                <span>Valentina La Torre</span> <span>Tufts University</span>
+              </li>
+              <li>
+                <span>Prof. Gabriel Brammer</span>
+                <span>University of Copenhagen</span>
+              </li>
+              <li>
+                <span>Dr. Mubdi Rahman</span>
+                <span>Sidrat Research</span>
+              </li>
+              <li><span>Hansen Jiang</span> <span>Sidrat Research</span></li>
+              <li>
+                <span>Dr. Jennifer Scora</span>
+                <span>Sidrat Research</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- <div class="collaboration-row">J-HIVE is a project of:</div> -->
+      </section>
+
+      {{> _footer}}
     </div>
     <script type="module" src="/src/landing.js"></script>
   </body>
