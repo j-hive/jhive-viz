@@ -24,6 +24,7 @@ function getCurrentYear() {
 
 export default defineConfig({
   build: {
+    copyPublicDir: false,
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
