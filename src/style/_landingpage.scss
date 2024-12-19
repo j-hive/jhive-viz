@@ -25,12 +25,6 @@ body.landing-page {
     max-width: 1200px;
     min-height: 100vh;
 
-    @media (min-width: 1200px) {
-      border-left-style: solid;
-      border-right-style: solid;
-      border-color: colours.$Main-secondary-text-hex;
-    }
-
     .landing-header {
       position: relative;
       width: 100%;
@@ -43,26 +37,39 @@ body.landing-page {
         url(../assets/mainbg.jpg);
       background-size: cover;
       display: flex;
+      flex-wrap: wrap;
       flex-direction: row;
       align-items: center;
+      justify-content: center;
+
+      @media (max-width: 900px) {
+        flex-direction: column;
+      }
 
       .header-left {
         display: flex;
         flex-direction: column;
-        min-width: 50%;
+        max-width: 40vw;
+        padding: 7rem 2rem 7rem 2rem;
+
+        @media (max-width: 900px) {
+          text-align: center;
+          max-width: 80vw;
+          padding-bottom: 2em;
+        }
+
         .title {
           font-family: "Bebas Neue", sans-serif;
           font-weight: 400;
           font-style: normal;
           font-size: 12em;
-          padding: 10rem 1rem 0rem 7rem;
           margin: 0;
           line-height: 0.8em;
         }
 
         .subtitle {
           margin: 0;
-          padding: 0rem 1rem 10rem 7.25rem;
+          // padding: 0rem 1rem 10rem 7.25rem;
           font-family: "Bebas Neue", sans-serif;
           font-weight: 400;
           font-size: 1.8em;
@@ -76,6 +83,9 @@ body.landing-page {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 30em;
+        max-width: 40vw;
+        padding: 3rem 2rem 3rem 2rem;
 
         .tagline {
           font-size: 1.6em;
@@ -123,6 +133,11 @@ body.landing-page {
         padding-right: 3em;
         justify-content: space-around;
 
+        @media (max-width: 900px) {
+          flex-direction: column;
+          flex-wrap: wrap;
+        }
+
         li {
           list-style: none;
           text-align: center;
@@ -162,6 +177,20 @@ body.landing-page {
         flex-direction: row;
         justify-content: center;
 
+        @media (max-width: 900px) {
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 1em;
+          margin-top: 1em;
+
+          img {
+            width: 40vw;
+            height: 30vw;
+            margin-right: 2em;
+            margin-left: 2em;
+          }
+        }
+
         .feature-text {
           display: flex;
           flex-direction: column;
@@ -173,6 +202,7 @@ body.landing-page {
             font-weight: 400;
             font-size: 2.5em;
             margin-bottom: 0;
+            margin-top: 0;
             line-height: 1em;
           }
 
@@ -189,6 +219,8 @@ body.landing-page {
         colours.$J-HIVE-Theme-4-hex,
         $lightness: -20%
       );
+      padding-top: 2em;
+      padding-bottom: 0;
 
       a {
         color: colours.$J-HIVE-Theme-1-hex;
@@ -204,28 +236,46 @@ body.landing-page {
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        padding-top: 3em;
-        padding-bottom: 3em;
+        padding-top: 1em;
+        padding-bottom: 1em;
+
+        @media (max-width: 900px) {
+          flex-direction: column;
+          align-items: center;
+          // text-align: center;
+          // max-width: 80vw;
+          // padding-bottom: 2em;
+        }
       }
 
       .collaboration-left {
         margin-left: 3em;
-        margin-right: 2em;
+        margin-right: 3em;
         flex: 1;
         font-size: 1.2em;
+        line-height: 1.35em;
+
+        p {
+          margin-top: 1.5em;
+          margin-bottom: 1.5em;
+        }
       }
 
       .collaboration-right {
         margin-left: 2em;
-        margin-right: 3em;
+        margin-right: 2em;
         flex: 1;
 
         .team-header {
           font-family: "Bebas Neue", sans-serif;
           font-weight: 400;
-          font-size: 1.5em;
+          font-size: 1.75em;
           line-height: 1em;
           margin-bottom: 0;
+        }
+
+        .team-members {
+          margin-top: 0.5em;
         }
 
         ul {
@@ -240,6 +290,7 @@ body.landing-page {
 
           li span {
             display: block;
+            line-height: 1.15em;
           }
 
           li span:first-child {
@@ -249,6 +300,32 @@ body.landing-page {
             font-size: 0.8em;
             font-style: italic;
           }
+        }
+      }
+
+      .collaboration-logos {
+        display: flex;
+        flex-direction: column;
+
+        .logo-holder {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          padding: 2em 2em;
+
+          img {
+            height: 5em;
+            padding-left: 1em;
+            padding-right: 1em;
+          }
+
+          #sidrat-logo {
+            height: 3em;
+          }
+        }
+
+        .dev-support {
+          font-size: 0.9em;
         }
       }
     }
