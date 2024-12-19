@@ -286,7 +286,7 @@ function populateTopInfo(fieldName, id, mainData) {
 function changeCutoutImage(fieldName, id) {
   const cutoutImage = document.getElementById("details-cutout-image");
 
-  cutoutImage.style.backgroundImage = `url(${getCutoutURL(id, "test")})`;
+  cutoutImage.style.backgroundImage = `url(${getCutoutURL(id, fieldName)})`;
 }
 
 async function initDetailsPage() {
