@@ -209,7 +209,7 @@ export function updateDetailPanel(dataPoint) {
 
   detailsImage.style.backgroundImage = `url(${getCutoutURL(
     dataPoint["id"],
-    "test"
+    dataPoint["fieldName"]
   )})`;
 }
 

@@ -31,6 +31,12 @@ export const distributionMetadataPath =
   dataRootURL + "v1.0/distributions/metadata.json";
 
 /**
+ * The tag for the cutouts
+ * @type {string}
+ */
+export const cutoutsTag = "_dja-v7.2_HSV_";
+
+/**
  * The URL to the Data File
  * @type {string}
  */

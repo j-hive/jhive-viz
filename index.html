@@ -20,11 +20,13 @@
         </div>
         <div class="header-right">
           <div class="tagline">
-            Harnessing the power of JWST to visualize the galaxy evolution over
+            Harnessing the power of JWST to visualize galaxy evolution over
             cosmic time
           </div>
 
-          <a href="app.html" class="enter-button">Enter the Visualization</a>
+          <a href="app.html" class="enter-button" target="_blank"
+            >Enter the Visualization</a
+          >
         </div>
       </header>
 
@@ -108,9 +110,17 @@
             <p>
               Documentation for the J-HIVE dataset and all open-source codes are
               available on the documentation site: <br />
-              <a href="https://j-hive.github.io/jhive-docs/">
+              <a href="https://j-hive.github.io/jhive-docs/" target="_blank">
                 https://j-hive.github.io/jhive-docs/<i
                   class="fa-solid fa-link link-icon"
+                ></i>
+              </a>
+            </p>
+            <p>
+              If have any questions about the collaboration, please contact:
+              <a href="mailto:j-hive@wellesley.edu">
+                j-hive@wellesley.edu<i
+                  class="fa-solid fa-envelope link-icon"
                 ></i>
               </a>
             </p>
@@ -124,9 +134,7 @@
               <li>
                 <span>Dr. Kartheik Iyer</span> <span>Columbia University</span>
               </li>
-              <li>
-                <span>Dr. Jonathan Kemp</span> <span>Wellesley College</span>
-              </li>
+              <li><span>Jonathan Kemp</span> <span>Wellesley College</span></li>
               <li>
                 <span>Dr. Anan Lu</span>
                 <span>University of British Columbia</span>
@@ -150,7 +158,34 @@
             </ul>
           </div>
         </div>
-        <!-- <div class="collaboration-row">J-HIVE is a project of:</div> -->
+        <div class="collaboration-row collaboration-logos">
+          <div><i>J-HIVE is a supported by:</i></div>
+          <div class="logo-holder">
+            <a href="https://www.wellesley.edu/" target="_blank"
+              ><img
+                src="src/assets/wellesley-logo-text-white.png"
+                alt="Wellesley College"
+            /></a>
+            <a
+              href="https://www.wellesley.edu/whitin-observatory"
+              target="_blank"
+              ><img
+                src="src/assets/whitin-own-logo-text-vertical-white.png"
+                alt="Whitin Observatory"
+            /></a>
+          </div>
+          <div class="dev-support">
+            <i>Project Management and Development Support Provided by:</i>
+          </div>
+          <div class="logo-holder">
+            <a href="https://www.sidratresearch.com" target="_blank"
+              ><img
+                id="sidrat-logo"
+                src="src/assets/sidrat.svg"
+                alt="Sidrat Research"
+            /></a>
+          </div>
+        </div>
       </section>
 
       {{> _footer}}
