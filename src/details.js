@@ -273,6 +273,26 @@ function populateTopInfo(fieldName, id, mainData) {
     `Flux Radius: ${d3.format(".3f")(mainData.flux_radius)}"`
   );
 
+  changeHTMLFromElementByID(
+    "details-photometric-redshift",
+    `Photometric Redshift: ${d3.format(".2f")(mainData.zfit_50)}`
+  );
+
+  changeHTMLFromElementByID(
+    "details-stellar-mass",
+    `Stellar Mass (log): ${d3.format(".2f")(mainData.logM_50)}`
+  );
+
+  changeHTMLFromElementByID(
+    "details-sfr",
+    `Star Formation Rate (log): ${d3.format(".2f")(mainData.logSFRinst_50)}`
+  );
+
+  changeHTMLFromElementByID(
+    "details-metallicity",
+    `Metallicity (log): ${d3.format(".2f")(mainData.logZsol_50)}`
+  );
+
   // add magnitude values
 
   populateMagnitudes(mainData);

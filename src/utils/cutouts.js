@@ -1,6 +1,6 @@
 // Utilities for cutouts
 
-import { cutoutsTag, dataContainers, dataRootURL } from "../config";
+import { dataContainers, dataRootURL } from "../config";
 
 export function getCutoutURL(catalogID, fieldName) {
   if (fieldName == "test") {
@@ -14,10 +14,7 @@ export function getCutoutURL(catalogID, fieldName) {
       dataRootURL + dataContainers.fieldsFile[fieldName].cutouts_dir;
 
     // THIS USES A HACK -- need to fix output field names
-    cutoutURL += `${fieldName.replace(
-      "-grizli",
-      "_grizli"
-    )}${cutoutsTag}${catalogID}_image.jpg`;
+    cutoutURL += `${fieldName}_${catalogID}.jpg`;
 
     return cutoutURL;
   }
