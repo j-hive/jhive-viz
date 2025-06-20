@@ -17,19 +17,19 @@ import {
 const detailsPanel = document.getElementById("detailpanel");
 const detailsImage = document.getElementById("source-cutout");
 const detailsTitleID = document.getElementById("detail-title-header-val");
-const detailsTitleRA = document.getElementById("detail-title-ra-val");
-const detailsTitleDEC = document.getElementById("detail-title-dec-val");
 const detailsTitleZ = document.getElementById("detail-title-z-val");
 const detailsTitleSFR = document.getElementById("detail-title-sfr-val");
+const detailsTitleMass = document.getElementById("detail-title-mass-val");
+
+const detailsTitleRf150w = document.getElementById("detail-title-r-f150w-val");
+const detailsTitleRf444w = document.getElementById("detail-title-r-f444w-val");
 
 const detailsTitleMagf150w = document.getElementById(
   "detail-title-mag-f150w-val"
 );
-const detailsTitleMagf200w = document.getElementById(
-  "detail-title-mag-f200w-val"
-);
-const detailsTitleMagf277w = document.getElementById(
-  "detail-title-mag-f277w-val"
+
+const detailsTitleMagf444w = document.getElementById(
+  "detail-title-mag-f444w-val"
 );
 
 // Getting SED Container
@@ -111,16 +111,18 @@ export function updateDetailPanel(dataPoint) {
     dataContainers.fieldsFile[dataPoint["fieldName"]].display +
     " " +
     dataPoint["id"];
-  detailsTitleRA.innerHTML = d3.format(".5f")(dataPoint["ra"]) + "&deg;";
-  detailsTitleDEC.innerHTML = d3.format(".5f")(dataPoint["dec"]) + "&deg;";
   detailsTitleZ.innerHTML = d3.format(".2f")(dataPoint["zfit_50"]);
   detailsTitleSFR.innerHTML = d3.format(".1f")(dataPoint["logSFRinst_50"]);
+  detailsTitleMass.innerHTML = d3.format(".1f")(dataPoint["logM_50"]);
   detailsTitleMagf150w.innerHTML =
-    d3.format(".1f")(dataPoint["abmag_f150w"]) + " (f150w)";
-  detailsTitleMagf200w.innerHTML =
-    d3.format(".1f")(dataPoint["abmag_f200w"]) + " (f200w)";
-  detailsTitleMagf277w.innerHTML =
-    d3.format(".1f")(dataPoint["abmag_f277w"]) + " (f277w)";
+    d3.format(".1f")(dataPoint["abmag_f150w"]) + " (150)";
+  detailsTitleMagf444w.innerHTML =
+    d3.format(".1f")(dataPoint["abmag_f444w"]) + " (444)";
+
+  detailsTitleRf150w.innerHTML =
+    d3.format(".1f")(dataPoint["f150w-clear-reff"]) + " (150)";
+  detailsTitleRf444w.innerHTML =
+    d3.format(".1f")(dataPoint["f150w-clear-reff"]) + " (444)";
 
   let sedData = getSEDPoints(dataPoint);
   // Change SED Points:
