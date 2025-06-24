@@ -166,11 +166,13 @@ export async function initializePixiApp() {
     .scaleLinear()
     .domain(windowState.xRange)
     .range([0, windowState.WIDTH]);
+  // .unknown(windowState.WIDTH + 500);
 
   windowState.yScaler = d3
     .scaleLinear()
     .domain(windowState.yRange)
     .range([0, windowState.HEIGHT]);
+  // .unknown(windowState.HEIGHT + 500);
 
   // Making Pixi Point Texture
   dataContainers.pixiTexture = makePixiTemplate(dataContainers.app);
