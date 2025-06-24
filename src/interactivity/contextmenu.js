@@ -130,7 +130,12 @@ export function hideContextMenu(event) {
   document.removeEventListener("click", hideContextMenu);
 }
 
-function openDetails() {
+export function openDetails() {
+  if (windowState.selectedPoint === false) {
+    console.log("No selected point");
+    return;
+  }
+
   let dataPoint = dataContainers.spriteToData.get(windowState.selectedPoint);
   const fieldName = dataPoint.fieldName;
   const id = dataPoint.id;
@@ -139,7 +144,12 @@ function openDetails() {
   open(mainURL, "jhiveDetails");
 }
 
-function openFITSMap() {
+export function openFITSMap() {
+  if (windowState.selectedPoint === false) {
+    console.log("No selected point");
+    return;
+  }
+
   let dataPoint = dataContainers.spriteToData.get(windowState.selectedPoint);
 
   const ra = dataPoint.ra;
@@ -183,7 +193,12 @@ function copyAbridgedDataToClipboard() {
     });
 }
 
-function copyAllDataToClipboard() {
+export function copyAllDataToClipboard() {
+  if (windowState.selectedPoint === false) {
+    console.log("No selected point");
+    return;
+  }
+
   let dataPoint = dataContainers.spriteToData.get(windowState.selectedPoint);
 
   let headerString = "";

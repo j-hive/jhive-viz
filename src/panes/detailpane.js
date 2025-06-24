@@ -13,6 +13,11 @@ import {
   convertABmagnitudeToLogFlux,
   redshiftRestWavelength,
 } from "../utils/astro";
+import {
+  copyAllDataToClipboard,
+  openDetails,
+  openFITSMap,
+} from "../interactivity/contextmenu";
 
 const detailsPanel = document.getElementById("detailpanel");
 const detailsImage = document.getElementById("source-cutout");
@@ -637,10 +642,24 @@ export function initializeMZPlot() {
 }
 
 /**
+ * Function to initialize the control buttons
+ */
+function initializeControlButtons() {
+  const openSummaryButton = document.getElementById("control-summary-button");
+  const openFITSMapButton = document.getElementById("control-fitsmap-button");
+  const openCopyDataButton = document.getElementById("control-copydata-button");
+
+  openSummaryButton.addEventListener("click", openDetails);
+  openFITSMapButton.addEventListener("click", openFITSMap);
+  openCopyDataButton.addEventListener("click", copyAllDataToClipboard);
+}
+
+/**
  * Function to initialize the details pane
  */
 export function initializeDetailPane() {
   initializeSEDPlot();
   initializeMZPlot();
   initializeMSFRPlot();
+  initializeControlButtons();
 }
